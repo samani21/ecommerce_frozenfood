@@ -1,5 +1,15 @@
 <?php
+    include "koneksi.php";
     $hal = $_GET['page'];
+	session_start();
+ 
+	// cek apakah yang mengakses halaman ini sudah login
+	if($_SESSION['level']==""){
+		header("location:login.php?pesan=gagal");
+	}
+    $id = $_SESSION['id'];
+    $query = mysqli_query($koneksi,"SELECT * FROM pelanggan WHERE id_user = '$id'");
+    $row = mysqli_fetch_assoc($query);
 ?>
 
 <!DOCTYPE html>
@@ -18,7 +28,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js"></script>
@@ -28,17 +39,20 @@
         list-style: none;
         margin: 20px 0 20px 0;
     }
-    .hidup{
+
+    .hidup {
         background-color: blueviolet;
         border-radius: 10px;
         font-size: 20px;
         width: 200px;
 
     }
+
     a {
         text-decoration: none;
         margin: 10px;
     }
+
     .sidebar {
         width: 250px;
         height: 100vh;
@@ -46,9 +60,11 @@
         margin-left: -300px;
         transition: 0.4s;
     }
+
     .active-main-content {
         margin-left: 250px;
     }
+
     .active-sidebar {
         margin-left: 0;
     }
@@ -57,32 +73,115 @@
         transition: 0.4s;
     }
 </style>
+<?php
+    if(empty($row['id_pelanggan'])){
+        ?>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header bg-info">
+                <div class="row">
+                    <div class="col-11">
+                    <h2>Tambah Data Pelanggan</h2>
+                    </div>
+                    <div class="col-1">
+                        <a href="logout.php" class="btn btn-danger">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <form action="" method="post">
+                    <div>
+                        <input type="hidden" value="<?= $_SESSION['id'] ?>" name="id_user">
+                        <label for="">Nama</label>
+                        <input type="text" class="form-control" name="nama" autofocus required>
+                    </div>
+                    <div class="row">
+                        <label for="">TTL</label>
+                        <div class="col-6">
+                            <input type="text" class="form-control" name="tempat" required>
+                        </div>
+                        <div class="col-6">
+                            <input type="date" class="form-control" name="tgl" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="">Alamat</label>
+                        <input type="text" class="form-control" name="alamat" autofocus required>
+                    </div>
+                    <br>
+                    <div>
+                        <button type="submit" name="simpan" class="btn btn-primary">Simpan</button>
+                        <button type="reset" name="simpan" class="btn btn-danger">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <?php
+if(isset($_POST['simpan'])){
+    $nama = $_POST['nama'];
+    $tempat = $_POST['tempat'];
+    $tgl = $_POST['tgl'];
+    $alamat = $_POST['alamat'];
+    $id_user = $_POST['id_user'];
+
+    mysqli_query($koneksi,"INSERT INTO pelanggan VALUES(null,'$id_user','$nama','$tempat','$tgl','$alamat')");
+    ?>
+    <script>
+        swal({
+title: "Success!",
+text: "Tambah data berhasil",
+type: "success"
+}, setTimeout(function(){
+
+window.location.href = "http://localhost/bikafrozen/index.php?page=dashboard";
+
+}, 1000));
+    </script>
+    <?php   
+}
+?>
+</body>
+<?php
+    }else{
+        ?>
+
 <body>
     <div>
         <div class="sidebar p-4 bg-primary active-sidebar" id="sidebar">
             <h4 class="mb-5 text-white">BIKA FROZEN</h4>
-            <li <?php if($hal == "dashboard"){ ?>class="hidup"<?php }?>>
+            <li <?php if($hal == "dashboard"){ ?>class="hidup" <?php }?>>
                 <a class="text-white" href="index.php?page=dashboard">
                     <i class="bi bi-house mr-2"></i>
                     Dashboard
                 </a>
             </li>
-            <li <?php if($hal == "kategori" || $hal == "tambah_kategori" || $hal == "edit_kategori"){ ?>class="hidup"<?php }?>>
+            <li <?php if($hal == "kategori" || $hal == "tambah_kategori" || $hal == "edit_kategori"){ ?>class="hidup"
+                <?php }?>>
                 <a class="text-white" href="index.php?page=kategori">
                     <i class="bi bi-house mr-2"></i>
                     Kategori
                 </a>
             </li>
-            <li <?php if($hal == "barang" || $hal == "tambah_barang" || $hal == "edit_barang"){ ?>class="hidup"<?php }?>>
+            <li <?php if($hal == "barang" || $hal == "tambah_barang" || $hal == "edit_barang"){ ?>class="hidup"
+                <?php }?>>
                 <a class="text-white" href="index.php?page=barang">
                     <i class="bi bi-house mr-2"></i>
                     Barang
                 </a>
             </li>
-            <li <?php if($hal == "menu" || $hal == "order" || $hal == "edit_menu"){ ?>class="hidup"<?php }?>>
+            <li <?php if($hal == "menu" || $hal == "order" || $hal == "edit_menu"){ ?>class="hidup" <?php }?>>
                 <a class="text-white" href="index.php?page=menu">
                     <i class="bi bi-house mr-2"></i>
                     Menu
+                </a>
+            </li>
+            <li>
+                <a class="text-white" href="logout.php">
+                    <i class="bi bi-house mr-2"></i>
+                    Logout
                 </a>
             </li>
         </div>
@@ -90,15 +189,17 @@
     <section class="p-4 active-main-content" id="main-content">
         <div class="row">
             <div class="col-1">
-            <button class="btn btn-primary" id="button-toggle">
-            <i class="bi bi-list"></i>
-        </button>
+                <button class="btn btn-primary" id="button-toggle">
+                    <i class="bi bi-list"></i>
+                </button>
             </div>
             <div class="col-11">
-                <h1 style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"><?= $hal?></h1>
+                <h1
+                    style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">
+                    <?= $hal?></h1>
             </div>
         </div>
-                <hr>
+        <hr>
         <div class="">
             <?php 
 	if(isset($_GET['page'])){
@@ -163,20 +264,49 @@
         </div>
     </section>
     <script>
-    // event will be executed when the toggle-button is clicked
-    document.getElementById("button-toggle").addEventListener("click", () => {
+        // event will be executed when the toggle-button is clicked
+        document.getElementById("button-toggle").addEventListener("click", () => {
 
-        // when the button-toggle is clicked, it will add/remove the active-sidebar class
-        document.getElementById("sidebar").classList.toggle("active-sidebar");
+            // when the button-toggle is clicked, it will add/remove the active-sidebar class
+            document.getElementById("sidebar").classList.toggle("active-sidebar");
 
-        // when the button-toggle is clicked, it will add/remove the active-main-content class
-        document.getElementById("main-content").classList.toggle("active-main-content");
-    });
-</script>
+            // when the button-toggle is clicked, it will add/remove the active-main-content class
+            document.getElementById("main-content").classList.toggle("active-main-content");
+        });
+    </script>
     <script>
         new DataTable('#example');
-        
     </script>
+    <script type="text/javascript">
+		
+		var rupiah = document.getElementById('rupiah');
+		rupiah.addEventListener('keyup', function(e){
+			// tambahkan 'Rp.' pada saat form di ketik
+			// gunakan fungsi formatRupiah() untuk mengubah angka yang di ketik menjadi format angka
+			rupiah.value = formatRupiah(this.value, 'Rp. ');
+		});
+ 
+		/* Fungsi formatRupiah */
+		function formatRupiah(angka, prefix){
+			var number_string = angka.replace(/[^,\d]/g, '').toString(),
+			split   		= number_string.split(','),
+			sisa     		= split[0].length % 3,
+			rupiah     		= split[0].substr(0, sisa),
+			ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
+ 
+			// tambahkan titik jika yang di input sudah menjadi angka ribuan
+			if(ribuan){
+				separator = sisa ? '.' : '';
+				rupiah += separator + ribuan.join('.');
+			}
+ 
+			rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+			return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+		}
+	</script>
 </body>
+<?php
+    }
+?>
 
 </html>

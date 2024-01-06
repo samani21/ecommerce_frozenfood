@@ -46,6 +46,10 @@
             <input type="number" name="jumlah" class="form-control" required>
         </div>
         <div>
+                <label for="">Harga</label>
+                <input type="text" name="harga" class="form-control" id="rupiah" required >
+            </div>
+        <div>
             <label for="">Foto</label>
             <input type="file" name="foto" class="form-control" required>
         </div>
@@ -67,14 +71,14 @@
 		$ukuran	= $_FILES['foto']['size'];
 		$file_tmp = $_FILES['foto']['tmp_name'];
         $nama_c = date('hisdmy').$nama;
-
+        $harga = preg_replace('/[Rp. ]/','',$_POST['harga']);
         $nm_barang = $_POST['nm_barang'];
         $id_kategori = substr($_POST['id_kategori'],0,4);
         $jumlah = $_POST['jumlah'];
         if(in_array($ekstensi, $ekstensi_diperbolehkan) === true){
             if($ukuran < 1044070){			
                 move_uploaded_file($file_tmp, 'file/'.$nama_c);
-                mysqli_query($koneksi,"INSERT INTO barang VALUES(null,'$id_kategori','$nm_barang','$jumlah','$nama_c')") or die(mysqli_error($koneksi));
+                mysqli_query($koneksi,"INSERT INTO barang VALUES(null,'$id_kategori','$nm_barang','$jumlah','$nama_c','$harga')") or die(mysqli_error($koneksi));
                 ?>
                 <script>
                     swal({

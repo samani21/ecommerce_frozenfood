@@ -3,6 +3,7 @@ include "././koneksi.php";
 $pa = $_GET['page'];
 @$id_k = substr($_GET['id_kategori'],0,4);
 @$kategori = $_GET['id_kategori'];
+@$order = $_GET['id_order'];
 $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
 ?>
 
@@ -12,6 +13,7 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
             <div class="row">
                 <input type="hidden" name="page" value="<?= $pa ?>" class="form-control" required>
                 <input type="hidden" name="halaman" value="1" class="form-control" required>
+                <input type="hidden" name="id_order" value="<?= $order?>" class="form-control" required>
                 <div class="col-6">
                     <select name="id_kategori" class="form-control" id="">
                         <option value="">Semua</option>
@@ -53,7 +55,7 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
     </div>
     <div class="col-2">
         <div align="right">
-        <a href="index.php?page=order" class="btn btn-warning">Order</a>
+            <a href="index.php?page=order" class="btn btn-warning">Order</a>
         </div>
     </div>
 </div>
@@ -83,49 +85,147 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
             while($row = mysqli_fetch_array($query)){
                 ?>
         <div class="card">
-            <h5 class="card-header bg-info"><?= $nomor++  ?>. <?= $row['nm_barang']?></h5>
+            <div class="card-header bg-info">
+                <div class="row">
+                    <div class="col-6">
+                        <h4><?= $nomor++  ?>. <?= $row['nm_barang']?></h4>
+                    </div>
+                    <div class="col-3">
+                        <h4><?= $row['nm_kategori']?></h4>
+                    </div>
+                    <div class="col-3">
+                        <h4><?= $hasil_rupiah = "Rp " . number_format($row['harga'],0,',','.') ?></h4>
+                    </div>
+                </div>
+            </div>
             <div class="card-body">
-            <table width="100%">
-    <td width="40%"><img src="././file/<?= $row['foto']?>" alt="" width="40%"></td>
-    <td width="30%">Stok <?= $row['jumlah']?></</td>
-    <td width="30%"><form action="" method="post">
-    <div class="row">
-        <div class="col-6">
-        <input type="number" name="jumlah" class="form-control">
-        </div>
-        <div class="col-6">
-            <button class="btn btn-primary" type="submit" name="simpan">Pesan</button>
-        </div>
-    </div>
-</form></td>
-</table>
+                <table width="100%">
+                    <td width="40%"><img src="././file/<?= $row['foto']?>" alt="" width="40%"></td>
+                    <td width="30%">Stok <?= $row['jumlah']?></</td> <td width="30%">
+                        <?php
+                            if(empty($order)){
+
+                            }else{
+                                ?>
+                        <form action="" method="post">
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="number" name="jumlah" class="form-control" required>
+                                    <input type="hidden" name="harga" value="<?= $row['harga']?>" class="form-control"
+                                        required>
+                                    <input type="hidden" name="id_barang" value="<?= $row['id_barang']?>"
+                                        class="form-control" required>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-primary" type="submit" name="simpan1">Pesan</button>
+                                </div>
+                            </div>
+                        </form>
+                        <?php
+                                
+                            }
+                        ?>
+                    </td>
+                </table>
             </div>
         </div>
         <br>
         <?php
             }
         ?>
-
         <nav>
             <ul class="pagination justify-content">
                 <li class="page-item">
                     <a class="page-link"
-                        <?php if($halaman > 1){ echo "href='?page=menu&halaman=$previous&id_kategori=$kategori'"; } ?>>Previous</a>
+                        <?php if($halaman > 1){ echo "href='?page=menu&halaman=$previous&id_kategori=$kategori&id_order=$order'"; } ?>>Previous</a>
                 </li>
                 <?php 
 				for($x=1;$x<=$total_halaman;$x++){
 					?>
                 <li class="page-item"><a class="page-link"
-                        href="?page=menu&halaman=<?php echo $x ?>&id_kategori=<?= $kategori ?>"><?php echo $x; ?></a></li>
+                        href="?page=menu&halaman=<?php echo $x ?>&id_kategori=<?= $kategori ?>&id_order=<?= $order ?>"><?php echo $x; ?></a>
+                </li>
                 <?php
 				}
 				?>
                 <li class="page-item">
                     <a class="page-link"
-                        <?php if($halaman < $total_halaman) { echo "href='?page=menu&halaman=$next&id_kategori=$kategori'"; } ?>>Next</a>
+                        <?php if($halaman < $total_halaman) { echo "href='?page=menu&halaman=$next&id_kategori=$kategori&id_order=$order'"; } ?>>Next</a>
                 </li>
             </ul>
         </nav>
     </div>
-    <div class="col-6">sdsd</div>
-</div>
+    <div class="col-6">
+        <?php
+            if(empty($order)){
+
+            }else{
+                ?>
+                     <div class="card">
+            <div class="card-header bg-info">
+                <div class="row">
+                    <div class="col-6">
+                        <h5> Nama Barang<h5>
+                    </div>
+                    <div class="col-3">
+                        <h5>kategori</h5>
+                    </div>
+                    <div class="col-3">
+                        <h5>Harga</h5>
+                    </div>
+                </div>
+            </div>
+                <?php
+                $pesan = mysqli_query($koneksi,"SELECT pesanan.jumlah as total ,pesanan.*,barang.*,kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE pesanan.id_order = '$order'");
+                $total = mysqli_query($koneksi,"SELECT SUM(pesanan.jumlah*pesanan.harga) as subtotal FROM pesanan WHERE pesanan.id_order = '$order'");
+                $subtotal = mysqli_fetch_array($total);
+                while($row_pesan = mysqli_fetch_array($pesan)){
+                ?>
+
+        <div class="card">
+            <div class="card-header bg-secondary">
+                <div class="row">
+                    <div class="col-6">
+                        <h5> <?= $row_pesan['nm_barang']?> (<?= $row_pesan['nm_kategori']?>)</h5>
+                    </div>
+                    <div class="col-3">
+                        <h5><?= $row_pesan['total']?></h5>
+                    </div>
+                    <div class="col-3">
+                        <h5><?= $hasil_rupiah = "Rp " . number_format($row_pesan['harga']*$row_pesan['total'],0,',','.') ?></h5>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <?php
+                }
+            }
+        ?>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-9">
+        <h5>Total Keseluruhan</h5>
+        </div>
+        <div class="col-3">
+        <h5><?= $hasil_rupiah = "Rp " . number_format($subtotal['subtotal'],0,',','.') ?></h5>
+        </div>
+    </div>
+    <?php
+if(isset($_POST['simpan1'])){
+                                    
+    $id_order = $order;
+    $tgl = date('Y-m-d');
+    $jumlah = $_POST['jumlah'];
+    $id_barang = $_POST['id_barang'];
+    $harga = $_POST['harga'];
+    $status = 1;
+    mysqli_query($koneksi,"INSERT INTO pesanan VALUES(null,'$id_order','$id_barang','$tgl','$jumlah','$harga','$status')") or die(mysqli_error($koneksi));
+   ?>
+    <script>
+        window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order?>";
+    </script>
+
+    <?php
+}
+?>

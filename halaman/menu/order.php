@@ -1,7 +1,11 @@
 <?php
     include "././koneksi.php";
     $tgl = date('Y-m-d');
-    mysqli_query($koneksi,"INSERT INTO `order` VALUES(null,'$tgl')") or die(mysqli_error($koneksi));
+    $id = $_SESSION['id'];
+    $pelanggan = mysqli_query($koneksi,"SELECT * FROM pelanggan WHERE id_user = '$id' ");
+    $row_p = mysqli_fetch_assoc($pelanggan);
+    $id_pel = $row_p['id_pelanggan'];
+    mysqli_query($koneksi,"INSERT INTO `order` VALUES(null,'$id_pel','$tgl')") or die(mysqli_error($koneksi));
 
     $query = mysqli_query($koneksi,"SELECT * FROM `order` ORDER BY id_order desc ");
     $row = mysqli_fetch_assoc($query);

@@ -66,6 +66,7 @@
                 <th>Nama barang</th>
                 <th>Kategori</th>
                 <th>Jumlah</th>
+                <th>Harga</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -79,6 +80,7 @@
                             <td><?= $row['nm_barang'] ?></td>
                             <td><?= $row['nm_kategori'] ?></td>
                             <td><?= $row['jumlah'] ?></td>
+                            <td><?= $hasil_rupiah = "Rp " . number_format($row['harga'],0,',','.') ?></td>
                             <td>
                                 <a href="index.php?page=edit_barang&id=<?= $row['id_barang']?>" class="btn btn-warning">Edit</a>
                                 <a href="index.php?page=hapus_barang&id=<?= $row['id_barang']?>" class="btn btn-danger" onclick="return confirm('Apakah anda yakin ingin menghapus ini ?')">Hapus</a>
