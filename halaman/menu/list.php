@@ -54,13 +54,13 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
         </form>
     </div>
     <div class="col-2">
-            <?php
+        <?php
                 if(empty($order)){
                     ?>
-                    <div align="right">
+        <div align="right">
             <a href="index.php?page=order" class="btn btn-warning">Order</a>
         </div>
-                    <?php
+        <?php
                 }
             ?>
     </div>
@@ -183,7 +183,7 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
             </div>
             <?php
                 $pesan = mysqli_query($koneksi,"SELECT pesanan.jumlah as total_p ,pesanan.*,barang.*,kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE pesanan.id_order = '$order'");
-                $total = mysqli_query($koneksi,"SELECT SUM(pesanan.jumlah*pesanan.harga) as subtotal, `order`.harga as harga_total FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` WHERE `order`.`id_order`= '$order'");
+                $total = mysqli_query($koneksi,"SELECT SUM(pesanan.jumlah*pesanan.harga) as subtotal, `order`.harga as harga_total,`order`.id_ongkir as ongkir, ongkir.harga as harga_ongkir,ongkir.kota as kota FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` JOIN ongkir ON ongkir.id_ongkir = `order`.id_ongkir WHERE `order`.`id_order`= '$order'");
                 $subtotal = mysqli_fetch_array($total);
                 while($row_pesan = mysqli_fetch_array($pesan)){
                 ?>
@@ -198,12 +198,20 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
                             <form method="post">
                                 <div class="row">
                                     <div class="col-6">
-                                    <input class="form-control" type="hidden" name="id_pesanan" value="<?= $row_pesan['id_pesanan']?>">
-                                        <input class="form-control" type="number" name="jumlah" value="<?= $row_pesan['total_p']?>">
+                                        <input class="form-control" type="hidden" name="id_pesanan"
+                                            value="<?= $row_pesan['id_pesanan']?>">
+                                        <input class="form-control" type="number" name="jumlah"
+                                            value="<?= $row_pesan['total_p']?>">
                                     </div>
+                                    <?php
+                                        if($subtotal['harga_total'] == 0 ){
+                                            ?>
                                     <div class="col-1">
-                                        <button class="btn btn-primary" name="updt" >edit</button>
+                                        <button class="btn btn-primary" name="updt">edit</button>
                                     </div>
+                                    <?php
+                                        }
+                                    ?>
                                 </div>
                             </form>
                         </div>
@@ -219,7 +227,7 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
             if(isset($_POST['bayar'])){
                                     $id_pesanan = $row_pesan['id_pesanan'];
                 @$id_order =$row_pesan['id_order'];
-                $harga_total = $subtotal['subtotal'];
+                $harga_total = $subtotal['subtotal']+$subtotal['harga_ongkir'];
                 $total_p = $row_pesan['total_p'];
                 mysqli_query($koneksi,"UPDATE pesanan SET status =2,total='$total_p' WHERE id_pesanan = '$id_pesanan'") or die(mysqli_error($koneksi));
                 
@@ -243,19 +251,84 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
                 <h5><?= $hasil_rupiah = "Rp " . number_format($subtotal['subtotal'],0,',','.') ?></h5>
             </div>
         </div>
+        <?php
+                if($subtotal['ongkir'] == 0){
+                    ?>
+        <form method="post">
+            <div class="row">
+                <div class="col-8">
+                    <select class="form-control col-md-12" name="id_ongkir">
+                        <?php
+                $query = mysqli_query($koneksi,"SELECT * FROM ongkir");
+                while($r_ongkir = mysqli_fetch_array($query)){
+                    ?>
+                        <option
+                            value="<?php
+                        if($r_ongkir['id_ongkir'] < 10){
+                            echo "000".$r_ongkir['id_ongkir'];
+                        }else if($r_ongkir['id_ongkir'] < 100){
+                            echo "00".$r_ongkir['id_ongkir'];
+                        }else if($r_ongkir['id_ongkir'] < 1000){
+                            echo "0".$r_ongkir['id_ongkir'];
+                        }else if($r_ongkir['id_ongkir'] < 10000){
+                            echo $r_ongkir['id_ongkir'];
+                        }
+                        ?>, <?= $r_ongkir['kota']?>, <?= $hasil_rupiah = "Rp " . number_format($r_ongkir['harga'],0,',','.') ?>"><?php
+                        if($r_ongkir['id_ongkir'] < 10){
+                            echo "000".$r_ongkir['id_ongkir'];
+                        }else if($r_ongkir['id_ongkir'] < 100){
+                            echo "00".$r_ongkir['id_ongkir'];
+                        }else if($r_ongkir['id_ongkir'] < 1000){
+                            echo "0".$r_ongkir['id_ongkir'];
+                        }else if($r_ongkir['id_ongkir'] < 10000){
+                            echo $r_ongkir['id_ongkir'];
+                        }
+                        ?>, <?= $r_ongkir['kota']?>,
+                            <?= $hasil_rupiah = "Rp " . number_format($r_ongkir['harga'],0,',','.') ?></option>
+                        <?php
+                }
+                ?>
+                    </select>
+                </div>
+                <div class="col-4">
+                    <button class="btn btn-primary" name="ongkir">Pilih</button>
+                </div>
+            </div>
+        </form>
+        <?php
+                }else{
+                    ?>
+        <div class="row">
+            <div class="col-9">
+                <h5>Ongkir <?= $subtotal['kota']?>
+                    (<?= $hasil_rupiah = "Rp " . number_format($subtotal['harga_ongkir'],0,',','.') ?>)</h5>
+            </div>
+            <div class="col-3">
+                <h5><?= $hasil_rupiah = "Rp " . number_format($subtotal['subtotal']+$subtotal['harga_ongkir'],0,',','.') ?>
+                </h5>
+            </div>
+        </div>
+        <?php
+                }
+            ?>
         <br>
         <div>
             <?php
                 if($subtotal['harga_total'] == 0){
+                   if($subtotal['ongkir'] == 0){
+                    
+                   }else{
+
                     ?>
-                        <form method="post">
+            <form method="post">
                 <button class="btn btn-primary col-md-12" type="submit" name="bayar">Bayar</button>
             </form>
-                    <?php
+            <?php
+                   }
                 }else{
                     ?>
-                        <a href="#" class="btn btn-success col-md-12" >Cetak</a>
-                    <?php
+            <a href="#" class="btn btn-success col-md-12">Cetak</a>
+            <?php
                 }
             ?>
         </div>
@@ -285,11 +358,23 @@ if(isset($_POST['updt'])){
     $id_pesanan1 = $_POST['id_pesanan'];
 mysqli_query($koneksi,"UPDATE pesanan SET jumlah = '$jumlah' WHERE id_pesanan = '$id_pesanan1'") or die(mysqli_error($koneksi));
 ?>
-<script>
-window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order?>";
-</script>
+        <script>
+            window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order?>";
+        </script>
 
-<?php
+        <?php
 
+}
+
+if(isset($_POST['ongkir'])){
+$id_ongkir = substr($_POST['id_ongkir'],0,4);
+
+mysqli_query($koneksi,"UPDATE `order` SET id_ongkir = '$id_ongkir' WHERE id_order = '$order'") or die(mysqli_error($koneksi));
+?>
+        <script>
+            window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order?>";
+        </script>
+
+        <?php
 }
 ?>

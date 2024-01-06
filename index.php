@@ -165,6 +165,13 @@ window.location.href = "http://localhost/bikafrozen/index.php?page=dashboard";
                     Kategori
                 </a>
             </li>
+            <li <?php if($hal == "pelanggan"  || $hal == "edit_pelanggan"){ ?>class="hidup"
+                <?php }?>>
+                <a class="text-white" href="index.php?page=pelanggan">
+                    <i class="bi bi-house mr-2"></i>
+                    Pelanggan
+                </a>
+            </li>
             <li <?php if($hal == "barang" || $hal == "tambah_barang" || $hal == "edit_barang"){ ?>class="hidup"
                 <?php }?>>
                 <a class="text-white" href="index.php?page=barang">
@@ -182,6 +189,20 @@ window.location.href = "http://localhost/bikafrozen/index.php?page=dashboard";
                 <a class="text-white" href="index.php?page=barang_keluar">
                     <i class="bi bi-house mr-2"></i>
                     Barang Keluar
+                </a>
+            </li>
+            <li <?php if($hal == "ongkir" || $hal == "tambah_ongkir" || $hal == "edit_ongkir"){ ?>class="hidup"
+                <?php }?>>
+                <a class="text-white" href="index.php?page=ongkir">
+                    <i class="bi bi-house mr-2"></i>
+                    Ongkir
+                </a>
+            </li>
+            <li <?php if($hal == "barang_masuk" || $hal == "tambah_barang_masuk" || $hal == "edit_barang_masuk"){ ?>class="hidup"
+                <?php }?>>
+                <a class="text-white" href="index.php?page=barang_masuk">
+                    <i class="bi bi-house mr-2"></i>
+                    Barang Masuk
                 </a>
             </li>
             <li>
@@ -230,6 +251,17 @@ window.location.href = "http://localhost/bikafrozen/index.php?page=dashboard";
 				include "halaman/kategori/hapus.php";
 				break;   
             
+            //pelanggan
+            case 'pelanggan':
+				include "halaman/pelanggan/list.php";
+				break;
+             case 'edit_pelanggan':
+				include "halaman/pelanggan/edit.php";
+				break;
+            case 'hapus_pelanggan':
+				include "halaman/pelanggan/hapus.php";
+				break;   
+            
             //barang
 			case 'barang':
 				include "halaman/barang/list.php";
@@ -262,6 +294,34 @@ window.location.href = "http://localhost/bikafrozen/index.php?page=dashboard";
             case 'barang_keluar':
 				include "halaman/barang_keluar/list.php";
 				break;
+
+            //Ongkir
+            case 'ongkir':
+				include "halaman/ongkir/list.php";
+				break;
+            case 'tambah_ongkir':
+				include "halaman/ongkir/tambah.php";
+				break;
+             case 'edit_ongkir':
+				include "halaman/ongkir/edit.php";
+				break;
+            case 'hapus_ongkir':
+				include "halaman/ongkir/hapus.php";
+				break;	
+
+            //Barang Masuk
+            case 'barang_masuk':
+				include "halaman/barang_masuk/list.php";
+				break;
+            case 'tambah_barang_masuk':
+				include "halaman/barang_masuk/tambah.php";
+				break;
+             case 'edit_barang_masuk':
+				include "halaman/barang_masuk/edit.php";
+				break;
+            case 'hapus_barang_masuk':
+				include "halaman/barang_masuk/hapus.php";
+				break;	
 			default:
 				echo "<center><h3>Maaf. Halaman tidak di temukan !</h3></center>";
 				break;
