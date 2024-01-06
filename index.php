@@ -178,6 +178,12 @@ window.location.href = "http://localhost/bikafrozen/index.php?page=dashboard";
                     Menu
                 </a>
             </li>
+            <li <?php if($hal == "barang_keluar"){ ?>class="hidup" <?php }?>>
+                <a class="text-white" href="index.php?page=barang_keluar">
+                    <i class="bi bi-house mr-2"></i>
+                    Barang Keluar
+                </a>
+            </li>
             <li>
                 <a class="text-white" href="logout.php">
                     <i class="bi bi-house mr-2"></i>
@@ -251,7 +257,11 @@ window.location.href = "http://localhost/bikafrozen/index.php?page=dashboard";
             case 'hapus_menu':
 				include "halaman/menu/hapus.php";
 				break;	
-
+            
+            //barang keluar
+            case 'barang_keluar':
+				include "halaman/barang_keluar/list.php";
+				break;
 			default:
 				echo "<center><h3>Maaf. Halaman tidak di temukan !</h3></center>";
 				break;

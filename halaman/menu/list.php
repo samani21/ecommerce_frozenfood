@@ -54,9 +54,15 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
         </form>
     </div>
     <div class="col-2">
-        <div align="right">
+            <?php
+                if(empty($order)){
+                    ?>
+                    <div align="right">
             <a href="index.php?page=order" class="btn btn-warning">Order</a>
         </div>
+                    <?php
+                }
+            ?>
     </div>
 </div>
 <hr>
@@ -161,57 +167,102 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
 
             }else{
                 ?>
-                     <div class="card">
+        <div class="card">
             <div class="card-header bg-info">
                 <div class="row">
                     <div class="col-6">
                         <h5> Nama Barang<h5>
                     </div>
                     <div class="col-3">
-                        <h5>kategori</h5>
+                        <h5>Jumlah</h5>
                     </div>
                     <div class="col-3">
                         <h5>Harga</h5>
                     </div>
                 </div>
             </div>
-                <?php
-                $pesan = mysqli_query($koneksi,"SELECT pesanan.jumlah as total ,pesanan.*,barang.*,kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE pesanan.id_order = '$order'");
-                $total = mysqli_query($koneksi,"SELECT SUM(pesanan.jumlah*pesanan.harga) as subtotal FROM pesanan WHERE pesanan.id_order = '$order'");
+            <?php
+                $pesan = mysqli_query($koneksi,"SELECT pesanan.jumlah as total_p ,pesanan.*,barang.*,kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE pesanan.id_order = '$order'");
+                $total = mysqli_query($koneksi,"SELECT SUM(pesanan.jumlah*pesanan.harga) as subtotal, `order`.harga as harga_total FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` WHERE `order`.`id_order`= '$order'");
                 $subtotal = mysqli_fetch_array($total);
                 while($row_pesan = mysqli_fetch_array($pesan)){
                 ?>
 
-        <div class="card">
-            <div class="card-header bg-secondary">
-                <div class="row">
-                    <div class="col-6">
-                        <h5> <?= $row_pesan['nm_barang']?> (<?= $row_pesan['nm_kategori']?>)</h5>
-                    </div>
-                    <div class="col-3">
-                        <h5><?= $row_pesan['total']?></h5>
-                    </div>
-                    <div class="col-3">
-                        <h5><?= $hasil_rupiah = "Rp " . number_format($row_pesan['harga']*$row_pesan['total'],0,',','.') ?></h5>
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <div class="row">
+                        <div class="col-5">
+                            <h5> <?= $row_pesan['nm_barang']?> (<?= $row_pesan['nm_kategori']?>)</h5>
+                        </div>
+                        <div class="col-4">
+                            <form method="post">
+                                <div class="row">
+                                    <div class="col-6">
+                                    <input class="form-control" type="hidden" name="id_pesanan" value="<?= $row_pesan['id_pesanan']?>">
+                                        <input class="form-control" type="number" name="jumlah" value="<?= $row_pesan['total_p']?>">
+                                    </div>
+                                    <div class="col-1">
+                                        <button class="btn btn-primary" name="updt" >edit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-3">
+                            <h5><?= $hasil_rupiah = "Rp " . number_format($row_pesan['harga']*$row_pesan['total_p'],0,',','.') ?>
+                            </h5>
+                        </div>
                     </div>
                 </div>
             </div>
-            </div>
+
             <?php
+            if(isset($_POST['bayar'])){
+                                    $id_pesanan = $row_pesan['id_pesanan'];
+                @$id_order =$row_pesan['id_order'];
+                $harga_total = $subtotal['subtotal'];
+                $total_p = $row_pesan['total_p'];
+                mysqli_query($koneksi,"UPDATE pesanan SET status =2,total='$total_p' WHERE id_pesanan = '$id_pesanan'") or die(mysqli_error($koneksi));
+                
+                mysqli_query($koneksi,"UPDATE `order` SET harga = '$harga_total' WHERE id_order = '$id_order'") or die(mysqli_error($koneksi));
+               ?>
+            <script>
+                window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order?>";
+            </script>
+
+            <?php
+            }
                 }
+                ?>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-9">
+                <h5>Total Keseluruhan</h5>
+            </div>
+            <div class="col-3">
+                <h5><?= $hasil_rupiah = "Rp " . number_format($subtotal['subtotal'],0,',','.') ?></h5>
+            </div>
+        </div>
+        <br>
+        <div>
+            <?php
+                if($subtotal['harga_total'] == 0){
+                    ?>
+                        <form method="post">
+                <button class="btn btn-primary col-md-12" type="submit" name="bayar">Bayar</button>
+            </form>
+                    <?php
+                }else{
+                    ?>
+                        <a href="#" class="btn btn-success col-md-12" >Cetak</a>
+                    <?php
+                }
+            ?>
+        </div>
+        <?php
             }
         ?>
-    </div>
-    <hr>
-    <div class="row">
-        <div class="col-9">
-        <h5>Total Keseluruhan</h5>
-        </div>
-        <div class="col-3">
-        <h5><?= $hasil_rupiah = "Rp " . number_format($subtotal['subtotal'],0,',','.') ?></h5>
-        </div>
-    </div>
-    <?php
+        <?php
 if(isset($_POST['simpan1'])){
                                     
     $id_order = $order;
@@ -220,12 +271,25 @@ if(isset($_POST['simpan1'])){
     $id_barang = $_POST['id_barang'];
     $harga = $_POST['harga'];
     $status = 1;
-    mysqli_query($koneksi,"INSERT INTO pesanan VALUES(null,'$id_order','$id_barang','$tgl','$jumlah','$harga','$status')") or die(mysqli_error($koneksi));
+    mysqli_query($koneksi,"INSERT INTO pesanan VALUES(null,'$id_order','$id_barang','$tgl','$jumlah',0,'$harga','$status')") or die(mysqli_error($koneksi));
    ?>
-    <script>
-        window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order?>";
-    </script>
+        <script>
+            window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order?>";
+        </script>
 
-    <?php
+        <?php
+}
+
+if(isset($_POST['updt'])){
+    $jumlah = $_POST['jumlah'];
+    $id_pesanan1 = $_POST['id_pesanan'];
+mysqli_query($koneksi,"UPDATE pesanan SET jumlah = '$jumlah' WHERE id_pesanan = '$id_pesanan1'") or die(mysqli_error($koneksi));
+?>
+<script>
+window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order?>";
+</script>
+
+<?php
+
 }
 ?>
