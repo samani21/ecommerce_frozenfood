@@ -21,12 +21,22 @@ if($cek > 0){
 	$data = mysqli_fetch_assoc($login);
  
 	// cek jika user login sebagai admin
-	if($data['level']=="Admin" || $data['level']=="Pelanggan"){
+	if($data['level']=="Admin"){
  
 		// buat session login dan username
 		$_SESSION['username'] = $username;
         $_SESSION['id'] = $data['id'];
 		$_SESSION['level'] = "Admin";
+		// alihkan ke halaman dashboard admin
+		header("location:index.php?page=dashboard");
+ 
+	// cek jika user login sebagai pegawai
+	}else if($data['level']=="Pelanggan"){
+ 
+		// buat session login dan username
+		$_SESSION['username'] = $username;
+        $_SESSION['id'] = $data['id'];
+		$_SESSION['level'] = "Pelanggan";
 		// alihkan ke halaman dashboard admin
 		header("location:index.php?page=dashboard");
  

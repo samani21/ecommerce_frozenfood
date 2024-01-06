@@ -185,6 +185,9 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
                 $pesan = mysqli_query($koneksi,"SELECT pesanan.jumlah as total_p ,pesanan.*,barang.*,kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE pesanan.id_order = '$order'");
                 $total = mysqli_query($koneksi,"SELECT SUM(pesanan.jumlah*pesanan.harga) as subtotal, `order`.harga as harga_total,`order`.id_ongkir as ongkir, ongkir.harga as harga_ongkir,ongkir.kota as kota FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` JOIN ongkir ON ongkir.id_ongkir = `order`.id_ongkir WHERE `order`.`id_order`= '$order'");
                 $subtotal = mysqli_fetch_array($total);
+
+                $total_kes = mysqli_query($koneksi,"SELECT SUM(jumlah*harga) as totl FROM `pesanan` WHERE id_order = '$order'");
+                $subtotal_kes = mysqli_fetch_array($total_kes);
                 while($row_pesan = mysqli_fetch_array($pesan)){
                 ?>
 
@@ -248,7 +251,7 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
                 <h5>Total Keseluruhan</h5>
             </div>
             <div class="col-3">
-                <h5><?= $hasil_rupiah = "Rp " . number_format($subtotal['subtotal'],0,',','.') ?></h5>
+                <h5><?= $hasil_rupiah = "Rp " . number_format($subtotal_kes['totl'],0,',','.') ?></h5>
             </div>
         </div>
         <?php
@@ -257,7 +260,8 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
         <form method="post">
             <div class="row">
                 <div class="col-8">
-                    <select class="form-control col-md-12" name="id_ongkir">
+                    <select class="form-control col-md-12" name="id_ongkir" required>
+                        <option value="">--Pilih</option>
                         <?php
                 $query = mysqli_query($koneksi,"SELECT * FROM ongkir");
                 while($r_ongkir = mysqli_fetch_array($query)){

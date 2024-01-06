@@ -20,7 +20,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bootstrap Demo</title>
     <!-- bootstrap 5 css -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css" integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css"
+        integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css" />
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
@@ -33,6 +34,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js"></script>
+    <script src="https://kit.fontawesome.com/a284c48079.js" crossorigin="anonymous"></script>
 </head>
 <style>
     li {
@@ -69,6 +71,12 @@
         margin-left: 0;
     }
 
+    .dropdown-container {
+        display: none;
+        padding-left: 8px;
+    }
+
+
     #main-content {
         transition: 0.4s;
     }
@@ -83,7 +91,7 @@
             <div class="card-header bg-info">
                 <div class="row">
                     <div class="col-11">
-                    <h2>Tambah Data Pelanggan</h2>
+                        <h2>Tambah Data Pelanggan</h2>
                     </div>
                     <div class="col-1">
                         <a href="logout.php" class="btn btn-danger">Logout</a>
@@ -131,14 +139,14 @@ if(isset($_POST['simpan'])){
     ?>
     <script>
         swal({
-title: "Success!",
-text: "Tambah data berhasil",
-type: "success"
-}, setTimeout(function(){
+            title: "Success!",
+            text: "Tambah data berhasil",
+            type: "success"
+        }, setTimeout(function () {
 
-window.location.href = "http://localhost/bikafrozen/index.php?page=dashboard";
+            window.location.href = "http://localhost/bikafrozen/index.php?page=dashboard";
 
-}, 1000));
+        }, 1000));
     </script>
     <?php   
 }
@@ -154,60 +162,102 @@ window.location.href = "http://localhost/bikafrozen/index.php?page=dashboard";
             <h4 class="mb-5 text-white">BIKA FROZEN</h4>
             <li <?php if($hal == "dashboard"){ ?>class="hidup" <?php }?>>
                 <a class="text-white" href="index.php?page=dashboard">
-                    <i class="bi bi-house mr-2"></i>
+                    <i class="fa-solid fa-home"></i>
                     Dashboard
                 </a>
             </li>
+            <?php
+                if($_SESSION['level'] == "Admin"){
+                 ?>
+                    <a class="dropdown-btn text-white" href="#">
+            <i class="fa-solid fa-gear"></i>
+                Data Master
+            </a>
+            <div class="dropdown-container">
             <li <?php if($hal == "kategori" || $hal == "tambah_kategori" || $hal == "edit_kategori"){ ?>class="hidup"
                 <?php }?>>
                 <a class="text-white" href="index.php?page=kategori">
-                    <i class="bi bi-house mr-2"></i>
+                <i class="fa-solid fa-list"></i>
                     Kategori
                 </a>
             </li>
-            <li <?php if($hal == "pelanggan"  || $hal == "edit_pelanggan"){ ?>class="hidup"
-                <?php }?>>
+            <li <?php if($hal == "pelanggan"  || $hal == "edit_pelanggan"){ ?>class="hidup" <?php }?>>
                 <a class="text-white" href="index.php?page=pelanggan">
-                    <i class="bi bi-house mr-2"></i>
+                <i class="fa-solid fa-user"></i>
                     Pelanggan
                 </a>
             </li>
             <li <?php if($hal == "barang" || $hal == "tambah_barang" || $hal == "edit_barang"){ ?>class="hidup"
                 <?php }?>>
                 <a class="text-white" href="index.php?page=barang">
-                    <i class="bi bi-house mr-2"></i>
+                <i class="fa-solid fa-box"></i>
                     Barang
                 </a>
             </li>
+            </div>
+                 <?php
+                }
+            ?>
             <li <?php if($hal == "menu" || $hal == "order" || $hal == "edit_menu"){ ?>class="hidup" <?php }?>>
                 <a class="text-white" href="index.php?page=menu">
-                    <i class="bi bi-house mr-2"></i>
+                <i class="fa-solid fa-table"></i>
                     Menu
                 </a>
             </li>
-            <li <?php if($hal == "barang_keluar"){ ?>class="hidup" <?php }?>>
+            <?php
+                if($_SESSION['level'] == "Admin"){
+                    ?>
+<li <?php if($hal == "barang_keluar"){ ?>class="hidup" <?php }?>>
                 <a class="text-white" href="index.php?page=barang_keluar">
-                    <i class="bi bi-house mr-2"></i>
+                <i class="fa-solid fa-truck-ramp-box"></i>
                     Barang Keluar
                 </a>
             </li>
             <li <?php if($hal == "ongkir" || $hal == "tambah_ongkir" || $hal == "edit_ongkir"){ ?>class="hidup"
                 <?php }?>>
                 <a class="text-white" href="index.php?page=ongkir">
-                    <i class="bi bi-house mr-2"></i>
+                <i class="fa-solid fa-truck-fast"></i>
                     Ongkir
                 </a>
             </li>
             <li <?php if($hal == "barang_masuk" || $hal == "tambah_barang_masuk" || $hal == "edit_barang_masuk"){ ?>class="hidup"
                 <?php }?>>
                 <a class="text-white" href="index.php?page=barang_masuk">
-                    <i class="bi bi-house mr-2"></i>
+                <i class="fa-solid fa-boxes-packing"></i>
                     Barang Masuk
                 </a>
             </li>
+                    <?php
+                }
+            ?>
+            <li <?php if($hal == "history" || $hal == "tambah_history" || $hal == "edit_history"){ ?>class="hidup"
+                <?php }?>>
+                <a class="text-white" href="index.php?page=history">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                    History
+                </a>
+            </li>
+            <a class="dropdown-btn text-white" href="#">
+            <i class="fa-solid fa-bars"></i>
+                Laporan
+            </a>
+            <div class="dropdown-container">
+                <li>
+                    <a class="text-white" href="logout.php">
+                        <i class="bi bi-house mr-2"></i>
+                        Logout
+                    </a>
+                </li>
+                <li>
+                    <a class="text-white" href="logout.php">
+                        <i class="bi bi-house mr-2"></i>
+                        Logout
+                    </a>
+                </li>
+            </div>
             <li>
                 <a class="text-white" href="logout.php">
-                    <i class="bi bi-house mr-2"></i>
+                <i class="fa-solid fa-right-from-bracket"></i>
                     Logout
                 </a>
             </li>
@@ -322,6 +372,18 @@ window.location.href = "http://localhost/bikafrozen/index.php?page=dashboard";
             case 'hapus_barang_masuk':
 				include "halaman/barang_masuk/hapus.php";
 				break;	
+
+            //history
+            case 'history':
+				include "halaman/history/list.php";
+				break;
+             case 'edit_history':
+				include "halaman/history/edit.php";
+				break;
+            case 'hapus_history':
+				include "halaman/history/hapus.php";
+				break;	
+
 			default:
 				echo "<center><h3>Maaf. Halaman tidak di temukan !</h3></center>";
 				break;
@@ -348,32 +410,49 @@ window.location.href = "http://localhost/bikafrozen/index.php?page=dashboard";
         new DataTable('#example');
     </script>
     <script type="text/javascript">
-		
-		var rupiah = document.getElementById('rupiah');
-		rupiah.addEventListener('keyup', function(e){
-			// tambahkan 'Rp.' pada saat form di ketik
-			// gunakan fungsi formatRupiah() untuk mengubah angka yang di ketik menjadi format angka
-			rupiah.value = formatRupiah(this.value, 'Rp. ');
-		});
- 
-		/* Fungsi formatRupiah */
-		function formatRupiah(angka, prefix){
-			var number_string = angka.replace(/[^,\d]/g, '').toString(),
-			split   		= number_string.split(','),
-			sisa     		= split[0].length % 3,
-			rupiah     		= split[0].substr(0, sisa),
-			ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
- 
-			// tambahkan titik jika yang di input sudah menjadi angka ribuan
-			if(ribuan){
-				separator = sisa ? '.' : '';
-				rupiah += separator + ribuan.join('.');
-			}
- 
-			rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-			return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
-		}
-	</script>
+        var rupiah = document.getElementById('rupiah');
+        rupiah.addEventListener('keyup', function (e) {
+            // tambahkan 'Rp.' pada saat form di ketik
+            // gunakan fungsi formatRupiah() untuk mengubah angka yang di ketik menjadi format angka
+            rupiah.value = formatRupiah(this.value, 'Rp. ');
+        });
+
+        /* Fungsi formatRupiah */
+        function formatRupiah(angka, prefix) {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            // tambahkan titik jika yang di input sudah menjadi angka ribuan
+            if (ribuan) {
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+        }
+    </script>
+
+    <script>
+        /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
+        var dropdown = document.getElementsByClassName("dropdown-btn");
+        var i;
+
+        for (i = 0; i < dropdown.length; i++) {
+            dropdown[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var dropdownContent = this.nextElementSibling;
+                if (dropdownContent.style.display === "block") {
+                    dropdownContent.style.display = "none";
+                } else {
+                    dropdownContent.style.display = "block";
+                }
+            });
+        }
+    </script>
 </body>
 <?php
     }
