@@ -27,25 +27,27 @@
         </tr>
     </table>
     <hr>
-    <h3 align="center">DATA BARANG</h3>
+    <h3 align="center">HISTORY PEMBELIAN</h3>
     <hr>
     <?php
     include "../../koneksi.php";
-    $pa = $_GET['page'];
-    @$id_k = substr($_GET['id_kategori'],0,4);
-    if(empty($id_k)){
-        $query = mysqli_query($koneksi,"SELECT * FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori");
+    $id_pel = $_GET['id_pel'];
+    $level= $_GET['level'];
+    $dari= $_GET['dari'];
+    $sampai= $_GET['sampai'];
+    if($level == "Admin"){
+        $query = mysqli_query($koneksi,"SELECT `order`.*,pelanggan.*,ongkir.*, `order`.harga as hrg, `order`.tgl as tgl FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.`id_pelanggan` JOIN ongkir ON ongkir.id_ongkir = `order`.`id_ongkir` WHERE `order`.tgl BETWEEN '$dari' AND '$sampai'");
     }else{
-        $query = mysqli_query($koneksi,"SELECT * FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k'");
+        $query = mysqli_query($koneksi,"SELECT `order`.*,pelanggan.*,ongkir.*, `order`.harga as hrg, `order`.tgl as tgl FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.`id_pelanggan` JOIN ongkir ON ongkir.id_ongkir = `order`.`id_ongkir` WHERE pelanggan.id_user = $id_pel AND `order`.tgl BETWEEN '$dari' AND '$sampai'");
     }
 ?>
 <table border="1" style="width:100%; border-collapse: collapse;">
-        <thead>
+<thead>
             <tr>
                 <th>NO</th>
-                <th>Nama barang</th>
-                <th>Kategori</th>
-                <th>Jumlah</th>
+                <th>Nama</th>
+                <th>Tanggal</th>
+                <th>Ongkir</th>
                 <th>Harga</th>
             </tr>
         </thead>
@@ -56,10 +58,10 @@
                     ?>
                         <tr>
                             <td><?= $no++ ?></td>
-                            <td><?= $row['nm_barang'] ?></td>
-                            <td><?= $row['nm_kategori'] ?></td>
-                            <td><?= $row['jumlah'] ?></td>
-                            <td><?= $hasil_rupiah = "Rp " . number_format($row['harga'],0,',','.') ?></td>
+                            <td><?= $row['nama'] ?></td>
+                            <td><?= $row['tgl'] ?></td>
+                            <td><?= $row['kota'] ?></td>
+                            <td><?= $row['hrg'] ?></td>
                         </tr>
                     <?php
                 }

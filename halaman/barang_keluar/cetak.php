@@ -27,16 +27,16 @@
         </tr>
     </table>
     <hr>
-    <h3 align="center">DATA BARANG</h3>
+    <h3 align="center">DATA BARANG KELUAR</h3>
     <hr>
     <?php
     include "../../koneksi.php";
-    $pa = $_GET['page'];
     @$id_k = substr($_GET['id_kategori'],0,4);
+    @$kategori = $_GET['id_kategori'];
     if(empty($id_k)){
-        $query = mysqli_query($koneksi,"SELECT * FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori");
+        $query = mysqli_query($koneksi,"SELECT pesanan.*, barang.*, kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori");
     }else{
-        $query = mysqli_query($koneksi,"SELECT * FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k'");
+        $query = mysqli_query($koneksi,"SELECT pesanan.*, barang.*, kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k'");
     }
 ?>
 <table border="1" style="width:100%; border-collapse: collapse;">
@@ -44,6 +44,7 @@
             <tr>
                 <th>NO</th>
                 <th>Nama barang</th>
+                <th>Tanggal</th>
                 <th>Kategori</th>
                 <th>Jumlah</th>
                 <th>Harga</th>
@@ -54,12 +55,14 @@
                 $no = 1;
                 while($row = mysqli_fetch_array($query)){
                     ?>
-                        <tr>
+                         <tr>
                             <td><?= $no++ ?></td>
                             <td><?= $row['nm_barang'] ?></td>
+                            <td><?= $row['tgl'] ?></td>
                             <td><?= $row['nm_kategori'] ?></td>
-                            <td><?= $row['jumlah'] ?></td>
+                            <td><?= $row['total'] ?></td>
                             <td><?= $hasil_rupiah = "Rp " . number_format($row['harga'],0,',','.') ?></td>
+                            <td><?= $hasil_rupiah = "Rp " . number_format($row['harga']*$row['total'],0,',','.') ?></td>
                         </tr>
                     <?php
                 }

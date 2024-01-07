@@ -194,6 +194,13 @@ if(isset($_POST['simpan'])){
                     Barang
                 </a>
             </li>
+            <li <?php if($hal == "ongkir" || $hal == "tambah_ongkir" || $hal == "edit_ongkir"){ ?>class="hidup"
+                <?php }?>>
+                <a class="text-white" href="index.php?page=ongkir">
+                <i class="fa-solid fa-truck-fast"></i>
+                    Ongkir
+                </a>
+            </li>
             </div>
                  <?php
                 }
@@ -211,13 +218,6 @@ if(isset($_POST['simpan'])){
                 <a class="text-white" href="index.php?page=barang_keluar">
                 <i class="fa-solid fa-truck-ramp-box"></i>
                     Barang Keluar
-                </a>
-            </li>
-            <li <?php if($hal == "ongkir" || $hal == "tambah_ongkir" || $hal == "edit_ongkir"){ ?>class="hidup"
-                <?php }?>>
-                <a class="text-white" href="index.php?page=ongkir">
-                <i class="fa-solid fa-truck-fast"></i>
-                    Ongkir
                 </a>
             </li>
             <li <?php if($hal == "barang_masuk" || $hal == "tambah_barang_masuk" || $hal == "edit_barang_masuk"){ ?>class="hidup"
@@ -242,18 +242,38 @@ if(isset($_POST['simpan'])){
                 Laporan
             </a>
             <div class="dropdown-container">
-                <li>
-                    <a class="text-white" href="logout.php">
-                        <i class="bi bi-house mr-2"></i>
-                        Logout
-                    </a>
-                </li>
-                <li>
-                    <a class="text-white" href="logout.php">
-                        <i class="bi bi-house mr-2"></i>
-                        Logout
-                    </a>
-                </li>
+            <?php
+            if($_SESSION['level'] == "Admin"){
+                ?>
+    <li <?php if($hal == "laporan_barang"){ ?>class="hidup"
+                <?php }?>>
+                <a class="text-white" href="index.php?page=laporan_barang">
+                <i class="fa-solid fa-box"></i>
+                    Laporan Barang
+                </a>
+            </li>
+            <li <?php if($hal == "laporan_barang_keluar"){ ?>class="hidup" <?php }?>>
+                <a class="text-white" href="index.php?page=laporan_barang_keluar">
+                <i class="fa-solid fa-boxes-packing"></i>
+                    Barang Masuk
+                </a>
+            </li>
+            <li <?php if($hal == "laporan_barang_masuk"){ ?>class="hidup" <?php }?>>
+                <a class="text-white" href="index.php?page=laporan_barang_masuk">
+                <i class="fa-solid fa-truck-ramp-box"></i>
+                    Barang Masuk
+                </a>
+            </li>
+                <?php
+            }
+            ?>
+            <li <?php if($hal == "laporan_history"){ ?>class="hidup"
+                <?php }?>>
+                <a class="text-white" href="index.php?page=laporan_history">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                    History
+                </a>
+            </li>
             </div>
             <li>
                 <a class="text-white" href="logout.php">
@@ -324,6 +344,9 @@ if(isset($_POST['simpan'])){
 				break;
             case 'hapus_barang':
 				include "halaman/barang/hapus.php";
+				break;
+            case 'laporan_barang':
+				include "halaman/barang/laporan.php";
 				break;	
 
             //menu
@@ -344,7 +367,10 @@ if(isset($_POST['simpan'])){
             case 'barang_keluar':
 				include "halaman/barang_keluar/list.php";
 				break;
-
+            case 'laporan_barang_keluar':
+				include "halaman/barang_keluar/laporan.php";
+				break;
+                	
             //Ongkir
             case 'ongkir':
 				include "halaman/ongkir/list.php";
@@ -372,10 +398,15 @@ if(isset($_POST['simpan'])){
             case 'hapus_barang_masuk':
 				include "halaman/barang_masuk/hapus.php";
 				break;	
-
+            case 'laporan_barang_masuk':
+				include "halaman/barang_masuk/laporan.php";
+				break;	
             //history
             case 'history':
 				include "halaman/history/list.php";
+				break;
+            case 'laporan_history':
+				include "halaman/history/laporan.php";
 				break;
              case 'edit_history':
 				include "halaman/history/edit.php";

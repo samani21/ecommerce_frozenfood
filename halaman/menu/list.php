@@ -255,7 +255,7 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
             </div>
         </div>
         <?php
-                if($subtotal['ongkir'] == 0){
+                if($subtotal['ongkir'] == 1){
                     ?>
         <form method="post">
             <div class="row">
@@ -263,7 +263,7 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
                     <select class="form-control col-md-12" name="id_ongkir" required>
                         <option value="">--Pilih</option>
                         <?php
-                $query = mysqli_query($koneksi,"SELECT * FROM ongkir");
+                $query = mysqli_query($koneksi,"SELECT * FROM ongkir WHERE NOT id_ongkir = 1");
                 while($r_ongkir = mysqli_fetch_array($query)){
                     ?>
                         <option
@@ -319,7 +319,7 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
         <div>
             <?php
                 if($subtotal['harga_total'] == 0){
-                   if($subtotal['ongkir'] == 0){
+                   if($subtotal['ongkir'] == 1){
                     
                    }else{
 
@@ -331,7 +331,7 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
                    }
                 }else{
                     ?>
-            <a href="#" class="btn btn-success col-md-12">Cetak</a>
+            <a href="halaman/menu/cetak.php?id_order=<?= $order ?>" class="btn btn-success col-md-12">Cetak</a>
             <?php
                 }
             ?>

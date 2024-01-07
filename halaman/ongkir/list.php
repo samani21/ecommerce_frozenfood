@@ -1,6 +1,6 @@
 <?php
     include "././koneksi.php";
-    $query = mysqli_query($koneksi,"SELECT * FROM ongkir");
+    $query = mysqli_query($koneksi,"SELECT * FROM ongkir WHERE NOT id_ongkir =1");
 ?>
 <div>
     <a href="index.php?page=tambah_ongkir" class="btn btn-primary">Tambah</a>
