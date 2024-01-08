@@ -255,7 +255,7 @@ if(isset($_POST['simpan'])){
             <li <?php if($hal == "laporan_barang_keluar"){ ?>class="hidup" <?php }?>>
                 <a class="text-white" href="index.php?page=laporan_barang_keluar">
                 <i class="fa-solid fa-boxes-packing"></i>
-                    Barang Masuk
+                    Barang Keluar
                 </a>
             </li>
             <li <?php if($hal == "laporan_barang_masuk"){ ?>class="hidup" <?php }?>>
