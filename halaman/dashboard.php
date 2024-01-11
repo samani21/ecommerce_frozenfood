@@ -1,4 +1,7 @@
-<div class="row">
+<?php
+  if($_SESSION['level'] == "Admin"){
+    ?>
+  <div class="row">
     <div class="col-6">
     <form action="halaman/laba/laba_kotor.php" method="get">
     <div class="row">
@@ -36,6 +39,9 @@
   </form>
     </div>
 </div>
+    <?php
+  }
+?>
 <br>
 <div class="row">
   <div class="col-6">
