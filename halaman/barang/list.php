@@ -83,6 +83,7 @@
                             <td><?= $hasil_rupiah = "Rp " . number_format($row['harga'],0,',','.') ?></td>
                             <td>
                                 <a href="index.php?page=tambah_barang_masuk&id=<?= $row['id_barang']?>" class="btn btn-success">Restok</a>
+                                <a href="index.php?page=tambah_barang_rusak&id=<?= $row['id_barang']?>" class="btn btn-danger">Rusak</a>
                                 <a href="index.php?page=edit_barang&id=<?= $row['id_barang']?>" class="btn btn-warning">Edit</a>
                                 <a href="index.php?page=hapus_barang&id=<?= $row['id_barang']?>" class="btn btn-danger" onclick="return confirm('Apakah anda yakin ingin menghapus ini ?')">Hapus</a>
                             </td>

@@ -2,7 +2,7 @@
     include "../../koneksi.php";
     $id_order = $_GET['id_order'];
     $query = mysqli_query($koneksi,"SELECT barang.nm_barang,kategori.nm_kategori,pesanan.jumlah,pesanan.jumlah*pesanan.harga as harga FROM `pesanan` JOIN `order` ON `order`.`id_order` = pesanan.id_order JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE pesanan.id_order = '$id_order'");
-    $total_query = mysqli_query($koneksi,"SELECT `order`.`harga`-ongkir.harga as subtotal, ongkir.harga as ongkir, `order`.`harga` as total,`order`.`tgl` FROM `order` JOIN ongkir ON ongkir.id_ongkir = `order`.`id_ongkir` WHERE id_order = '$id_order'");
+    $total_query = mysqli_query($koneksi,"SELECT `order`.`harga`-ongkir.harga as subtotal, ongkir.harga as ongkir, `order`.`harga`,`order`.alamat,`order`.pembayaran as total,`order`.`tgl` FROM `order` JOIN ongkir ON ongkir.id_ongkir = `order`.`id_ongkir` WHERE id_order = '$id_order'");
     $row_totl = mysqli_fetch_array($total_query);
 ?>
 
@@ -38,6 +38,7 @@
     <h3 align="center">NOTA PEMBELIAN</h3>
     <hr>
 <h4><?= date('d-m-Y', strtotime($row_totl['tgl']))?></h4>
+<h5><?= $row_totl['alamat']?></h5>
 <table border="1" style="width:100%; border-collapse: collapse;">
         <thead>
             <tr>
@@ -75,6 +76,17 @@
             </tr>
         </tbody>
     </table>
+    <br><br><br>
+<pre>
+                                        Banjarmasin <?= date('d-m-Y')?>
+
+
+
+                                        
+
+
+                                                Admin
+</pre>
 </div>
 </body>
 </html>

@@ -56,11 +56,15 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
     <div class="col-2">
         <?php
                 if(empty($order)){
-                    ?>
+                    if($_SESSION['level'] == "Admin"){
+
+                    }else{
+                        ?>
         <div align="right">
             <a href="index.php?page=order" class="btn btn-warning">Order</a>
         </div>
         <?php
+                    }
                 }
             ?>
     </div>
@@ -183,7 +187,7 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
             </div>
             <?php
                 $pesan = mysqli_query($koneksi,"SELECT pesanan.jumlah as total_p ,pesanan.*,barang.*,kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE pesanan.id_order = '$order'");
-                $total = mysqli_query($koneksi,"SELECT SUM(pesanan.jumlah*pesanan.harga) as subtotal, `order`.harga as harga_total,`order`.id_ongkir as ongkir, ongkir.harga as harga_ongkir,ongkir.kota as kota FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` JOIN ongkir ON ongkir.id_ongkir = `order`.id_ongkir WHERE `order`.`id_order`= '$order'");
+                $total = mysqli_query($koneksi,"SELECT SUM(pesanan.jumlah*pesanan.harga) as subtotal, `order`.harga as harga_total,`order`.id_ongkir as ongkir, ongkir.harga as harga_ongkir,ongkir.kota as kota,`order`.alamat,`order`.pembayaran FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` JOIN ongkir ON ongkir.id_ongkir = `order`.id_ongkir WHERE `order`.`id_order`= '$order'");
                 $subtotal = mysqli_fetch_array($total);
 
                 $total_kes = mysqli_query($koneksi,"SELECT SUM(jumlah*harga) as totl FROM `pesanan` WHERE id_order = '$order'");
@@ -232,9 +236,12 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
                 @$id_order =$row_pesan['id_order'];
                 $harga_total = $subtotal['subtotal']+$subtotal['harga_ongkir'];
                 $total_p = $row_pesan['total_p'];
+                $alamat = $_POST['alamat'];
+                $pembayaran = $_POST['pembayaran'];
+                
                 mysqli_query($koneksi,"UPDATE pesanan SET status =2,total='$total_p' WHERE id_pesanan = '$id_pesanan'") or die(mysqli_error($koneksi));
                 
-                mysqli_query($koneksi,"UPDATE `order` SET harga = '$harga_total' WHERE id_order = '$id_order'") or die(mysqli_error($koneksi));
+                mysqli_query($koneksi,"UPDATE `order` SET harga = '$harga_total',alamat = '$alamat',pembayaran = '$pembayaran' WHERE id_order = '$id_order'") or die(mysqli_error($koneksi));
                ?>
             <script>
                 window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order?>";
@@ -312,6 +319,37 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
                 </h5>
             </div>
         </div>
+       <?php
+            if($subtotal['pembayaran'] == 0){
+                
+            }else{
+                ?>
+     <div class="row">
+            <div class="col-12">
+                <h5>Alamat : <?= $subtotal['alamat']?></h5>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h5>Pembayaran : <?php
+                    if($subtotal['pembayaran'] == 1){
+                        echo "Transfer";
+                    }else if($subtotal['pembayaran'] == 2){
+                        echo "COD";
+                    }
+                ?>(<?php
+                    if($subtotal['pembayaran'] == 3){
+                        echo "Dibayar";
+                    }else{
+                        echo "Belum Bayar";
+                    }
+                ?>)</h5>
+            </div>
+        </div>
+                <?php
+            }
+       ?>
         <?php
                 }
             ?>
@@ -325,14 +363,29 @@ $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
 
                     ?>
             <form method="post">
+                <div>
+                    <label> Alamat</label>
+                    <input class="form-control" name="alamat" required>
+                </div>
+                <div>
+                    <label> Pembayaran</label>
+                    <select class="form-control" name="pembayaran" required>
+                        <option value="">--Pilih pembayaran</option>
+                        <option value="1">Transfer</option>
+                        <option value="2">COD</option>
+                    </select>
+                </div>
+                <br>
                 <button class="btn btn-primary col-md-12" type="submit" name="bayar">Bayar</button>
             </form>
             <?php
                    }
                 }else{
-                    ?>
+                    if($subtotal['pembayaran'] == 3){
+                        ?>
             <a href="halaman/menu/cetak.php?id_order=<?= $order ?>" class="btn btn-success col-md-12">Cetak</a>
             <?php
+                    }
                 }
             ?>
         </div>

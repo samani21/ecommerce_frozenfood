@@ -4,9 +4,9 @@
     @$id_k = substr($_GET['id_kategori'],0,4);
     @$kategori = $_GET['id_kategori'];
     if(empty($id_k)){
-        $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*, barang_masuk.jumlah as jum, barang_masuk.harga as harga_bm FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori");
+        $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*, barang_masuk.jumlah as jum FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori");
     }else{
-        $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*, barang_masuk.jumlah as jum, barang_masuk.harga as harga_bm FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k'");
+        $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*, barang_masuk.jumlah as jum FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k'");
     }
     $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
 ?>
@@ -64,7 +64,6 @@
                 <th>Nama barang</th>
                 <th>Kategori</th>
                 <th>Jumlah</th>
-                <th>Harga</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -78,7 +77,6 @@
                 <td><?= $row['nm_barang'] ?></td>
                 <td><?= $row['nm_kategori'] ?></td>
                 <td><?= $row['jum'] ?></td>
-                <td><?= $hasil_rupiah = "Rp " . number_format($row['harga_bm'],0,',','.') ?></td>
                 <td>
                     <a href="index.php?page=edit_barang_masuk&id=<?= $row['id_barang_masuk']?>"
                         class="btn btn-warning">Edit</a>

@@ -33,12 +33,17 @@
     include "../../koneksi.php";
     @$id_k = substr($_GET['id_kategori'],0,4);
     @$kategori = $_GET['id_kategori'];
+    $sampai= $_GET['sampai'];
+    $dari= $_GET['dari'];
     if(empty($id_k)){
-        $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*, barang_masuk.jumlah as jum, barang_masuk.harga as harga_bm FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori");
+        $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*, barang_masuk.jumlah as jum FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE tgl BETWEEN '$dari' AND '$sampai'");
     }else{
-        $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*, barang_masuk.jumlah as jum, barang_masuk.harga as harga_bm FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k'");
+        $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*, barang_masuk.jumlah as jum FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k' WHERE tgl BETWEEN '$dari' AND '$sampai'");
     }
 ?>
+<pre>
+periode tanggal <?= $dari?> sampai <?= $sampai ?>
+</pre>
 <table border="1" style="width:100%; border-collapse: collapse;">
         <thead>
             <tr>
@@ -47,7 +52,6 @@
                 <th>Tanggal</th>
                 <th>Kategori</th>
                 <th>Jumlah</th>
-                <th>Harga</th>
             </tr>
         </thead>
         <tbody>
@@ -61,13 +65,23 @@
                 <td><?= $row['tgl'] ?></td>
                 <td><?= $row['nm_kategori'] ?></td>
                 <td><?= $row['jum'] ?></td>
-                <td><?= $hasil_rupiah = "Rp " . number_format($row['harga_bm'],0,',','.') ?></td>
             </tr>
                     <?php
                 }
             ?>
         </tbody>
     </table>
+    <br><br><br>
+<pre>
+                                        Banjarmasin <?= date('d-m-Y')?>
+
+
+
+                                        
+
+
+                                                Admin
+</pre>
 </div>
 </body>
 </html>

@@ -27,26 +27,22 @@
         </tr>
     </table>
     <hr>
-    <h3 align="center">DATA BARANG</h3>
+    <h3 align="center">HISTORY PEMBELIAN</h3>
     <hr>
     <?php
     include "../../koneksi.php";
-    $pa = $_GET['page'];
-    @$id_k = substr($_GET['id_kategori'],0,4);
-    if(empty($id_k)){
-        $query = mysqli_query($koneksi,"SELECT * FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori");
-    }else{
-        $query = mysqli_query($koneksi,"SELECT * FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k'");
-    }
+    $cari = $_GET['cari'];
+    $query = mysqli_query($koneksi,"SELECT * FROM supplier WHERE nm_supplier LIKE '%".$cari."%'")
+
 ?>
 <table border="1" style="width:100%; border-collapse: collapse;">
-        <thead>
+<thead>
             <tr>
                 <th>NO</th>
-                <th>Nama barang</th>
-                <th>Kategori</th>
-                <th>Jumlah</th>
-                <th>Harga</th>
+                <th>Nama Supplier</th>
+                <th>Alamat</th>
+                <th>Kota</th>
+                <th>Telp</th>
             </tr>
         </thead>
         <tbody>
@@ -56,10 +52,10 @@
                     ?>
                         <tr>
                             <td><?= $no++ ?></td>
-                            <td><?= $row['nm_barang'] ?></td>
-                            <td><?= $row['nm_kategori'] ?></td>
-                            <td><?= $row['jumlah'] ?></td>
-                            <td><?= $hasil_rupiah = "Rp " . number_format($row['harga'],0,',','.') ?></td>
+                            <td><?= $row['nm_supplier'] ?></td>
+                            <td><?= $row['alamat'] ?></td>
+                            <td><?= $row['kota'] ?></td>
+                            <td><?= $row['telp'] ?></td>
                         </tr>
                     <?php
                 }

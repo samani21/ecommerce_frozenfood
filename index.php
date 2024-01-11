@@ -201,6 +201,13 @@ if(isset($_POST['simpan'])){
                     Ongkir
                 </a>
             </li>
+            <li <?php if($hal == "supplier" || $hal == "tambah_supplier" || $hal == "edit_supplier"){ ?>class="hidup"
+                <?php }?>>
+                <a class="text-white" href="index.php?page=supplier">
+                <i class="fa-solid fa-truck-field-un"></i>
+                    Supplier
+                </a>
+            </li>
             </div>
                  <?php
                 }
@@ -225,6 +232,13 @@ if(isset($_POST['simpan'])){
                 <a class="text-white" href="index.php?page=barang_masuk">
                 <i class="fa-solid fa-boxes-packing"></i>
                     Barang Masuk
+                </a>
+            </li>
+            <li <?php if($hal == "barang_rusak"||$hal == "barang_baik" || $hal == "tambah_barang_rusak" || $hal == "edit_barang_rusak"){ ?>class="hidup"
+                <?php }?>>
+                <a class="text-white" href="index.php?page=barang_rusak">
+                <i class="fa-solid fa-boxes-packing"></i>
+                    Barang Rusak
                 </a>
             </li>
                     <?php
@@ -262,6 +276,18 @@ if(isset($_POST['simpan'])){
                 <a class="text-white" href="index.php?page=laporan_barang_masuk">
                 <i class="fa-solid fa-truck-ramp-box"></i>
                     Barang Masuk
+                </a>
+            </li>
+            <li <?php if($hal == "laporan_barang_rusak"){ ?>class="hidup" <?php }?>>
+                <a class="text-white" href="index.php?page=laporan_barang_rusak">
+                <i class="fa-solid fa-truck-ramp-box"></i>
+                    Barang Rusak
+                </a>
+            </li>
+            <li <?php if($hal == "laporan_supplier"){ ?>class="hidup" <?php }?>>
+                <a class="text-white" href="index.php?page=laporan_supplier">
+                <i class="fa-solid fa-truck-field-un"></i>
+                    Supplier
                 </a>
             </li>
                 <?php
@@ -383,6 +409,23 @@ if(isset($_POST['simpan'])){
 				break;
             case 'hapus_ongkir':
 				include "halaman/ongkir/hapus.php";
+				break;
+            
+            //supplier
+            case 'supplier':
+				include "halaman/supplier/list.php";
+				break;
+            case 'tambah_supplier':
+				include "halaman/supplier/tambah.php";
+				break;
+             case 'edit_supplier':
+				include "halaman/supplier/edit.php";
+				break;
+            case 'hapus_supplier':
+				include "halaman/supplier/hapus.php";
+				break;	
+            case 'laporan_supplier':
+				include "halaman/supplier/laporan.php";
 				break;	
 
             //Barang Masuk
@@ -400,6 +443,26 @@ if(isset($_POST['simpan'])){
 				break;	
             case 'laporan_barang_masuk':
 				include "halaman/barang_masuk/laporan.php";
+				break;
+            
+            //barang Rusak
+            case 'barang_rusak':
+				include "halaman/barang_rusak/list.php";
+				break;
+            case 'tambah_barang_rusak':
+				include "halaman/barang_rusak/tambah.php";
+				break;
+            case 'edit_barang_rusak':
+				include "halaman/barang_rusak/edit.php";
+				break;
+             case 'barang_baik':
+				include "halaman/barang_rusak/baik.php";
+				break;
+            case 'hapus_barang_rusak':
+				include "halaman/barang_rusak/hapus.php";
+				break;	
+            case 'laporan_barang_rusak':
+				include "halaman/barang_rusak/laporan.php";
 				break;	
             //history
             case 'history':
@@ -414,6 +477,9 @@ if(isset($_POST['simpan'])){
             case 'hapus_history':
 				include "halaman/history/hapus.php";
 				break;	
+             case 'bayar':
+				include "halaman/history/bayar.php";
+				break;
 
 			default:
 				echo "<center><h3>Maaf. Halaman tidak di temukan !</h3></center>";

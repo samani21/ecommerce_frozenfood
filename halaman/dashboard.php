@@ -1,17 +1,55 @@
 <div class="row">
-	
-	<div class="col-6">
-	<h5>GRAFIK MENU TERLARIS</h5>
-	<div>
-  <canvas id="myChart"></canvas>
+    <div class="col-6">
+    <form action="halaman/laba/laba_kotor.php" method="get">
+    <div class="row">
+      <div class="col-4">
+        <label for="">Dari</label>
+        <input type="date" name="dari" class="form-control">
+      </div>
+      <div class="col-4">
+        <label for="">Sampai</label>
+        <input type="date" name="sampai" class="form-control">
+      </div>
+      <div class="col-4">
+        <br>
+       <button class="btn btn-warning">Laba Kotor</button>
+      </div>
+    </div>
+  </form>
+    </div>
+    <div class="col-6">
+    <form action="halaman/laba/laba_bersih.php" method="get">
+    <div class="row">
+      <div class="col-4">
+        <label for="">Dari</label>
+        <input type="date" name="dari" class="form-control">
+      </div>
+      <div class="col-4">
+        <label for="">Sampai</label>
+        <input type="date" name="sampai" class="form-control">
+      </div>
+      <div class="col-4">
+        <br>
+       <button class="btn btn-warning">Laba bersih</button>
+      </div>
+    </div>
+  </form>
+    </div>
 </div>
-	</div>
-	<div class="col-6">
-	<h5>GRAFIK PENJUALAN</h5>
-	<div>
-  <canvas id="myChart1"></canvas>
-</div>
-	</div>
+<br>
+<div class="row">
+  <div class="col-6">
+    <h5>GRAFIK MENU TERLARIS</h5>
+    <div>
+      <canvas id="myChart"></canvas>
+    </div>
+  </div>
+  <div class="col-6">
+    <h5>GRAFIK PENJUALAN</h5>
+    <div>
+      <canvas id="myChart1"></canvas>
+    </div>
+  </div>
 </div>
 <?php
 include "././koneksi.php";
@@ -36,10 +74,10 @@ include "././koneksi.php";
   new Chart(ctx, {
     type: 'line',
     data: {
-      labels: <?= json_encode($nm_barang) ?>,
+      labels: <?= json_encode($nm_barang) ?> ,
       datasets: [{
         label: '# of Votes',
-        data: <?= json_encode($total) ?>,
+        data: <?= json_encode($total) ?> ,
         borderWidth: 1
       }]
     },
@@ -58,10 +96,10 @@ include "././koneksi.php";
   new Chart(ctx1, {
     type: 'line',
     data: {
-      labels: <?= json_encode($bulan) ?>,
+      labels: <?= json_encode($bulan) ?> ,
       datasets: [{
         label: '# of Votes',
-        data: <?= json_encode($data) ?>,
+        data: <?= json_encode($data) ?> ,
         borderWidth: 1
       }]
     },

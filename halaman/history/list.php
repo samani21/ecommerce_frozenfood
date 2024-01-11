@@ -8,7 +8,7 @@
     }
 ?>
 <div>
-<table id="example" class="table table-striped" style="width:100%">
+    <table id="example" class="table table-striped" style="width:100%">
         <thead>
             <tr>
                 <th>NO</th>
@@ -24,17 +24,31 @@
                 $no = 1;
                 while($row = mysqli_fetch_array($query)){
                     ?>
-                        <tr>
-                            <td><?= $no++ ?></td>
-                            <td><?= $row['nama'] ?></td>
-                            <td><?= $row['tgl_order'] ?></td>
-                            <td><?= $row['kota'] ?></td>
-                            <td><?= $row['hrg'] ?></td>
-                            <td>
-                                <a href="index.php?page=menu&id_order=<?= $row['id_order']?>" class="btn btn-warning">Cek</a>
-                            </td>
-                        </tr>
+            <tr>
+                <td><?= $no++ ?></td>
+                <td><?= $row['nama'] ?></td>
+                <td><?= $row['tgl_order'] ?></td>
+                <td><?= $row['kota'] ?></td>
+                <td><?= $hasil_rupiah = "Rp " . number_format($row['hrg'],0,',','.') ?></td>
+                <td>
+                    <a href="index.php?page=menu&id_order=<?= $row['id_order']?>" class="btn btn-warning">Cek</a>
+                    
                     <?php
+                                   if($_SESSION['level'] == "Admin"){
+                                    if($row['pembayaran'] == 3){
+
+                                    }else{
+                                        ?>
+                    <a href="index.php?page=bayar&id_order=<?= $row['id_order']?>" class="btn btn-success">Dibayar</a>
+                    <a href="index.php?page=hapus_history&id_order=<?= $row['id_order']?>" class="btn btn-danger">Hapus</a>
+                    <?php
+                                    }
+                                   }
+                               ?>
+
+                </td>
+            </tr>
+            <?php
                 }
             ?>
         </tbody>

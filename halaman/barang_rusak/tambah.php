@@ -12,23 +12,16 @@
             <input type="text" value="<?= $row_bm['nm_barang'] ?>" class="form-control" autocomplete="off" required readonly>
         </div>
         <div>
-            <label for="">Supplier</label>
-            <select name="id_supplier" class="form-control" id="" required>
-            <option value="">--pilih</option>
-            <?php
-                    $qr = mysqli_query($koneksi,"SELECT * FROM supplier");
-                    $rw = mysqli_fetch_array($qr);
-            ?>
-            <option value="<?= $rw['id_supplier'] ?>"><?= $rw['nm_supplier'] ?></option>
-            </select>
-        </div>
-        <div>
             <label for="">Tanggal</label>
-            <input type="date" name="tgl" value="<?= date('Y-m-d') ?>" class="form-control" required autofocus>
+            <input type="date" name="tgl" value="<?= date('Y-m-d')?>" class="form-control" required>
         </div>
         <div>
             <label for="">Jumlah</label>
             <input type="number" name="jumlah" class="form-control" required autofocus>
+        </div>
+        <div>
+                <label for="">Keterangan</label>
+                <textarea name="keterangan" class="form-control" id="" cols="30" rows="10"></textarea>
         </div>
         <br>
         <div>
@@ -42,11 +35,11 @@
     include "././koneksi.php";
     if(isset($_POST['simpan'])){
         $id_barang = $_POST['id_barang'];
-        $id_supplier = $_POST['id_supplier'];
         $jumlah = $_POST['jumlah'];
         $tgl = $_POST['tgl'];
+        $keterangan = $_POST['keterangan'];
 
-        mysqli_query($koneksi,"INSERT INTO barang_masuk VALUES(null,'$id_supplier','$id_barang','$jumlah','$tgl')") or die(mysqli_error($koneksi));
+        mysqli_query($koneksi,"INSERT INTO kondisi_barang VALUES(null,'$id_barang','$jumlah',0,'$tgl','$keterangan')");
         ?>
         <script>
             swal({
@@ -55,7 +48,7 @@
   type: "success"
 }, setTimeout(function(){
 
-window.location.href = "http://localhost/bikafrozen/index.php?page=barang_masuk";
+window.location.href = "http://localhost/bikafrozen/index.php?page=barang_rusak";
 
 }, 1000));
         </script>

@@ -4,15 +4,15 @@
     @$id_k = substr($_GET['id_kategori'],0,4);
     @$kategori = $_GET['id_kategori'];
     if(empty($id_k)){
-        $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*,barang_masuk.jumlah as jum FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori");
+        $query = mysqli_query($koneksi,"SELECT * FROM `kondisi_barang` JOIN barang ON barang.id_barang = kondisi_barang.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori");
     }else{
-        $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*,barang_masuk.jumlah as jum FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k'");
+        $query = mysqli_query($koneksi,"SELECT * FROM `kondisi_barang` JOIN barang ON barang.id_barang = kondisi_barang.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k'");
     }
     $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
 ?>
 <div class="row">
     <div class="col-9">
-        <form action="halaman/barang_masuk/cetak.php" method="get">
+        <form action="halaman/barang_rusak/cetak.php" method="get">
             <div class="row">
                 <input type="hidden" name="page" value="<?= $pa ?>" class="form-control" required>
                 <div class="col-6">
@@ -68,9 +68,11 @@
             <tr>
                 <th>NO</th>
                 <th>Nama barang</th>
-                <th>Tanggal</th>
                 <th>Kategori</th>
-                <th>Jumlah</th>
+                <th>Tanggal</th>
+                <th>Jumlah Rusak</th>
+                <th>Jumlah Baik</th>
+                <th>Keterangan</th>
             </tr>
         </thead>
         <tbody>
@@ -81,9 +83,13 @@
             <tr>
                 <td><?= $no++ ?></td>
                 <td><?= $row['nm_barang'] ?></td>
-                <td><?= $row['tgl'] ?></td>
                 <td><?= $row['nm_kategori'] ?></td>
-                <td><?= $row['jum'] ?></td>
+                <td><?= $row['tgl'] ?></td>
+                <td><?= $row['total'] ?></td>
+                <td><?= $row['jumlah_baik'] ?></td>
+                <td><?= $row['keterangan'] ?></td>
+                
+                </td>
             </tr>
             <?php
                 }

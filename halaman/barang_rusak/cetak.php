@@ -27,7 +27,7 @@
         </tr>
     </table>
     <hr>
-    <h3 align="center">DATA BARANG KELUAR</h3>
+    <h3 align="center">DATA BARANG RUSAK</h3>
     <hr>
     <?php
     include "../../koneksi.php";
@@ -36,24 +36,25 @@
     $dari = $_GET['dari'];
     $sampai = $_GET['sampai'];
     if(empty($id_k)){
-        $query = mysqli_query($koneksi,"SELECT pesanan.*, barang.*, kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE pesanan.tgl BETWEEN '$dari' AND '$sampai'");
+        $query = mysqli_query($koneksi,"SELECT * FROM `kondisi_barang` JOIN barang ON barang.id_barang = kondisi_barang.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE tgl BETWEEN '$dari' AND '$sampai'");
     }else{
-        $query = mysqli_query($koneksi,"SELECT pesanan.*, barang.*, kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k' AND pesanan.tgl BETWEEN '$dari' AND '$sampai'");
+        $query = mysqli_query($koneksi,"SELECT * FROM `kondisi_barang` JOIN barang ON barang.id_barang = kondisi_barang.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k' AND tgl BETWEEN '$dari' AND '$sampai'");
     }
-
-    $query_to = mysqli_query($koneksi,"SELECT   SUM(total*harga) as total FROM pesanan"); 
-    $row_to = mysqli_fetch_array($query_to);
+    $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
 ?>
+<pre>
+periode tanggal <?= $dari?> sampai <?= $sampai ?>
+</pre>
 <table border="1" style="width:100%; border-collapse: collapse;">
         <thead>
-            <tr>
+        <tr>
                 <th>NO</th>
                 <th>Nama barang</th>
-                <th>Tanggal</th>
                 <th>Kategori</th>
-                <th>Jumlah</th>
-                <th>Harga</th>
-                <th>Total Harga</th>
+                <th>Tanggal</th>
+                <th>Jumlah Rusak</th>
+                <th>Jumlah Baik</th>
+                <th>Keterangan</th>
             </tr>
         </thead>
         <tbody>
@@ -61,22 +62,18 @@
                 $no = 1;
                 while($row = mysqli_fetch_array($query)){
                     ?>
-                         <tr>
-                            <td><?= $no++ ?></td>
-                            <td><?= $row['nm_barang'] ?></td>
-                            <td><?= $row['tgl'] ?></td>
-                            <td><?= $row['nm_kategori'] ?></td>
-                            <td><?= $row['total'] ?></td>
-                            <td><?= $hasil_rupiah = "Rp " . number_format($row['harga'],0,',','.') ?></td>
-                            <td><?= $hasil_rupiah = "Rp " . number_format($row['harga']*$row['total'],0,',','.') ?></td>
-                        </tr>
+                        <tr>
+                        <td><?= $no++ ?></td>
+                <td><?= $row['nm_barang'] ?></td>
+                <td><?= $row['nm_kategori'] ?></td>
+                <td><?= $row['tgl'] ?></td>
+                <td><?= $row['total'] ?></td>
+                <td><?= $row['jumlah_baik'] ?></td>
+                <td><?= $row['keterangan'] ?></td>
+            </tr>
                     <?php
                 }
             ?>
-            <tr>
-                <td colspan="6" align="right">Total</td>
-                <td colspan="6" align="left"><?= $hasil_rupiah = "Rp " . number_format($row_to['total'],0,',','.') ?></td>
-            </tr>
         </tbody>
     </table>
     <br><br><br>

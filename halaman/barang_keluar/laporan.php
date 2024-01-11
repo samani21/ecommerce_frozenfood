@@ -11,13 +11,13 @@
 ?>
 <div>
 <div class="col-9">
-        <form action="halaman/barang_keluar/cetak.php" method="get">
+<form action="halaman/barang_keluar/cetak.php" method="get">
             <div class="row">
-            <input type="hidden" name="page" value="<?= $pa ?>" class="form-control" required>
+                <input type="hidden" name="page" value="<?= $pa ?>" class="form-control" required>
                 <div class="col-6">
-                <select  name="id_kategori" class="form-control" id="" >
-                <option value="">Semua</option>
-                    <?php
+                    <select name="id_kategori" class="form-control" id="">
+                        <option value="">Semua</option>
+                        <?php
                     while($row1 = mysqli_fetch_array($query1)){
                         ?>
                         <option value="<?php
@@ -44,11 +44,17 @@
                         <?php
                     }
                 ?>
-                
-            </select>
+
+                    </select>
                 </div>
-                <div class="col-6">
-                <button type="submit" class="btn btn-primary">Cari</button>
+                <div class="col-3">
+                    <input type="date" class="form-control" name="dari" required>
+                </div>
+                <div class="col-3">
+                    <input type="date" class="form-control" name="sampai" required>
+                </div>
+                <div class="col-3">
+                    <button type="submit" class="btn btn-primary">cetak</button>
                 </div>
             </div>
         </form>
