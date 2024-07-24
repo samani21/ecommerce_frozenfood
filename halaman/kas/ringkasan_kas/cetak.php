@@ -1,6 +1,43 @@
-<?php
-include "././koneksi.php";
-$query = mysqli_query($koneksi, "SELECT 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body onload="window.print()">
+
+    <table>
+        <tr>
+            <td colspan="4">
+                <p style="font-size: 20px;">BIKA FROZEN FOOD</p>
+            </td>
+        </tr>
+        <tr>
+            <td width="6%">
+                <img src="../../file/ig.png" alt="" width="50%">
+            </td>
+            <td>
+                <h5>bika.frozenfoodbtk</h5>
+            </td>
+            <td width="6%">
+                <img src="../../file/icon-wa.png" alt="" width="50%">
+            </td>
+            <td>
+                <h5>0821 4074 3958</h5>
+            </td>
+        </tr>
+    </table>
+    <hr>
+    <h3 align="center">RINGKASAN KAS</h3>
+    <hr>
+    <?php
+    include "../../../koneksi.php";
+    $dari = $_GET['dari'];
+    $sampai = $_GET['sampai'];
+    $query = mysqli_query($koneksi, "SELECT 
     tanggal,
     MIN(CASE WHEN rn_awal = 1 THEN saldo_awal END) AS saldo_awal,
     SUM(pemasukkan) AS pemasukkan,
@@ -20,31 +57,16 @@ FROM (
     FROM 
         transaksi_harian
 ) AS subquery
+WHERE tanggal BETWEEN '$dari' AND '$sampai'
 GROUP BY 
     tanggal
 ORDER BY 
-    tanggal;");
-?>
-
-<div>
-    <form action="halaman/kas/ringkasan_kas/cetak.php" method="get">
-        <div class="row">
-            <div class="col-5">
-                <input type="date" name="dari" value="<?= date('Y-m-d') ?>" class="form-control" required>
-            </div>
-            <div class="col-5">
-                <input type="date" name="sampai" value="<?= date('Y-m-d') ?>" class="form-control" required>
-            </div>
-            <div class="col-2">
-                <button type="submit" class="btn btn-primary">Cetak</button>
-            </div>
-        </div>
-    </form>
-</div>
-<br>
-
-<div>
-    <table id="example" class="table table-striped" style="width:100%">
+    tanggal");
+    ?>
+    <pre>
+periode tanggal <?= $dari ?> sampai <?= $sampai ?>
+</pre>
+    <table border="1" style="width:100%; border-collapse: collapse;">
         <thead>
             <tr>
                 <th>NO</th>
@@ -73,4 +95,18 @@ ORDER BY
             ?>
         </tbody>
     </table>
-</div>
+    <br><br><br>
+    <pre>
+                                        Banjarmasin <?= date('d-m-Y') ?>
+
+
+
+                                        
+
+
+                                                Admin
+</pre>
+    </div>
+</body>
+
+</html>

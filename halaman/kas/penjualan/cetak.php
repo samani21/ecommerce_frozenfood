@@ -31,13 +31,13 @@
         </tr>
     </table>
     <hr>
-    <h3 align="center">KAS TRANSAKSI HARIAN</h3>
+    <h3 align="center">KAS PITANG</h3>
     <hr>
     <?php
     include "../../../koneksi.php";
     $dari = $_GET['dari'];
     $sampai = $_GET['sampai'];
-    $query = mysqli_query($koneksi, "SELECT * FROM transaksi_harian WHERE tanggal BETWEEN '$dari' AND '$sampai'");
+    $query = mysqli_query($koneksi, "SELECT * FROM penjualan WHERE tanggal BETWEEN '$dari' AND '$sampai'");
     ?>
     <pre>
 periode tanggal <?= $dari ?> sampai <?= $sampai ?>
@@ -47,10 +47,7 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
             <tr>
                 <th>NO</th>
                 <th>Tanggal</th>
-                <th>Deskripsi</th>
                 <th>Jumlah</th>
-                <th>Saldo Awal</th>
-                <th>Saldo Akhir</th>
             </tr>
         </thead>
         <tbody>
@@ -61,10 +58,7 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $row['tanggal'] ?></td>
-                    <td><?= $row['deskripsi'] ?></td>
                     <td><?= $hasil_rupiah = "Rp " . number_format($row['jumlah'], 0, ',', '.') ?></td>
-                    <td><?= $hasil_rupiah = "Rp " . number_format($row['saldo_awal'], 0, ',', '.') ?></td>
-                    <td><?= $hasil_rupiah = "Rp " . number_format($row['saldo_akhir'], 0, ',', '.') ?></td>
                 </tr>
             <?php
             }
