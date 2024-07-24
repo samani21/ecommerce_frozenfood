@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>Membuat Login Multi User Level Dengan PHP dan MySQLi - www.malasngoding.com</title>
+	<title>Login</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <style>
@@ -84,9 +84,9 @@
 
 	<h1 align="center">BIKA FROZENFOOD</h1>
 
-	<?php 
-	if(isset($_GET['pesan'])){
-		if($_GET['pesan']=="gagal"){
+	<?php
+	if (isset($_GET['pesan'])) {
+		if ($_GET['pesan'] == "gagal") {
 			echo "<div class='alert'>Username dan Password tidak sesuai !</div>";
 		}
 	}

@@ -17,9 +17,12 @@
             <option value="">--pilih</option>
             <?php
                     $qr = mysqli_query($koneksi,"SELECT * FROM supplier");
-                    $rw = mysqli_fetch_array($qr);
+                    while($rw = mysqli_fetch_array($qr)){
             ?>
             <option value="<?= $rw['id_supplier'] ?>"><?= $rw['nm_supplier'] ?></option>
+            <?php
+            }
+            ?>
             </select>
         </div>
         <div>

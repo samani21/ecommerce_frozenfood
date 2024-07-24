@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body onload="window.print()">
-    
+
     <table>
         <tr>
-            <td colspan="4"><p style="font-size: 20px;">BIKA FROZEN FOOD</p></td>
+            <td colspan="4">
+                <p style="font-size: 20px;">BIKA FROZEN FOOD</p>
+            </td>
         </tr>
         <tr>
             <td width="6%">
@@ -32,11 +36,11 @@
     <?php
     include "../../koneksi.php";
     $cari = $_GET['cari'];
-    $query = mysqli_query($koneksi,"SELECT * FROM supplier WHERE nm_supplier LIKE '%".$cari."%'")
+    $query = mysqli_query($koneksi, "SELECT * FROM supplier WHERE nm_supplier LIKE '%" . $cari . "%'")
 
-?>
-<table border="1" style="width:100%; border-collapse: collapse;">
-<thead>
+    ?>
+    <table border="1" style="width:100%; border-collapse: collapse;">
+        <thead>
             <tr>
                 <th>NO</th>
                 <th>Nama Supplier</th>
@@ -47,24 +51,24 @@
         </thead>
         <tbody>
             <?php
-                $no = 1;
-                while($row = mysqli_fetch_array($query)){
-                    ?>
-                        <tr>
-                            <td><?= $no++ ?></td>
-                            <td><?= $row['nm_supplier'] ?></td>
-                            <td><?= $row['alamat'] ?></td>
-                            <td><?= $row['kota'] ?></td>
-                            <td><?= $row['telp'] ?></td>
-                        </tr>
-                    <?php
-                }
+            $no = 1;
+            while ($row = mysqli_fetch_array($query)) {
+            ?>
+                <tr>
+                    <td><?= $no++ ?></td>
+                    <td><?= $row['nm_supplier'] ?></td>
+                    <td><?= $row['alamat'] ?></td>
+                    <td><?= $row['kota'] ?></td>
+                    <td><?= $row['telp'] ?></td>
+                </tr>
+            <?php
+            }
             ?>
         </tbody>
     </table>
     <br><br><br>
-<pre>
-                                        Banjarmasin <?= date('d-m-Y')?>
+    <pre>
+                                        Banjarmasin <?= date('d-m-Y') ?>
 
 
 
@@ -73,6 +77,7 @@
 
                                                 Admin
 </pre>
-</div>
+    </div>
 </body>
+
 </html>

@@ -3,15 +3,25 @@
     $pa = $_GET['page'];
     @$id_k = substr($_GET['id_kategori'],0,4);
     @$kategori = $_GET['id_kategori'];
-    if(empty($id_k)){
-        $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*, barang_masuk.jumlah as jum FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori");
+    @$dari = $_GET['dari'];
+    @$sampai = $_GET['sampai'];
+    if(empty($dari) && empty($sampai)){
+        if(empty($id_k)){
+            $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*, barang_masuk.jumlah as jum FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori ");
+        }else{
+            $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*, barang_masuk.jumlah as jum FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k' ");
+        }
     }else{
-        $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*, barang_masuk.jumlah as jum FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k'");
+        if(empty($id_k)){
+            $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*, barang_masuk.jumlah as jum FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE tgl BETWEEN '$dari' AND '$sampai'");
+        }else{
+            $query = mysqli_query($koneksi,"SELECT barang.*,barang_masuk.*,kategori.*, barang_masuk.jumlah as jum FROM barang_masuk JOIN barang ON barang.id_barang = barang_masuk.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k' AND tgl BETWEEN '$dari' AND '$sampai'");
+        }
     }
     $query1 = mysqli_query($koneksi,"SELECT * FROM kategori");
 ?>
 <div class="row">
-    <div class="col-9">
+    <div class="col-12">
         <form action="" method="get">
             <div class="row">
                 <input type="hidden" name="page" value="<?= $pa ?>" class="form-control" required>
@@ -48,7 +58,13 @@
 
                     </select>
                 </div>
-                <div class="col-6">
+                <div class="col-2">
+                    <input type="date" class="form-control" value="<?= $dari ?>" name="dari">
+                </div>
+                <div class="col-2">
+                    <input type="date" class="form-control" value="<?= $sampai ?>" name="sampai">
+                </div>
+                <div class="col-2">
                     <button type="submit" class="btn btn-primary">Cari</button>
                 </div>
             </div>
@@ -63,6 +79,7 @@
                 <th>NO</th>
                 <th>Nama barang</th>
                 <th>Kategori</th>
+                <th>Tanggal</th>
                 <th>Jumlah</th>
                 <th>Aksi</th>
             </tr>
@@ -76,6 +93,7 @@
                 <td><?= $no++ ?></td>
                 <td><?= $row['nm_barang'] ?></td>
                 <td><?= $row['nm_kategori'] ?></td>
+                <td><?= $row['tgl'] ?></td>
                 <td><?= $row['jum'] ?></td>
                 <td>
                     <a href="index.php?page=edit_barang_masuk&id=<?= $row['id_barang_masuk']?>"

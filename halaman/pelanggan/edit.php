@@ -1,13 +1,20 @@
 <?php
     include "././koneksi.php";
+   if($_SESSION['level']=="Pelanggan"){
+    $id = $_GET['id'];
+    $query = mysqli_query($koneksi,"SELECT * FROM pelanggan WHERE id_user = '$id'");
+    $row = mysqli_fetch_assoc($query);
+   }else{
     $id = $_GET['id'];
     $query = mysqli_query($koneksi,"SELECT * FROM pelanggan WHERE id_pelanggan = '$id'");
     $row = mysqli_fetch_assoc($query);
+   }
 ?>
 <div>
     <form action="" method="post">
         <div>
             <label for="">Nama</label>
+            <input type="hidden" name="id_pelanggan" value="<?= $row['id_pelanggan'] ?>" class="form-control" required>
             <input type="text" name="nama" value="<?= $row['nama'] ?>" class="form-control" required>
         </div>
         <div>
@@ -21,6 +28,10 @@
         <div>
             <label for="">Alamat</label>
             <input type="text" name="alamat" value="<?= $row['alamat'] ?>" class="form-control" required>
+        </div>
+        <div>
+            <label for="">No Hp</label>
+            <input type="text" name="no_hp" value="<?= $row['no_hp'] ?>" class="form-control" required>
         </div>
         <br>
         <div>
@@ -37,8 +48,10 @@
         $tempat = $_POST['tempat'];
         $tgl = $_POST['tgl'];
         $alamat = $_POST['alamat'];
+        $no_hp = $_POST['no_hp'];
+        $id_pelanggan = $_POST['id_pelanggan'];
 
-        mysqli_query($koneksi,"UPDATE pelanggan SET nama = '$nama',tempat = '$tempat',tgl = '$tgl',alamat = '$alamat' WHERE id_pelanggan = '$id'");
+        mysqli_query($koneksi,"UPDATE pelanggan SET nama = '$nama',tempat = '$tempat',tgl = '$tgl',alamat = '$alamat',no_hp = '$no_hp' WHERE id_pelanggan = '$id_pelanggan'");
         ?>
 <script>
             swal({
@@ -46,8 +59,18 @@
   text: "Edit data berhasil",
   type: "success"
 }, setTimeout(function(){
-
+<?php
+if($_SESSION['level'] == "Admin"){
+?>
 window.location.href = "http://localhost/bikafrozen/index.php?page=pelanggan";
+
+<?php
+}else{
+    ?>
+    window.Headers();
+    <?php
+}
+?>
 
 }, 1000));
         </script>
