@@ -57,6 +57,22 @@ if ($_SESSION['level'] == "Admin") {
     </div>
   </div>
 </div>
+<div class="row">
+  <?php
+  include "././koneksi.php";
+  $qr = mysqli_query($koneksi, "SELECT * FROM `link` order BY id_link DESC");
+  while ($rl = mysqli_fetch_array($qr)) {
+  ?>
+    <div class="col-3">
+      <div class="ratio ratio-16x9">
+        <iframe src="<?= $rl['link'] ?>" title="YouTube video" allowfullscreen></iframe>
+      </div>
+      <br>
+    </div>
+  <?php
+  }
+  ?>
+</div>
 <?php
 include "././koneksi.php";
 $query_order = mysqli_query($koneksi, "SELECT 

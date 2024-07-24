@@ -33,6 +33,9 @@ $row = mysqli_fetch_assoc($query);
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js"></script>
     <script src="https://kit.fontawesome.com/a284c48079.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <style>
     li {
@@ -77,6 +80,94 @@ $row = mysqli_fetch_assoc($query);
 
     #main-content {
         transition: 0.4s;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #333;
+        color: white;
+    }
+
+    .logo {
+        font-size: 24px;
+    }
+
+    .notifications {
+        position: relative;
+    }
+
+    .notification-button {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .bell-icon {
+        font-size: 24px;
+    }
+
+    .badge {
+        position: absolute;
+        top: 0;
+        right: -5px;
+        background-color: red;
+        color: white;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 12px;
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 30px;
+        right: 0;
+        background-color: white;
+        color: black;
+        border: 1px solid #ddd;
+        width: 250px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+
+    .dropdown-header {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        background-color: #f1f1f1;
+    }
+
+    .clear {
+        color: blue;
+        cursor: pointer;
+    }
+
+    .dropdown-content {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .dropdown-content a {
+        display: block;
+        padding: 10px;
+        text-decoration: none;
+        color: black;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #f1f1f1;
     }
 </style>
 <?php
@@ -225,6 +316,12 @@ if (empty($row['id_pelanggan'])) {
                                 Supplier
                             </a>
                         </li>
+                        <li <?php if ($hal == "link_live" || $hal == "tambah_link_live" || $hal == "edit_link_live") { ?>class="hidup" <?php } ?>>
+                            <a class="text-white" href="index.php?page=link_live">
+                                <i class="fa-brands fa-youtube"></i>
+                                Youtube
+                            </a>
+                        </li>
                     </div>
                 <?php
                 }
@@ -314,6 +411,13 @@ if (empty($row['id_pelanggan'])) {
                     </a>
                 </li>
 
+                <li <?php if ($hal == "komplen" || $hal == "tambah_komplen" || $hal == "edit_komplen") { ?>class="hidup" <?php } ?>>
+                    <a class="text-white" href="index.php?page=komplen">
+                        <i class="fa-solid fa-person-circle-question"></i>
+                        Komplen
+                    </a>
+                </li>
+
                 <a class="dropdown-btn text-white" href="#">
                     <i class="fa-solid fa-bars"></i>
                     Laporan
@@ -371,10 +475,45 @@ if (empty($row['id_pelanggan'])) {
                         <i class="bi bi-list"></i>
                     </button>
                 </div>
-                <div class="col-11">
+                <?php
+                if ($_SESSION['level'] == "Admin") {
+                ?>
+                    <div class="notifications col-1">
+                        <button class="notification-button" onclick="toggleDropdown()">
+                            <span class="bell-icon">🔔</span>
+                            <?php
+                            include "koneksi.php";
+                            $countNotif = mysqli_query($koneksi, "SELECT COUNT(jumlah) as jumlah FROM `barang` WHERE jumlah < 15");
+                            $cn = mysqli_fetch_assoc($countNotif);
+                            ?>
+                            <span class="badge"><?= $cn['jumlah'] ?></span>
+                        </button>
+                        <div class="dropdown-menu" id="notification-dropdown">
+                            <div class="dropdown-header">
+                                <span>Notifications</span>
+                                <span class="clear" onclick="clearNotifications()">Clear All</span>
+                            </div>
+                            <div class="dropdown-content">
+                                <?php
+                                include "koneksi.php";
+                                $queryNotif = mysqli_query($koneksi, "SELECT DISTINCT(jumlah), nm_barang FROM `barang` WHERE jumlah < 15");
+                                while ($data = mysqli_fetch_array($queryNotif)) {
+                                ?>
+                                    <a href="#">Barang: <?php echo $data['nm_barang']; ?> tinggal <?php echo $data['jumlah']; ?></a>
+                                <?php
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php
+                }
+                ?>
+                <div class="col-10">
                     <h1 style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">
                         <?= $hal ?></h1>
                 </div>
+            </div>
             </div>
             <hr>
             <div class="">
@@ -399,6 +538,34 @@ if (empty($row['id_pelanggan'])) {
                             break;
                         case 'hapus_kategori':
                             include "halaman/kategori/hapus.php";
+                            break;
+
+                            //link live
+                        case 'link_live':
+                            include "halaman/link_live/list.php";
+                            break;
+                        case 'tambah_link_live':
+                            include "halaman/link_live/tambah.php";
+                            break;
+                        case 'edit_link_live':
+                            include "halaman/link_live/edit.php";
+                            break;
+                        case 'hapus_link_live':
+                            include "halaman/link_live/hapus.php";
+                            break;
+
+                            //komplen
+                        case 'komplen':
+                            include "halaman/komplen/list.php";
+                            break;
+                        case 'tambah_komplen':
+                            include "halaman/komplen/tambah.php";
+                            break;
+                        case 'edit_komplen':
+                            include "halaman/komplen/edit.php";
+                            break;
+                        case 'hapus_komplen':
+                            include "halaman/komplen/hapus.php";
                             break;
 
                             //pelanggan
@@ -670,6 +837,33 @@ if (empty($row['id_pelanggan'])) {
         <script>
             new DataTable('#example');
         </script>
+        <script>
+            function toggleDropdown() {
+                var dropdown = document.getElementById('notification-dropdown');
+                if (dropdown.style.display === 'block') {
+                    dropdown.style.display = 'none';
+                } else {
+                    dropdown.style.display = 'block';
+                }
+            }
+
+            function clearNotifications() {
+                var dropdownContent = document.querySelector('.dropdown-content');
+                dropdownContent.innerHTML = '<a href="#">No new notifications</a>';
+                var badge = document.querySelector('.badge');
+                badge.style.display = 'none';
+            }
+
+            window.onclick = function(event) {
+                if (!event.target.matches('.notification-button')) {
+                    var dropdown = document.getElementById('notification-dropdown');
+                    if (dropdown.style.display === 'block') {
+                        dropdown.style.display = 'none';
+                    }
+                }
+            }
+        </script>
+
         <script type="text/javascript">
             var rupiah = document.getElementById('rupiah');
             rupiah.addEventListener('keyup', function(e) {
