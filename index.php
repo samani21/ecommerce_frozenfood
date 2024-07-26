@@ -293,7 +293,8 @@ if (empty($row['id_pelanggan'])) {
         <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
         <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
         <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
-
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js"></script>
         <!-- Template Main CSS File -->
         <link href="assets/css/style.css" rel="stylesheet">
 
@@ -445,6 +446,11 @@ if (empty($row['id_pelanggan'])) {
                             <li>
                                 <a <?php if ($hal == "barang" || $hal == "tambah_barang" || $hal == "edit_barang") { ?>class="active" <?php } ?> href="index.php?page=barang">
                                     <i class="bi bi-circle"></i><span>Barang</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a <?php if ($hal == "jual_beli" || $hal == "tambah_jual_beli" || $hal == "edit_jual_beli") { ?>class="active" <?php } ?> href="index.php?page=jual_beli">
+                                    <i class="bi bi-circle"></i><span>Jual Beli Barang</span>
                                 </a>
                             </li>
                             <li>
@@ -673,6 +679,22 @@ if (empty($row['id_pelanggan'])) {
                         break;
                     case 'laporan_stok_barang':
                         include "halaman/barang/laporan.php";
+                        break;
+                        //jual beli
+                    case 'jual_beli':
+                        include "halaman/jual_beli/list.php";
+                        break;
+                    case 'tambah_jual_beli':
+                        include "halaman/jual_beli/tambah.php";
+                        break;
+                    case 'edit_jual_beli':
+                        include "halaman/jual_beli/edit.php";
+                        break;
+                    case 'hapus_jual_beli':
+                        include "halaman/jual_beli/hapus.php";
+                        break;
+                    case 'laporan_stok_jual_beli':
+                        include "halaman/jual_beli/laporan.php";
                         break;
 
                         //menu
@@ -917,10 +939,59 @@ if (empty($row['id_pelanggan'])) {
         <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
         <script src="assets/vendor/tinymce/tinymce.min.js"></script>
         <script src="assets/vendor/php-email-form/validate.js"></script>
-
         <!-- Template Main JS File -->
         <script src="assets/js/main.js"></script>
+        <script type="text/javascript">
+            var rupiah = document.getElementById('rupiah');
+            rupiah.addEventListener('keyup', function(e) {
+                // tambahkan 'Rp.' pada saat form di ketik
+                // gunakan fungsi formatRupiah() untuk mengubah angka yang di ketik menjadi format angka
+                rupiah.value = formatRupiah(this.value, 'Rp. ');
+            });
 
+            /* Fungsi formatRupiah */
+            function formatRupiah(angka, prefix) {
+                var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                    split = number_string.split(','),
+                    sisa = split[0].length % 3,
+                    rupiah = split[0].substr(0, sisa),
+                    ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+                // tambahkan titik jika yang di input sudah menjadi angka ribuan
+                if (ribuan) {
+                    separator = sisa ? '.' : '';
+                    rupiah += separator + ribuan.join('.');
+                }
+
+                rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+                return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+            }
+
+            var rupiah1 = document.getElementById('rupiah1');
+            rupiah1.addEventListener('keyup', function(e) {
+                // tambahkan 'Rp.' pada saat form di ketik
+                // gunakan fungsi formatRupiah1() untuk mengubah angka yang di ketik menjadi format angka
+                rupiah1.value = formatRupiah1(this.value, 'Rp. ');
+            });
+
+            /* Fungsi formatRupiah1 */
+            function formatRupiah1(angka, prefix) {
+                var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                    split = number_string.split(','),
+                    sisa = split[0].length % 3,
+                    rupiah1 = split[0].substr(0, sisa),
+                    ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+                // tambahkan titik jika yang di input sudah menjadi angka ribuan
+                if (ribuan) {
+                    separator = sisa ? '.' : '';
+                    rupiah1 += separator + ribuan.join('.');
+                }
+
+                rupiah1 = split[1] != undefined ? rupiah1 + ',' + split[1] : rupiah1;
+                return prefix == undefined ? rupiah1 : (rupiah1 ? 'Rp. ' + rupiah1 : '');
+            }
+        </script>
     </body>
 
     </html>
