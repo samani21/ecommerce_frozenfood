@@ -88,6 +88,11 @@
 	if (isset($_GET['pesan'])) {
 		if ($_GET['pesan'] == "gagal") {
 			echo "<div class='alert'>Username dan Password tidak sesuai !</div>";
+		} else if ($_GET['pesan'] == "verifikasi") {
+			echo "<div class='alert'>Email belum di verifikasi !</div>";
+		} else if ($_GET['pesan'] == "diblokir") {
+			echo "<div class='alert'>Akun telah DIBLOK !</div>";
+		} {
 		}
 	}
 	?>

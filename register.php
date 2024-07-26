@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css" integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css" />
 </head>
+
 <body>
     <div class="container">
         <div class="card">
@@ -20,6 +22,10 @@
                     <div>
                         <label for="">Username</label>
                         <input type="text" class="form-control" name="username" autofocus required>
+                    </div>
+                    <div>
+                        <label for="">Email</label>
+                        <input type="email" class="form-control" name="email" autofocus required>
                     </div>
                     <div>
                         <label for="">Password</label>
@@ -36,18 +42,34 @@
     </div>
     <?php
     include "koneksi.php";
-if(isset($_POST['simpan'])){
-    $name = $_POST['name'];
-    $username = $_POST['username'];
-    $password = md5($_POST['password']);
-    $level = "Pelanggan";
-    mysqli_query($koneksi,"INSERT INTO user VALUES(null,'$username','$name','$password','$level')");
+    require "send_mail.php";
+    if (isset($_POST['simpan'])) {
+        $email = $_POST['email'];
+        $username = $_POST['username'];
+        $name = $_POST['name'];
+        $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+        $verification_code = bin2hex(random_bytes(16)); // Generate verification code
+
+
+        $stmt = $koneksi->prepare("INSERT INTO user VALUES (null, '$username', '$email', '$name', '$password', 'Pelanggan', '$verification_code', 0)");
+        if ($stmt->execute()) {
+            // Kirim email verifikasi
+            if (sendVerificationEmail($email, $verification_code)) {
+                echo "Verification email sent. Please check your inbox.";
+            } else {
+                echo "Failed to send verification email.";
+            }
+        } else {
+            echo "Error: " . $stmt->error;
+        }
+
     ?>
-    <script>
-       window.location = "http://localhost/bikafrozen/login.php";
-    </script>
-    <?php   
-}
-?>
+        <script>
+            window.location = "http://localhost/bikafrozen/login.php";
+        </script>
+    <?php
+    }
+    ?>
 </body>
+
 </html>
