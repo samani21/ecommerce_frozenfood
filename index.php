@@ -356,68 +356,66 @@ if (empty($row['id_pelanggan'])) {
                 <?php
                 }
                 ?>
-                <a class="dropdown-btn text-white" href="#">
-                    <i class="fa-solid fa-money-bill-trend-up"></i>
-                    kas
-                </a>
-                <div class="dropdown-container">
-                    <li <?php if ($hal == "transaksi_harian" || $hal == "tambah_transaksi_harian" || $hal == "edit_transaksi_harian") { ?>class="hidup" <?php } ?>>
-                        <a class="text-white" href="index.php?page=transaksi_harian">
-                            <i class="fa-solid fa-money-bill-transfer"></i>
-                            Transaksi Harian
-                        </a>
-                    </li>
-                    <li <?php if ($hal == "ringkasan_kas" || $hal == "tambah_ringkasan_kas" || $hal == "edit_ringkasan_kas") { ?>class="hidup" <?php } ?>>
-                        <a class="text-white" href="index.php?page=ringkasan_kas">
-                            <i class="fa-solid fa-receipt"></i>
-                            Ringkasan Kas
-                        </a>
-                    </li>
-                    <li <?php if ($hal == "penjualan"  || $hal == "edit_penjualan") { ?>class="hidup" <?php } ?>>
-                        <a class="text-white" href="index.php?page=penjualan">
-                            <i class="fa-solid fa-sack-dollar"></i>
-                            Penjualan
-                        </a>
-                    </li>
-                    <li <?php if ($hal == "kewajiban"  || $hal == "edit_kewajiban") { ?>class="hidup" <?php } ?>>
-                        <a class="text-white" href="index.php?page=kewajiban">
-                            <i class="fa-solid fa-rocket"></i>
-                            Kewajiban
-                        </a>
-                    </li>
-                    <li <?php if ($hal == "piutang" || $hal == "tambah_piutang" || $hal == "edit_piutang") { ?>class="hidup" <?php } ?>>
-                        <a class="text-white" href="index.php?page=piutang">
-                            <i class="fa-solid fa-hand-holding-heart"></i>
-                            Piutang
-                        </a>
-                    </li>
-                    <li <?php if ($hal == "gaji" || $hal == "tambah_gaji" || $hal == "edit_gaji") { ?>class="hidup" <?php } ?>>
-                        <a class="text-white" href="index.php?page=gaji">
-                            <i class="fa-solid fa-wallet"></i>
-                            Gaji
-                        </a>
-                    </li>
-                    <li <?php if ($hal == "transaksi_lainnya" || $hal == "tambah_transaksi_lainnya" || $hal == "edit_transaksi_lainnya") { ?>class="hidup" <?php } ?>>
-                        <a class="text-white" href="index.php?page=transaksi_lainnya">
-                            <i class="fa-solid fa-scroll"></i>
-                            Transaksi Lainnya
-                        </a>
-                    </li>
-                </div>
+                <?php
+                if ($_SESSION['level'] == "Admin") {
+                ?>
+                    <a class="dropdown-btn text-white" href="#">
+                        <i class="fa-solid fa-money-bill-trend-up"></i>
+                        kas
+                    </a>
+                    <div class="dropdown-container">
+                        <li <?php if ($hal == "transaksi_harian" || $hal == "tambah_transaksi_harian" || $hal == "edit_transaksi_harian") { ?>class="hidup" <?php } ?>>
+                            <a class="text-white" href="index.php?page=transaksi_harian">
+                                <i class="fa-solid fa-money-bill-transfer"></i>
+                                Transaksi Harian
+                            </a>
+                        </li>
+                        <li <?php if ($hal == "ringkasan_kas" || $hal == "tambah_ringkasan_kas" || $hal == "edit_ringkasan_kas") { ?>class="hidup" <?php } ?>>
+                            <a class="text-white" href="index.php?page=ringkasan_kas">
+                                <i class="fa-solid fa-receipt"></i>
+                                Ringkasan Kas
+                            </a>
+                        </li>
+                        <li <?php if ($hal == "penjualan"  || $hal == "edit_penjualan") { ?>class="hidup" <?php } ?>>
+                            <a class="text-white" href="index.php?page=penjualan">
+                                <i class="fa-solid fa-sack-dollar"></i>
+                                Penjualan
+                            </a>
+                        </li>
+                        <li <?php if ($hal == "kewajiban"  || $hal == "edit_kewajiban") { ?>class="hidup" <?php } ?>>
+                            <a class="text-white" href="index.php?page=kewajiban">
+                                <i class="fa-solid fa-rocket"></i>
+                                Kewajiban
+                            </a>
+                        </li>
+                        <li <?php if ($hal == "piutang" || $hal == "tambah_piutang" || $hal == "edit_piutang") { ?>class="hidup" <?php } ?>>
+                            <a class="text-white" href="index.php?page=piutang">
+                                <i class="fa-solid fa-hand-holding-heart"></i>
+                                Piutang
+                            </a>
+                        </li>
+                        <li <?php if ($hal == "gaji" || $hal == "tambah_gaji" || $hal == "edit_gaji") { ?>class="hidup" <?php } ?>>
+                            <a class="text-white" href="index.php?page=gaji">
+                                <i class="fa-solid fa-wallet"></i>
+                                Gaji
+                            </a>
+                        </li>
+                        <li <?php if ($hal == "transaksi_lainnya" || $hal == "tambah_transaksi_lainnya" || $hal == "edit_transaksi_lainnya") { ?>class="hidup" <?php } ?>>
+                            <a class="text-white" href="index.php?page=transaksi_lainnya">
+                                <i class="fa-solid fa-scroll"></i>
+                                Transaksi Lainnya
+                            </a>
+                        </li>
+                    </div>
+                <?php
+                }
+                ?>
                 <li <?php if ($hal == "history" || $hal == "tambah_history" || $hal == "edit_history") { ?>class="hidup" <?php } ?>>
                     <a class="text-white" href="index.php?page=history">
                         <i class="fa-solid fa-clock-rotate-left"></i>
                         History
                     </a>
                 </li>
-
-                <li <?php if ($hal == "komplen" || $hal == "tambah_komplen" || $hal == "edit_komplen") { ?>class="hidup" <?php } ?>>
-                    <a class="text-white" href="index.php?page=komplen">
-                        <i class="fa-solid fa-person-circle-question"></i>
-                        Komplen
-                    </a>
-                </li>
-
                 <a class="dropdown-btn text-white" href="#">
                     <i class="fa-solid fa-bars"></i>
                     Laporan
@@ -714,6 +712,9 @@ if (empty($row['id_pelanggan'])) {
                             break;
                         case 'bayar':
                             include "halaman/history/bayar.php";
+                            break;
+                        case 'retur':
+                            include "halaman/history/retur.php";
                             break;
 
                             //kas

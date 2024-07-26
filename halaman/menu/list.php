@@ -184,7 +184,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 </div>
                 <?php
                 $pesan = mysqli_query($koneksi, "SELECT pesanan.jumlah as total_p ,pesanan.*,barang.*,kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE pesanan.id_order = '$order'");
-                $total = mysqli_query($koneksi, "SELECT SUM(pesanan.jumlah*pesanan.harga) as subtotal, `order`.harga as harga_total,`order`.id_ongkir as ongkir,kurir.kurir, ongkir.harga as harga_ongkir,ongkir.kota as kota,`order`.alamat,`order`.pembayaran FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` JOIN ongkir ON ongkir.id_ongkir = `order`.id_ongkir JOIN kurir ON kurir.id = `order`.id_kurir  WHERE `order`.`id_order`= '$order'");
+                $total = mysqli_query($koneksi, "SELECT SUM(pesanan.jumlah*pesanan.harga) as subtotal, `order`.harga as harga_total,`order`.id_ongkir as ongkir, ongkir.harga as harga_ongkir,ongkir.kota as kota,`order`.alamat,`order`.pembayaran FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` JOIN ongkir ON ongkir.id_ongkir = `order`.id_ongkir WHERE `order`.`id_order`= '$order'");
                 $subtotal = mysqli_fetch_array($total);
 
                 $total_kes = mysqli_query($koneksi, "SELECT SUM(jumlah*harga) as totl FROM `pesanan` WHERE id_order = '$order'");
@@ -297,8 +297,8 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
             ?>
                 <div class="row">
                     <div class="col-9">
-                        <h5>Ongkir Ke <?= $subtotal['kota'] ?>
-                            dengan Kurir <?= $subtotal['kurir'] ?> (<?= @$hasil_rupiah = "Rp " . number_format($subtotal['harga_ongkir'], 0, ',', '.') ?>)</h5>
+                        <h5>Ongkir Ke <?= @$subtotal['kota'] ?>
+                            dengan Kurir <?= @$subtotal['kurir'] ?> (<?= @$hasil_rupiah = "Rp " . number_format($subtotal['harga_ongkir'], 0, ',', '.') ?>)</h5>
                     </div>
                     <div class="col-3">
                         <h5><?= @$hasil_rupiah = "Rp " . number_format($subtotal['subtotal'] + $subtotal['harga_ongkir'], 0, ',', '.') ?>
@@ -366,7 +366,22 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                     }
                 } else {
                     if ($subtotal['pembayaran'] == 3) {
+                        $queryKomplen = mysqli_query($koneksi, "SELECT * FROM `komplen` WHERE id_order = $order");
+                        $rk = mysqli_fetch_assoc($queryKomplen);
                     ?>
+                        <form action="" method="post">
+                            <div>
+                                <input type="hidden" value="<?= date('Y-m-d') ?>" name="tanggal_komplen" class="form-control" required>
+                            </div>
+                            <div>
+                                <label for="">Deskripsi</label>
+                                <textarea class="form-control" required name="deskripsi_komplen" id=""><?= @$rk['deskripsi'] ?></textarea>
+                            </div>
+                            <br>
+                            <div>
+                                <button type="submit" name="komplen" class="btn btn-primary">Komplen</button>
+                            </div>
+                        </form>
                         <a href="halaman/menu/cetak.php?id_order=<?= $order ?>" class="btn btn-success col-md-12">Cetak</a>
                 <?php
                     }
@@ -409,13 +424,27 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
 
         if (isset($_POST['ongkir'])) {
             $id_ongkir = substr($_POST['id_ongkir'], 0, 4);
-            $id_kurir = $_POST['id_kurir'];
-            mysqli_query($koneksi, "UPDATE `order` SET id_ongkir = '$id_ongkir' ,id_kurir = '$id_kurir' WHERE id_order = '$order'") or die(mysqli_error($koneksi));
+
+            mysqli_query($koneksi, "UPDATE `order` SET id_ongkir = '$id_ongkir' WHERE id_order = '$order'") or die(mysqli_error($koneksi));
         ?>
             <script>
                 window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
             </script>
 
         <?php
+        }
+
+        if (isset($_POST['komplen'])) {
+            $tanggal_komplen = $_POST['tanggal_komplen'];
+            $deskripsi_komplen = $_POST['deskripsi_komplen'];
+
+            mysqli_query($koneksi, "INSERT INTO komplen VALUES(null,'$order','$tanggal_komplen','$deskripsi_komplen',0)");
+        ?>
+            <script>
+                window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
+            </script>
+
+        <?php
+
         }
         ?>
