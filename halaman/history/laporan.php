@@ -2,7 +2,7 @@
 include "././koneksi.php";
 $id_pel = $_SESSION['id'];
 $level = $_SESSION['level'];
-if ($_SESSION['level'] == "Admin") {
+if ($_SESSION['level'] == "Admin" ||$_SESSION['level'] == "Super Admin") {
     $query = mysqli_query($koneksi, "SELECT `order`.*,pelanggan.*,ongkir.*, `order`.harga as hrg, `order`.tgl as tgl FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.`id_pelanggan` JOIN ongkir ON ongkir.id_ongkir = `order`.`id_ongkir`");
 } else {
     $query = mysqli_query($koneksi, "SELECT `order`.*,pelanggan.*,ongkir.*, `order`.harga as hrg, `order`.tgl as tgl FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.`id_pelanggan` JOIN ongkir ON ongkir.id_ongkir = `order`.`id_ongkir` WHERE pelanggan.id_user = $id_pel");

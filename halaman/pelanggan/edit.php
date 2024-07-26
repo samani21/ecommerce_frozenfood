@@ -1,6 +1,6 @@
 <?php
 include "././koneksi.php";
-if ($_SESSION['level'] == "Pelanggan") {
+if ($_SESSION['level'] == "Pelanggan" ||$_SESSION['level'] == "Super Admin") {
     $id = $_GET['id'];
     $query = mysqli_query($koneksi, "SELECT * FROM pelanggan WHERE id_user = '$id'");
     $row = mysqli_fetch_assoc($query);
@@ -75,7 +75,7 @@ if (isset($_POST['simpan'])) {
             type: "success"
         }, setTimeout(function() {
             <?php
-            if ($_SESSION['level'] == "Admin") {
+            if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
             ?>
                 window.location.href = "http://localhost/bikafrozen/index.php?page=pelanggan";
 

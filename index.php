@@ -816,6 +816,9 @@ if (empty($row['id_pelanggan'])) {
                     case 'bayar':
                         include "halaman/history/bayar.php";
                         break;
+                    case 'terima':
+                        include "halaman/history/terima.php";
+                        break;
                     case 'retur':
                         include "halaman/history/retur.php";
                         break;

@@ -56,7 +56,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
     <div class="col-2">
         <?php
         if (empty($order)) {
-            if ($_SESSION['level'] == "Admin") {
+            if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
             } else {
         ?>
                 <div align="right">
@@ -79,16 +79,16 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
         $previous = $halaman - 1;
         $next = $halaman + 1;
         if (empty($id_k)) {
-            $data = mysqli_query($koneksi, "SELECT * FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori");
+            $data = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang");
         } else {
-            $data = mysqli_query($koneksi, "SELECT * FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k'");
+            $data = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.id_kategori = '$id_k'");
         }
         $jumlah_data = mysqli_num_rows($data);
         $total_halaman = ceil($jumlah_data / $batas);
         if (empty($id_k)) {
-            $query = mysqli_query($koneksi, "SELECT * FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori limit $halaman_awal, $batas");
+            $query = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang limit $halaman_awal, $batas");
         } else {
-            $query = mysqli_query($koneksi, "SELECT * FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k' limit $halaman_awal, $batas");
+            $query = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.id_kategori = '$id_k' limit $halaman_awal, $batas");
         }
         $nomor = $halaman_awal + 1;
         while ($row = mysqli_fetch_array($query)) {
@@ -103,7 +103,9 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                             <h5><?= $row['nm_kategori'] ?></h5>
                         </div>
                         <div class="col-3">
-                            <h5><?= $hasil_rupiah = "Rp " . number_format($row['harga'], 0, ',', '.') ?></h5>
+                            <h5><?php if (isset($row['harga'])) {
+                                    echo $hasil_rupiah = "Rp " . number_format($row['harga'], 0, ',', '.');
+                                } ?></h5>
                         </div>
                     </div>
                 </div>
@@ -169,7 +171,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
         } else {
         ?>
             <div class="card">
-                <div class="card-header bg-info">
+                <div class="card-header bg-info text-dark">
                     <div class="row">
                         <div class="col-6">
                             <h5> Nama Barang<h5>
@@ -183,7 +185,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                     </div>
                 </div>
                 <?php
-                $pesan = mysqli_query($koneksi, "SELECT pesanan.jumlah as total_p ,pesanan.*,barang.*,kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE pesanan.id_order = '$order'");
+                $pesan = mysqli_query($koneksi, "SELECT pesanan.jumlah as total_p ,pesanan.*,barang.id_barang,barang.nm_barang,barang.foto,jual_beli.jual as harga,kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE pesanan.id_order = '$order'");
                 $total = mysqli_query($koneksi, "SELECT SUM(pesanan.jumlah*pesanan.harga) as subtotal, `order`.harga as harga_total,`order`.id_ongkir as ongkir, ongkir.harga as harga_ongkir,ongkir.kota as kota,`order`.alamat,`order`.pembayaran FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` JOIN ongkir ON ongkir.id_ongkir = `order`.id_ongkir WHERE `order`.`id_order`= '$order'");
                 $subtotal = mysqli_fetch_array($total);
 
@@ -193,7 +195,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 ?>
 
                     <div class="card">
-                        <div class="card-header bg-secondary">
+                        <div class="card-header bg-white text-dark">
                             <div class="row">
                                 <div class="col-5">
                                     <h5> <?= $row_pesan['nm_barang'] ?> (<?= $row_pesan['nm_kategori'] ?>)</h5>
@@ -365,17 +367,21 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                     <?php
                     }
                 } else {
-                    if ($subtotal['pembayaran'] == 3) {
+                    if ($subtotal['pembayaran'] == 4) {
                         $queryKomplen = mysqli_query($koneksi, "SELECT * FROM `komplen` WHERE id_order = $order");
                         $rk = mysqli_fetch_assoc($queryKomplen);
                     ?>
-                        <form action="" method="post">
+                        <form action="" method="post" enctype="multipart/form-data">
                             <div>
                                 <input type="hidden" value="<?= date('Y-m-d') ?>" name="tanggal_komplen" class="form-control" required>
                             </div>
                             <div>
                                 <label for="">Deskripsi</label>
                                 <textarea class="form-control" required name="deskripsi_komplen" id=""><?= @$rk['deskripsi'] ?></textarea>
+                            </div>
+                            <div>
+                                <label for="">Foto / Video</label>
+                                <input type="file" name="bukti" class="form-control">
                             </div>
                             <br>
                             <div>
@@ -424,27 +430,104 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
 
         if (isset($_POST['ongkir'])) {
             $id_ongkir = substr($_POST['id_ongkir'], 0, 4);
-
-            mysqli_query($koneksi, "UPDATE `order` SET id_ongkir = '$id_ongkir' WHERE id_order = '$order'") or die(mysqli_error($koneksi));
+            $id_kurir = $_POST['id_kurir'];
+            mysqli_query($koneksi, "UPDATE `order` SET id_ongkir = '$id_ongkir',id_kurir = '$id_kurir' WHERE id_order = '$order'") or die(mysqli_error($koneksi));
         ?>
             <script>
                 window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
             </script>
 
-        <?php
+            <?php
         }
 
         if (isset($_POST['komplen'])) {
-            $tanggal_komplen = $_POST['tanggal_komplen'];
-            $deskripsi_komplen = $_POST['deskripsi_komplen'];
+            $queryKomplen = mysqli_query($koneksi, "SELECT * FROM `komplen` WHERE id_order = $order");
+            $rk = mysqli_fetch_assoc($queryKomplen);
+            if (isset($rk)) {
+                $ekstensi_diperbolehkan    = array('png', 'jpg', 'jpeg', 'mp4', 'mkv');
+                $nama = $_FILES['bukti']['name'];
+                $x = explode('.', $nama);
+                $ekstensi = strtolower(end($x));
+                $ukuran    = $_FILES['bukti']['size'];
+                $file_tmp = $_FILES['bukti']['tmp_name'];
+                $nama_c = date('hisdmy') . $nama;
+                $tanggal_komplen = $_POST['tanggal_komplen'];
+                $deskripsi_komplen = $_POST['deskripsi_komplen'];
+                if (empty($nama)) {
+                    mysqli_query($koneksi, "UPDATE komplen SET tanggal='$tanggal_komplen',deskripsi='$deskripsi_komplen' WHERE id_order ='$order'") or die(mysqli_error($koneksi));
+            ?>
+                    <script>
+                        swal({
+                            title: "Success!",
+                            text: "Edit data berhasil",
+                            type: "success"
+                        }, setTimeout(function() {
 
-            mysqli_query($koneksi, "INSERT INTO komplen VALUES(null,'$order','$tanggal_komplen','$deskripsi_komplen',0)");
-        ?>
-            <script>
-                window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
-            </script>
+                            window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
 
+                        }, 1000));
+                    </script>
+                    <?php
+
+                } else {
+                    if (in_array($ekstensi, $ekstensi_diperbolehkan) === true) {
+                        if ($ukuran < 104407000) {
+                            move_uploaded_file($file_tmp, 'file/' . $nama_c);
+                            mysqli_query($koneksi, "UPDATE komplen SET tanggal='$tanggal_komplen',deskripsi='$deskripsi_komplen',bukti='$nama_c' WHERE id_order ='$order'") or die(mysqli_error($koneksi));
+                    ?>
+                            <script>
+                                swal({
+                                    title: "Success!",
+                                    text: "Edit data berhasil",
+                                    type: "success"
+                                }, setTimeout(function() {
+
+                                    window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
+
+                                }, 1000));
+                            </script>
+                        <?php
+                        } else {
+                            echo 'UKURAN FILE TERLALU BESAR';
+                        }
+                    } else {
+                        echo 'EKSTENSI FILE YANG DI UPLOAD TIDAK DI PERBOLEHKAN';
+                    }
+                }
+            } else {
+                $ekstensi_diperbolehkan    = array('png', 'jpg', 'jpeg', 'mp4', 'mkv');
+                $nama = $_FILES['bukti']['name'];
+                $x = explode('.', $nama);
+                $ekstensi = strtolower(end($x));
+                $ukuran    = $_FILES['bukti']['size'];
+                $file_tmp = $_FILES['bukti']['tmp_name'];
+                $nama_c = date('hisdmy') . $nama;
+                $tanggal_komplen = $_POST['tanggal_komplen'];
+                $deskripsi_komplen = $_POST['deskripsi_komplen'];
+                if (in_array($ekstensi, $ekstensi_diperbolehkan) === true) {
+                    if ($ukuran < 104407000) {
+                        move_uploaded_file($file_tmp, 'file/' . $nama_c);
+
+                        mysqli_query($koneksi, "INSERT INTO komplen VALUES(null,'$order','$tanggal_komplen','$deskripsi_komplen','$nama_c',0)");
+                        ?>
+                        <script>
+                            swal({
+                                title: "Success!",
+                                text: "Tambah data berhasil",
+                                type: "success"
+                            }, setTimeout(function() {
+
+                                window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
+
+                            }, 1000));
+                        </script>
         <?php
-
+                    } else {
+                        echo 'UKURAN FILE TERLALU BESAR';
+                    }
+                } else {
+                    echo 'EKSTENSI FILE YANG DI UPLOAD TIDAK DI PERBOLEHKAN';
+                }
+            }
         }
         ?>

@@ -40,7 +40,7 @@
     $query_p = mysqli_query($koneksi, "SELECT SUM(harga) as harga FROM `order` WHERE tgl BETWEEN '$dari' AND '$sampai' ");
     $row_p = mysqli_fetch_array($query_p);
 
-    $query_h = mysqli_query($koneksi, "SELECT SUM( (pesanan.harga - ((barang.harga/100)*10))*total) AS hpp FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang WHERE tgl BETWEEN '$dari' AND '$sampai' ");
+    $query_h = mysqli_query($koneksi, "SELECT SUM(pesanan.harga - jual_beli.jual * total) AS hpp FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE tgl BETWEEN '$dari' AND '$sampai' ");
     $row_h = mysqli_fetch_array($query_h);
 
     ?>

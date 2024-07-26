@@ -1,5 +1,5 @@
 <?php
-if ($_SESSION['level'] == "Admin") {
+if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
 ?>
   <div class="row">
     <div class="col-6">
