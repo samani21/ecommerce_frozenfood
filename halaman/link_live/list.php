@@ -6,7 +6,7 @@ $query = mysqli_query($koneksi, "SELECT * FROM link");
     <a href="index.php?page=tambah_link_live" class="btn btn-primary">Tambah</a>
 </div>
 <div>
-    <table id="example" class="table table-striped" style="width:100%">
+    <table id="example" class="table datatable" style="width:100%">
         <thead>
             <tr>
                 <th>NO</th>

@@ -44,7 +44,7 @@ ORDER BY
 <br>
 
 <div>
-    <table id="example" class="table table-striped" style="width:100%">
+    <table id="example" class="table datatable" style="width:100%">
         <thead>
             <tr>
                 <th>NO</th>

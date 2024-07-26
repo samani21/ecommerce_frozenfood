@@ -12,7 +12,7 @@
 <body>
     <div class="container">
         <div class="card">
-            <h5 class="card-header bg-info">Tambah Data Pelanggan</h5>
+            <h5 class="card-header bg-info">Daftar Akun</h5>
             <div class="card-body">
                 <form action="" method="post">
                     <div>
@@ -47,7 +47,7 @@
         $email = $_POST['email'];
         $username = $_POST['username'];
         $name = $_POST['name'];
-        $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+        $password = md5($_POST['password']);
         $verification_code = bin2hex(random_bytes(16)); // Generate verification code
 
 

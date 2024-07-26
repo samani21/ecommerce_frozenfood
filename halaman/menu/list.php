@@ -94,16 +94,16 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
         while ($row = mysqli_fetch_array($query)) {
         ?>
             <div class="card">
-                <div class="card-header bg-info">
+                <div class="card-header bg-info text-dark">
                     <div class="row">
                         <div class="col-6">
-                            <h4><?= $nomor++  ?>. <?= $row['nm_barang'] ?></h4>
+                            <h5><?= $nomor++  ?>. <?= $row['nm_barang'] ?></h5>
                         </div>
                         <div class="col-3">
-                            <h4><?= $row['nm_kategori'] ?></h4>
+                            <h5><?= $row['nm_kategori'] ?></h5>
                         </div>
                         <div class="col-3">
-                            <h4><?= $hasil_rupiah = "Rp " . number_format($row['harga'], 0, ',', '.') ?></h4>
+                            <h5><?= $hasil_rupiah = "Rp " . number_format($row['harga'], 0, ',', '.') ?></h5>
                         </div>
                     </div>
                 </div>

@@ -1,14 +1,14 @@
 <?php
-    include "././koneksi.php";
-   if($_SESSION['level']=="Pelanggan"){
+include "././koneksi.php";
+if ($_SESSION['level'] == "Pelanggan") {
     $id = $_GET['id'];
-    $query = mysqli_query($koneksi,"SELECT * FROM pelanggan WHERE id_user = '$id'");
+    $query = mysqli_query($koneksi, "SELECT * FROM pelanggan WHERE id_user = '$id'");
     $row = mysqli_fetch_assoc($query);
-   }else{
+} else {
     $id = $_GET['id'];
-    $query = mysqli_query($koneksi,"SELECT * FROM pelanggan WHERE id_pelanggan = '$id'");
+    $query = mysqli_query($koneksi, "SELECT * FROM pelanggan WHERE id_pelanggan = '$id'");
     $row = mysqli_fetch_assoc($query);
-   }
+}
 ?>
 <div>
     <form action="" method="post">
@@ -24,6 +24,18 @@
         <div>
             <label for="">Tanggal</label>
             <input type="text" name="tgl" value="<?= $row['tgl'] ?>" class="form-control" required>
+        </div>
+        <div>
+            <label for="">Provensi</label>
+            <input type="text" name="provinsi" value="<?= $row['provinsi'] ?>" class="form-control" required>
+        </div>
+        <div>
+            <label for="">Kecamatan</label>
+            <input type="text" name="kecamatan" value="<?= $row['kecamatan'] ?>" class="form-control" required>
+        </div>
+        <div>
+            <label for="">Kelurahan</label>
+            <input type="text" name="kelurahan" value="<?= $row['kelurahan'] ?>" class="form-control" required>
         </div>
         <div>
             <label for="">Alamat</label>
@@ -42,38 +54,41 @@
 </div>
 
 <?php
-    include "././koneksi.php";
-    if(isset($_POST['simpan'])){
-        $nama = $_POST['nama'];
-        $tempat = $_POST['tempat'];
-        $tgl = $_POST['tgl'];
-        $alamat = $_POST['alamat'];
-        $no_hp = $_POST['no_hp'];
-        $id_pelanggan = $_POST['id_pelanggan'];
+include "././koneksi.php";
+if (isset($_POST['simpan'])) {
+    $nama = $_POST['nama'];
+    $tempat = $_POST['tempat'];
+    $tgl = $_POST['tgl'];
+    $provinsi = $_POST['provinsi'];
+    $kecamatan = $_POST['kecamatan'];
+    $kelurahan = $_POST['kelurahan'];
+    $alamat = $_POST['alamat'];
+    $no_hp = $_POST['no_hp'];
+    $id_pelanggan = $_POST['id_pelanggan'];
 
-        mysqli_query($koneksi,"UPDATE pelanggan SET nama = '$nama',tempat = '$tempat',tgl = '$tgl',alamat = '$alamat',no_hp = '$no_hp' WHERE id_pelanggan = '$id_pelanggan'");
-        ?>
-<script>
-            swal({
-  title: "Success!",
-  text: "Edit data berhasil",
-  type: "success"
-}, setTimeout(function(){
-<?php
-if($_SESSION['level'] == "Admin"){
+    mysqli_query($koneksi, "UPDATE pelanggan SET nama = '$nama',tempat = '$tempat',tgl = '$tgl',alamat = '$alamat',no_hp = '$no_hp',provinsi = '$provinsi',kecamatan = '$kecamatan',kelurahan = '$kelurahan' WHERE id_pelanggan = '$id_pelanggan'");
 ?>
-window.location.href = "http://localhost/bikafrozen/index.php?page=pelanggan";
+    <script>
+        swal({
+            title: "Success!",
+            text: "Edit data berhasil",
+            type: "success"
+        }, setTimeout(function() {
+            <?php
+            if ($_SESSION['level'] == "Admin") {
+            ?>
+                window.location.href = "http://localhost/bikafrozen/index.php?page=pelanggan";
 
+            <?php
+            } else {
+            ?>
+                window.Headers();
+            <?php
+            }
+            ?>
+
+        }, 1000));
+    </script>
 <?php
-}else{
-    ?>
-    window.Headers();
-    <?php
 }
-?>
-
-}, 1000));
-        </script>
-        <?php
-    }
 ?>

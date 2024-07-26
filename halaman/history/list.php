@@ -8,7 +8,7 @@ if ($_SESSION['level'] == "Admin") {
 }
 ?>
 <div>
-    <table id="example" class="table table-striped" style="width:100%">
+    <table id="example" class="table datatable" style="width:100%">
         <thead>
             <tr>
                 <th>NO</th>
@@ -40,13 +40,13 @@ if ($_SESSION['level'] == "Admin") {
                             <a href="index.php?page=retur&id_order=<?= $row['id_order'] ?>&status=1" class="btn btn-primary">Retur Barang</a>
                             <a href="index.php?page=retur&id_order=<?= $row['id_order'] ?>&status=2" class="btn btn-primary">Retur Uang</a>
                         <?php
-                        } else if ($row['deskripsi'] && $row['status_retur'] == 1 ) {
+                        } else if ($row['deskripsi'] && $row['status_retur'] == 1) {
                         ?>
-                            Diganti Barang
+                            <span class="badge bg-primary">Diganti Barang</span>
                         <?php
-                        } else if ($row['deskripsi'] && $row['status_retur'] == 2 ) {
+                        } else if ($row['deskripsi'] && $row['status_retur'] == 2) {
                         ?>
-                            Uang kembali
+                            <span class="badge bg-success">Uang kembali</span>
                         <?php
                         }
                         ?>

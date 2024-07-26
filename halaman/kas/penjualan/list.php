@@ -23,7 +23,7 @@ $query = mysqli_query($koneksi, "SELECT * FROM penjualan");
     <a href="index.php?page=tambah_penjualan" class="btn btn-primary">Tambah</a>
 </div>
 <div>
-    <table id="example" class="table table-striped" style="width:100%">
+    <table id="example" class="table datatable" style="width:100%">
         <thead>
             <tr>
                 <th>NO</th>
