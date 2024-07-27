@@ -373,6 +373,51 @@ if (empty($row['id_pelanggan'])) {
 
                     </li><!-- End Notification Nav -->
 
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-chat-left-text"></i>
+                            <?php
+                            include "koneksi.php";
+                            $id_user = $_SESSION['id'];
+                            $countNotif = mysqli_query($koneksi, "SELECT COUNT(pembayaran) as notfi_pembayaran FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.id_pelanggan JOIN user ON pelanggan.id_user = user.id WHERE pelanggan.id_user = $id_user AND pembayaran = 3");
+                            $cn = mysqli_fetch_assoc($countNotif);
+                            ?>
+                            <span class="badge bg-success badge-number"><?= $cn['notfi_pembayaran'] ?></span>
+                        </a><!-- End Notification Icon -->
+
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+                            <li class="dropdown-header">
+                                You have <?= $cn['notfi_pembayaran'] ?> new notifications
+                                <a href="index.php?page=history"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <?php
+                            include "koneksi.php";
+                            $queryNotif = mysqli_query($koneksi, "SELECT * FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.id_pelanggan JOIN user ON pelanggan.id_user = user.id WHERE pelanggan.id_user = $id_user AND pembayaran = 3");
+                            while ($data = mysqli_fetch_array($queryNotif)) {
+                            ?>
+                                <li class="notification-item">
+                                    <i class="bi bi-x-circle text-danger"></i>
+                                    <a href="index.php?page=menu&id_order= <?= $data['id_order'] ?>">
+                                        <p class="text-dark">Pesanan anda tanggal <?= $data['tgl'] ?> dengan total <?= "Rp " . number_format($data['harga'], 0, ',', '.'); ?> Sedang dikirim</p>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                            <?php
+                            }
+                            ?>
+                            <li class="dropdown-footer">
+                                <a href="#">Show all notifications</a>
+                            </li>
+
+                        </ul><!-- End Notification Dropdown Items -->
+
+                    </li><!-- End Notification Nav -->
 
 
                     <li class="nav-item dropdown pe-3">

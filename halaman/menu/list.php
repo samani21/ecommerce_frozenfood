@@ -56,7 +56,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
     <div class="col-2">
         <?php
         if (empty($order)) {
-            if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
+            if ($_SESSION['level'] == "Admin") {
             } else {
         ?>
                 <div align="right">
@@ -186,7 +186,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 </div>
                 <?php
                 $pesan = mysqli_query($koneksi, "SELECT pesanan.jumlah as total_p ,pesanan.*,barang.id_barang,barang.nm_barang,barang.foto,jual_beli.jual as harga,kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE pesanan.id_order = '$order'");
-                $total = mysqli_query($koneksi, "SELECT SUM(pesanan.jumlah*pesanan.harga) as subtotal, `order`.harga as harga_total,`order`.id_ongkir as ongkir, ongkir.harga as harga_ongkir,ongkir.kota as kota,`order`.alamat,`order`.pembayaran FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` JOIN ongkir ON ongkir.id_ongkir = `order`.id_ongkir WHERE `order`.`id_order`= '$order'");
+                $total = mysqli_query($koneksi, "SELECT order.foto as foto_pembayaran,SUM(pesanan.jumlah*pesanan.harga) as subtotal, `order`.harga as harga_total,`order`.id_ongkir as ongkir, ongkir.harga as harga_ongkir,ongkir.kota as kota,`order`.alamat,`order`.pembayaran FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` JOIN ongkir ON ongkir.id_ongkir = `order`.id_ongkir WHERE `order`.`id_order`= '$order'");
                 $subtotal = mysqli_fetch_array($total);
 
                 $total_kes = mysqli_query($koneksi, "SELECT SUM(jumlah*harga) as totl FROM `pesanan` WHERE id_order = '$order'");
@@ -334,6 +334,23 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                                                     ?>)</h5>
                         </div>
                     </div>
+                    <?php
+                    if (isset($subtotal['foto_pembayaran'])) {
+                    ?>
+                        <img src="././file/<?= $subtotal['foto_pembayaran'] ?>" width="300" height="300" alt="">
+                    <?php
+                    }
+                    ?>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <div>
+                            <label for="">Bukti pembayaran</label>
+                            <input type="file" name="foto_pembayaran" class="form-control">
+                        </div>
+                        <br>
+                        <div>
+                            <button type="submit" name="foto_pembayaran" class="btn btn-primary">kirim</button>
+                        </div>
+                    </form>
                 <?php
                 }
                 ?>
@@ -521,13 +538,45 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
 
                             }, 1000));
                         </script>
-        <?php
+                    <?php
                     } else {
                         echo 'UKURAN FILE TERLALU BESAR';
                     }
                 } else {
                     echo 'EKSTENSI FILE YANG DI UPLOAD TIDAK DI PERBOLEHKAN';
                 }
+            }
+        }
+        if (isset($_POST['foto_pembayaran'])) {
+            $ekstensi_diperbolehkan    = array('png', 'jpg', 'jpeg');
+            $nama = $_FILES['foto_pembayaran']['name'];
+            $x = explode('.', $nama);
+            $ekstensi = strtolower(end($x));
+            $ukuran    = $_FILES['foto_pembayaran']['size'];
+            $file_tmp = $_FILES['foto_pembayaran']['tmp_name'];
+            $nama_c = date('hisdmy') . $nama;
+            if (in_array($ekstensi, $ekstensi_diperbolehkan) === true) {
+                if ($ukuran < 104407000) {
+                    move_uploaded_file($file_tmp, 'file/' . $nama_c);
+                    mysqli_query($koneksi, "UPDATE `order` SET foto='$nama_c' WHERE id_order ='$order'") or die(mysqli_error($koneksi));
+                    ?>
+                    <script>
+                        swal({
+                            title: "Success!",
+                            text: "Edit data berhasil",
+                            type: "success"
+                        }, setTimeout(function() {
+
+                            window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
+
+                        }, 1000));
+                    </script>
+        <?php
+                } else {
+                    echo 'UKURAN FILE TERLALU BESAR';
+                }
+            } else {
+                echo 'EKSTENSI FILE YANG DI UPLOAD TIDAK DI PERBOLEHKAN';
             }
         }
         ?>
