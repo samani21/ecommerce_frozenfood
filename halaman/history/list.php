@@ -1,7 +1,7 @@
 <?php
 include "././koneksi.php";
 $id_pel = $_SESSION['id'];
-if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == " Super Admin") {
+if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
     $query = mysqli_query($koneksi, "SELECT `order`.*,pelanggan.*,ongkir.*, `order`.harga as hrg, `order`.tgl AS tgl_order,komplen.deskripsi,komplen.status_retur,komplen.bukti,user.email FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.`id_pelanggan` JOIN ongkir ON ongkir.id_ongkir = `order`.`id_ongkir` LEFT JOIN komplen ON `order`.id_order = komplen.id_order JOIN user ON pelanggan.id_user = user.id ORDER BY order.tgl DESC");
 } else {
     $query = mysqli_query($koneksi, "SELECT `order`.*,pelanggan.*,ongkir.*, `order`.harga as hrg, `order`.tgl AS tgl_order,komplen.deskripsi,komplen.status_retur,komplen.bukti,user.email FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.`id_pelanggan` JOIN ongkir ON ongkir.id_ongkir = `order`.`id_ongkir` LEFT JOIN komplen ON `order`.id_order = komplen.id_order JOIN user ON pelanggan.id_user = user.id WHERE pelanggan.id_user = $id_pel ORDER BY order.tgl DESC");
@@ -51,8 +51,13 @@ if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == " Super Admin") {
                         <?php
                         if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
                             if ($row['pembayaran'] == 3 || $row['pembayaran'] == 4) {
-                            } else {
+                                if ($row['pembayaran'] == 4) {
                         ?>
+                                    <span class="badge bg-success">Pesanan Diterima</span>
+                                <?php
+                                }
+                            } else if ($row['pembayaran'] != 5 && $row['pembayaran'] != 6) {
+                                ?>
                                 <a href="index.php?page=bayar&id_order=<?= $row['id_order'] ?>&email=<?= $row['email'] ?>" class="btn btn-success">Dikirim</a>
                                 <a href="index.php?page=hapus_history&id_order=<?= $row['id_order'] ?>" class="btn btn-danger">Hapus</a>
                             <?php

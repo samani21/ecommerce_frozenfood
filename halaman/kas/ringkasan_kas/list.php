@@ -23,7 +23,7 @@ FROM (
 GROUP BY 
     tanggal
 ORDER BY 
-    tanggal;");
+    tanggal desc;");
 ?>
 
 <div>

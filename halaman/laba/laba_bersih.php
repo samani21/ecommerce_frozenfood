@@ -37,7 +37,7 @@
     include "../../koneksi.php";
     $dari = $_GET['dari'];
     $sampai = $_GET['sampai'];
-    $query_p = mysqli_query($koneksi, "SELECT SUM(harga) as harga FROM `order` WHERE tgl BETWEEN '$dari' AND '$sampai' ");
+    $query_p = mysqli_query($koneksi, "SELECT SUM(jumlah*harga) as harga FROM `pesanan` WHERE tgl BETWEEN '$dari' AND '$sampai' and status =2 ");
     $row_p = mysqli_fetch_array($query_p);
 
     $query_h = mysqli_query($koneksi, "SELECT SUM(jual_beli.beli  * barang_masuk.jumlah) as keluar FROM `barang_masuk` JOIN barang ON barang.id_barang = barang_masuk.id_barang LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE tgl BETWEEN '$dari' AND '$sampai' ");
@@ -51,7 +51,7 @@
         </tr>
         <tr>
             <td>Pengeluaran</td>
-            <td align="left"><?= $hasil_rupiah = "Rp " . number_format(@$row_h['keluar'], 0, ',', '.') ?></td>
+            <td align="left"><?= @$hasil_rupiah = "Rp " . number_format(@$row_h['keluar'], 0, ',', '.') ?></td>
         </tr>
         <tr>
             <td>Total laba bersih</td>

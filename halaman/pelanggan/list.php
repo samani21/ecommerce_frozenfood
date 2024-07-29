@@ -28,6 +28,7 @@ $query = mysqli_query($koneksi, "SELECT * FROM pelanggan JOIN user ON user.id = 
                     <td>
                         <a href="index.php?page=edit_pelanggan&id=<?= $row['id_pelanggan'] ?>" class="btn btn-warning">Edit</a>
                         <a href="index.php?page=hapus_pelanggan&id=<?= $row['id_pelanggan'] ?>" class="btn btn-danger" onclick="return confirm('Apakah anda yakin ingin menghapus ini ?')">Hapus</a>
+                        <a href="index.php?page=blokir_pelanggan&id=<?= $row['id_user'] ?>" class="btn btn-dark" onclick="return confirm('Apakah anda yakin ingin menghapus ini ?')">Blokir</a>
                     </td>
                 </tr>
             <?php

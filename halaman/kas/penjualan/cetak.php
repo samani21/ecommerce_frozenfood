@@ -37,7 +37,7 @@
     include "../../../koneksi.php";
     $dari = $_GET['dari'];
     $sampai = $_GET['sampai'];
-    $query = mysqli_query($koneksi, "SELECT * FROM penjualan WHERE tanggal BETWEEN '$dari' AND '$sampai'");
+    $query = mysqli_query($koneksi, "SELECT SUM(total * harga) as jumlah, tgl as tanggal FROM `pesanan` WHERE tgl between '$dari' AND '$sampai'  GROUP BY tgl ORDER BY tgl desc");
     ?>
     <pre>
 periode tanggal <?= $dari ?> sampai <?= $sampai ?>

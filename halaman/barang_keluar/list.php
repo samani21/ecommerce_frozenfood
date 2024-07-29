@@ -7,15 +7,15 @@ $pa = $_GET['page'];
 @$sampai = $_GET['sampai'];
 if (empty($dari) && empty($sampai)) {
     if (empty($id_k)) {
-        $query = mysqli_query($koneksi, "SELECT * FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2");
+        $query = mysqli_query($koneksi, "SELECT barang.nm_barang,kategori.nm_kategori,pesanan.jumlah,pesanan.tgl,pesanan.harga,pesanan.total FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 ORDER BY pesanan.tgl desc");
     } else {
-        $query = mysqli_query($koneksi, "SELECT * FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 AND kategori.id_kategori = '$id_k'");
+        $query = mysqli_query($koneksi, "SELECT barang.nm_barang,kategori.nm_kategori,pesanan.jumlah,pesanan.tgl,pesanan.harga,pesanan.total FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 AND kategori.id_kategori = '$id_k' ORDER BY pesanan.tgl desc");
     }
 } else {
     if (empty($id_k)) {
-        $query = mysqli_query($koneksi, "SELECT * FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 AND tgl BETWEEN '$dari' AND '$sampai'");
+        $query = mysqli_query($koneksi, "SELECT barang.nm_barang,kategori.nm_kategori,pesanan.jumlah,pesanan.tgl,pesanan.harga,pesanan.total FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 AND tgl BETWEEN '$dari' AND '$sampai' ORDER BY pesanan.tgl desc");
     } else {
-        $query = mysqli_query($koneksi, "SELECT * FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 AND kategori.id_kategori = '$id_k' AND tgl BETWEEN '$dari' AND '$sampai'");
+        $query = mysqli_query($koneksi, "SELECT barang.nm_barang,kategori.nm_kategori,pesanan.jumlah,pesanan.tgl,pesanan.harga,pesanan.total FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 AND kategori.id_kategori = '$id_k' AND tgl BETWEEN '$dari' AND '$sampai' ORDER BY pesanan.tgl desc");
     }
 }
 $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
@@ -43,16 +43,16 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                                                 echo $row1['id_kategori'];
                                             }
                                             ?>, <?= $row1['nm_kategori'] ?>"><?php
-                                                        if ($row1['id_kategori'] < 10) {
-                                                            echo "000" . $row1['id_kategori'];
-                                                        } else if ($row1['id_kategori'] < 100) {
-                                                            echo "00" . $row1['id_kategori'];
-                                                        } else if ($row1['id_kategori'] < 1000) {
-                                                            echo "0" . $row1['id_kategori'];
-                                                        } else if ($row1['id_kategori'] < 10000) {
-                                                            echo $row1['id_kategori'];
-                                                        }
-                                                        ?>, <?= $row1['nm_kategori'] ?></option>
+                                                                                if ($row1['id_kategori'] < 10) {
+                                                                                    echo "000" . $row1['id_kategori'];
+                                                                                } else if ($row1['id_kategori'] < 100) {
+                                                                                    echo "00" . $row1['id_kategori'];
+                                                                                } else if ($row1['id_kategori'] < 1000) {
+                                                                                    echo "0" . $row1['id_kategori'];
+                                                                                } else if ($row1['id_kategori'] < 10000) {
+                                                                                    echo $row1['id_kategori'];
+                                                                                }
+                                                                                ?>, <?= $row1['nm_kategori'] ?></option>
                         <?php
                         }
                         ?>

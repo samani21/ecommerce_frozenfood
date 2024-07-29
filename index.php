@@ -313,7 +313,7 @@ if (empty($row['id_pelanggan'])) {
         <header id="header" class="header fixed-top d-flex align-items-center">
 
             <div class="d-flex align-items-center justify-content-between">
-                <a href="index.html" class="logo d-flex align-items-center">
+                <a href="index.php?page=dashboard" class="logo d-flex align-items-center">
                     <span class="d-none d-lg-block">BIKA FROZEN FOOD</span>
                 </a>
                 <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -379,7 +379,12 @@ if (empty($row['id_pelanggan'])) {
                             <?php
                             include "koneksi.php";
                             $id_user = $_SESSION['id'];
-                            $countNotif = mysqli_query($koneksi, "SELECT COUNT(pembayaran) as notfi_pembayaran FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.id_pelanggan JOIN user ON pelanggan.id_user = user.id WHERE pelanggan.id_user = $id_user AND pembayaran = 3");
+                            if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
+                                $countNotif = mysqli_query($koneksi, "SELECT COUNT(pembayaran) as notfi_pembayaran FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.id_pelanggan JOIN user ON pelanggan.id_user = user.id where pembayaran >1");
+                            } else {
+                                $countNotif = mysqli_query($koneksi, "SELECT COUNT(pembayaran) as notfi_pembayaran FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.id_pelanggan JOIN user ON pelanggan.id_user = user.id WHERE pelanggan.id_user = $id_user AND pembayaran >1");
+                            }
+
                             $cn = mysqli_fetch_assoc($countNotif);
                             ?>
                             <span class="badge bg-success badge-number"><?= $cn['notfi_pembayaran'] ?></span>
@@ -395,15 +400,56 @@ if (empty($row['id_pelanggan'])) {
                             </li>
                             <?php
                             include "koneksi.php";
-                            $queryNotif = mysqli_query($koneksi, "SELECT * FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.id_pelanggan JOIN user ON pelanggan.id_user = user.id WHERE pelanggan.id_user = $id_user AND pembayaran = 3");
+                            if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
+                                $queryNotif = mysqli_query($koneksi, "SELECT `order`.* FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.id_pelanggan JOIN user ON pelanggan.id_user = user.id ORDER BY `order`.tgl DESC, `order`.pembayaran DESC");
+                            } else {
+                                $queryNotif = mysqli_query($koneksi, "SELECT `order`.* FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.id_pelanggan JOIN user ON pelanggan.id_user = user.id WHERE pelanggan.id_user = $id_user ORDER BY `order`.tgl DESC, `order`.pembayaran DESC");
+                            }
                             while ($data = mysqli_fetch_array($queryNotif)) {
+                                // echo $data['pembayaran'];
                             ?>
-                                <li class="notification-item">
-                                    <i class="bi bi-x-circle text-danger"></i>
-                                    <a href="index.php?page=menu&id_order= <?= $data['id_order'] ?>">
-                                        <p class="text-dark">Pesanan anda tanggal <?= $data['tgl'] ?> dengan total <?= "Rp " . number_format($data['harga'], 0, ',', '.'); ?> Sedang dikirim</p>
-                                    </a>
-                                </li>
+                                <?php
+                                if ($data['pembayaran'] == 3) {
+                                ?>
+                                    <li class="notification-item">
+                                        <i class="bi bi-info-circle text-primary"></i>
+                                        <a href="index.php?page=menu&id_order= <?= $data['id_order'] ?>">
+                                            <p class="text-dark">Pesanan anda tanggal <?= $data['tgl'] ?> dengan total <?= "Rp " . number_format($data['harga'], 0, ',', '.'); ?> Sedang dikirim</p>
+                                        </a>
+                                    </li>
+                                <?php
+                                } else
+                                if ($data['pembayaran'] == 4) {
+                                ?>
+                                    <li class="notification-item">
+                                        <i class="bi bi-check-circle text-success"></i>
+                                        <a href="index.php?page=menu&id_order= <?= $data['id_order'] ?>">
+                                            <p class="text-dark">Pesanan anda tanggal <?= $data['tgl'] ?> dengan total <?= "Rp " . number_format($data['harga'], 0, ',', '.'); ?> Telah diterima</p>
+                                        </a>
+                                    </li>
+                                <?php
+                                } else
+                                if ($data['pembayaran'] == 5) {
+                                ?>
+                                    <li class="notification-item">
+                                        <i class="bi bi-x-circle text-danger"></i>
+                                        <a href="index.php?page=menu&id_order= <?= $data['id_order'] ?>">
+                                            <p class="text-dark">Pesanan pada tanggal <?= $data['tgl'] ?> dengan total <?= "Rp " . number_format($data['harga'], 0, ',', '.'); ?> ada rusak</p>
+                                        </a>
+                                    </li>
+                                <?php
+                                } else
+                                if ($data['pembayaran'] == 6) {
+                                ?>
+                                    <li class="notification-item">
+                                        <i class="bi bi-exclamation-circle text-warning"></i>
+                                        <a href="index.php?page=history">
+                                            <p class="text-dark">Pesanan anda tanggal <?= $data['tgl'] ?> dengan total <?= "Rp " . number_format($data['harga'], 0, ',', '.'); ?> Telah diganti</p>
+                                        </a>
+                                    </li>
+                                <?php
+                                }
+                                ?>
 
                                 <li>
                                     <hr class="dropdown-divider">
@@ -451,7 +497,7 @@ if (empty($row['id_pelanggan'])) {
                 <li class="nav-item">
                     <a class="nav-link <?php if ($hal != "dashboard") {
                                             echo "collapsed";
-                                        } ?>" href=" index.php?page=dashboard">
+                                        } ?>" href="index.php?page=dashboard">
                         <i class="bi bi-grid"></i>
                         <span>Dashboard</span>
                     </a>
@@ -707,6 +753,9 @@ if (empty($row['id_pelanggan'])) {
                         break;
                     case 'hapus_pelanggan':
                         include "halaman/pelanggan/hapus.php";
+                        break;
+                    case 'blokir_pelanggan':
+                        include "halaman/pelanggan/blokir.php";
                         break;
 
                         //barang

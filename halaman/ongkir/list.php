@@ -10,7 +10,8 @@ $query = mysqli_query($koneksi, "SELECT * FROM ongkir WHERE NOT id_ongkir =1");
         <thead>
             <tr>
                 <th>NO</th>
-                <th>Kota</th>
+                <th>Kecamatan</th>
+                <th>Kurir</th>
                 <th>Harga</th>
                 <th>Aksi</th>
             </tr>
@@ -23,6 +24,7 @@ $query = mysqli_query($koneksi, "SELECT * FROM ongkir WHERE NOT id_ongkir =1");
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $row['kota'] ?></td>
+                    <td><?= $row['kurir'] ?></td>
                     <td><?= $hasil_rupiah = "Rp " . number_format($row['harga'], 0, ',', '.') ?></td>
                     <td>
                         <a href="index.php?page=edit_ongkir&id=<?= $row['id_ongkir'] ?>" class="btn btn-warning">Edit</a>

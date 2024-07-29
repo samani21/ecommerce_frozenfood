@@ -45,7 +45,7 @@
         $query = mysqli_query($koneksi, "SELECT pesanan.*, barang.*, kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k' AND pesanan.tgl BETWEEN '$dari' AND '$sampai'");
     }
 
-    $query_to = mysqli_query($koneksi, "SELECT   SUM(total*harga) as total FROM pesanan");
+    $query_to = mysqli_query($koneksi, "SELECT SUM(total*harga) as total FROM pesanan WHERE tgl BETWEEN '$dari' AND '$sampai'");
     $row_to = mysqli_fetch_array($query_to);
     ?>
     <table border="1" style="width:100%; border-collapse: collapse;">

@@ -186,7 +186,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 </div>
                 <?php
                 $pesan = mysqli_query($koneksi, "SELECT pesanan.jumlah as total_p ,pesanan.*,barang.id_barang,barang.nm_barang,barang.foto,jual_beli.jual as harga,kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE pesanan.id_order = '$order'");
-                $total = mysqli_query($koneksi, "SELECT order.foto as foto_pembayaran,SUM(pesanan.jumlah*pesanan.harga) as subtotal, `order`.harga as harga_total,`order`.id_ongkir as ongkir, ongkir.harga as harga_ongkir,ongkir.kota as kota,`order`.alamat,`order`.pembayaran FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` JOIN ongkir ON ongkir.id_ongkir = `order`.id_ongkir WHERE `order`.`id_order`= '$order'");
+                $total = mysqli_query($koneksi, "SELECT order.foto as foto_pembayaran,SUM(pesanan.jumlah*pesanan.harga) as subtotal, `order`.harga as harga_total,`order`.id_ongkir as ongkir, ongkir.harga as harga_ongkir,ongkir.kota as kota,`order`.alamat,`order`.pembayaran,ongkir.kurir FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` JOIN ongkir ON ongkir.id_ongkir = `order`.id_ongkir WHERE `order`.`id_order`= '$order'");
                 $subtotal = mysqli_fetch_array($total);
 
                 $total_kes = mysqli_query($koneksi, "SELECT SUM(jumlah*harga) as totl FROM `pesanan` WHERE id_order = '$order'");
@@ -267,24 +267,16 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                             <select class="form-control col-md-12" name="id_ongkir" required>
                                 <option value="">--Pilih Lokasi Alamat Anda!</option>
                                 <?php
+                                $id_p = $_SESSION['id'];
+                                $queryPelanggan = mysqli_query($koneksi, "SELECT * FROM pelanggan WHERE id_user=$id_p");
+                                $row_p = mysqli_fetch_assoc($queryPelanggan);
                                 $query = mysqli_query($koneksi, "SELECT * FROM ongkir WHERE NOT id_ongkir = 1");
                                 while ($r_ongkir = mysqli_fetch_array($query)) {
+                                    if ($row_p['kecamatan'] == $r_ongkir['kota']) {
                                 ?>
-                                    <option value="<?= $r_ongkir['id_ongkir'] ?>"><?= $r_ongkir['kota'] ?>,<?= $hasil_rupiah = "Rp " . number_format($r_ongkir['harga'], 0, ',', '.') ?></option>
+                                        <option value="<?= $r_ongkir['id_ongkir'] ?>"><?= $r_ongkir['kota'] ?> (<?= $r_ongkir['kurir'] ?>),<?= $hasil_rupiah = "Rp " . number_format($r_ongkir['harga'], 0, ',', '.') ?></option>
                                 <?php
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="col-4">
-                            <select class="form-control col-md-12" name="id_kurir" required>
-                                <option value="">-- Silahkan Pilih Kurir</option>
-                                <?php
-                                $query = mysqli_query($koneksi, "SELECT * FROM kurir");
-                                while ($r_kurir = mysqli_fetch_array($query)) {
-                                ?>
-                                    <option value="<?= $r_kurir['id'] ?>"><?= $r_kurir['kurir'] ?></option>
-                                <?php
+                                    }
                                 }
                                 ?>
                             </select>
@@ -341,6 +333,14 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                     <?php
                     }
                     ?>
+                    <div class="row">
+                        <div class="col-6">
+                            <b>BNI (123456)</b>
+                        </div>
+                        <div class="col-6">
+                            <b>BRI (989798)</b>
+                        </div>
+                    </div>
                     <form action="" method="post" enctype="multipart/form-data">
                         <div>
                             <label for="">Bukti pembayaran</label>
@@ -363,12 +363,14 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 if ($subtotal['harga_total'] == 0) {
                     if ($subtotal['ongkir'] == 1) {
                     } else {
-
+                        $id_p = $_SESSION['id'];
+                        $queryPelanggan1 = mysqli_query($koneksi, "SELECT * FROM pelanggan WHERE id_user=$id_p");
+                        $row_p1 = mysqli_fetch_assoc($queryPelanggan1);
                 ?>
                         <form method="post">
                             <div>
                                 <label> Alamat</label>
-                                <input class="form-control" name="alamat" required>
+                                <input class="form-control" value="<?= $row_p1['alamat'] ?>" name="alamat" required>
                             </div>
                             <div>
                                 <label> Pembayaran</label>
@@ -384,7 +386,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                     <?php
                     }
                 } else {
-                    if ($subtotal['pembayaran'] == 4) {
+                    if ($subtotal['pembayaran'] == 4 || $subtotal['pembayaran'] == 5) {
                         $queryKomplen = mysqli_query($koneksi, "SELECT * FROM `komplen` WHERE id_order = $order");
                         $rk = mysqli_fetch_assoc($queryKomplen);
                     ?>
@@ -396,6 +398,22 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                                 <label for="">Deskripsi</label>
                                 <textarea class="form-control" required name="deskripsi_komplen" id=""><?= @$rk['deskripsi'] ?></textarea>
                             </div>
+                            <?php
+                            if (isset($rk['bukti'])) {
+
+                                if (substr($rk['bukti'], -3) == "mp4") {
+                            ?>
+                                    <video width="200" height="200" controls>
+                                        <source src="http://localhost/bikafrozen/file/<?= $rk['bukti'] ?>" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                <?php
+                                } else {
+                                ?>
+                                    <img src="http://localhost/bikafrozen/file/<?= $rk['bukti'] ?>" width="100" height="100" alt="">
+                            <?php
+                                }
+                            } ?>
                             <div>
                                 <label for="">Foto / Video</label>
                                 <input type="file" name="bukti" class="form-control">
@@ -447,8 +465,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
 
         if (isset($_POST['ongkir'])) {
             $id_ongkir = substr($_POST['id_ongkir'], 0, 4);
-            $id_kurir = $_POST['id_kurir'];
-            mysqli_query($koneksi, "UPDATE `order` SET id_ongkir = '$id_ongkir',id_kurir = '$id_kurir' WHERE id_order = '$order'") or die(mysqli_error($koneksi));
+            mysqli_query($koneksi, "UPDATE `order` SET id_ongkir = '$id_ongkir' WHERE id_order = '$order'") or die(mysqli_error($koneksi));
         ?>
             <script>
                 window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
@@ -472,6 +489,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 $deskripsi_komplen = $_POST['deskripsi_komplen'];
                 if (empty($nama)) {
                     mysqli_query($koneksi, "UPDATE komplen SET tanggal='$tanggal_komplen',deskripsi='$deskripsi_komplen' WHERE id_order ='$order'") or die(mysqli_error($koneksi));
+                    mysqli_query($koneksi, "UPDATE `order` SET pembayaran= 5 WHERE id_order ='$order'") or die(mysqli_error($koneksi));
             ?>
                     <script>
                         swal({
@@ -491,6 +509,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                         if ($ukuran < 104407000) {
                             move_uploaded_file($file_tmp, 'file/' . $nama_c);
                             mysqli_query($koneksi, "UPDATE komplen SET tanggal='$tanggal_komplen',deskripsi='$deskripsi_komplen',bukti='$nama_c' WHERE id_order ='$order'") or die(mysqli_error($koneksi));
+                            mysqli_query($koneksi, "UPDATE `order` SET pembayaran= 5 WHERE id_order ='$order'") or die(mysqli_error($koneksi));
                     ?>
                             <script>
                                 swal({

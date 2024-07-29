@@ -1,7 +1,7 @@
 <?php
 include "././koneksi.php";
 $id = $_GET['id'];
-mysqli_query($koneksi, "UPDATE penjualan SET acc=1 WHERE id_penjualan = '$id'");
+mysqli_query($koneksi, "UPDATE transaksi_harian SET acc=1 WHERE id_penjualan = '$id'");
 
 ?>
 <script>
