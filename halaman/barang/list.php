@@ -4,9 +4,9 @@ $pa = $_GET['page'];
 @$id_k = substr($_GET['id_kategori'], 0, 4);
 @$kategori = $_GET['id_kategori'];
 if (empty($id_k)) {
-    $query = mysqli_query($koneksi, "SELECT * FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori");
+    $query = mysqli_query($koneksi, "SELECT barang.nm_barang,barang.id_barang,kategori.nm_kategori,barang.merek,barang.jumlah,jual_beli.jual,jual_beli.beli FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori left JOIN jual_beli ON jual_beli.id_barang = barang.id_barang");
 } else {
-    $query = mysqli_query($koneksi, "SELECT * FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k'");
+    $query = mysqli_query($koneksi, "SELECT barang.nm_barang,barang.id_barang,kategori.nm_kategori,barang.merek,barang.jumlah,jual_beli.jual,jual_beli.beli FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori left JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.id_kategori = '$id_k'");
 }
 $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
 ?>
@@ -35,16 +35,16 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                                                 echo $row1['id_kategori'];
                                             }
                                             ?>, <?= $row1['nm_kategori'] ?>"><?php
-                                                        if ($row1['id_kategori'] < 10) {
-                                                            echo "000" . $row1['id_kategori'];
-                                                        } else if ($row1['id_kategori'] < 100) {
-                                                            echo "00" . $row1['id_kategori'];
-                                                        } else if ($row1['id_kategori'] < 1000) {
-                                                            echo "0" . $row1['id_kategori'];
-                                                        } else if ($row1['id_kategori'] < 10000) {
-                                                            echo $row1['id_kategori'];
-                                                        }
-                                                        ?>, <?= $row1['nm_kategori'] ?></option>
+                                                                                if ($row1['id_kategori'] < 10) {
+                                                                                    echo "000" . $row1['id_kategori'];
+                                                                                } else if ($row1['id_kategori'] < 100) {
+                                                                                    echo "00" . $row1['id_kategori'];
+                                                                                } else if ($row1['id_kategori'] < 1000) {
+                                                                                    echo "0" . $row1['id_kategori'];
+                                                                                } else if ($row1['id_kategori'] < 10000) {
+                                                                                    echo $row1['id_kategori'];
+                                                                                }
+                                                                                ?>, <?= $row1['nm_kategori'] ?></option>
                         <?php
                         }
                         ?>
@@ -65,8 +65,10 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 <th>NO</th>
                 <th>Nama barang</th>
                 <th>Kategori</th>
+                <th>Merek</th>
                 <th>Jumlah</th>
-                <th>Harga</th>
+                <th>Harga Beli</th>
+                <th>Harga Jual</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -79,8 +81,10 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                     <td><?= $no++ ?></td>
                     <td><?= $row['nm_barang'] ?></td>
                     <td><?= $row['nm_kategori'] ?></td>
+                    <td><?= $row['merek'] ?></td>
                     <td><?= $row['jumlah'] ?></td>
-                    <td><?= $hasil_rupiah = "Rp " . number_format($row['harga'], 0, ',', '.') ?></td>
+                    <td><?= @$hasil_rupiah = "Rp " . number_format($row['beli'], 0, ',', '.') ?></td>
+                    <td><?= @$hasil_rupiah = "Rp " . number_format($row['jual'], 0, ',', '.') ?></td>
                     <td>
                         <a href="index.php?page=tambah_barang_masuk&id=<?= $row['id_barang'] ?>" class="btn btn-success">Restok</a>
                         <a href="index.php?page=tambah_barang_rusak&id=<?= $row['id_barang'] ?>" class="btn btn-danger">Rusak</a>

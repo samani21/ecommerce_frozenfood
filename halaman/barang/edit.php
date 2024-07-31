@@ -66,15 +66,15 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
             </select>
         </div>
         <div>
+            <label for="">Merek</label>
+            <input type="text" name="merek" value="<?= $row['merek'] ?>" class="form-control" required>
+        </div>
+        <div>
             <label for="">Jumlah</label>
             <input type="text" name="jumlah" value="<?= $row['jumlah'] ?>" class="form-control" required>
         </div>
         <div>
-            <label for="">Harga</label>
-            <input type="text" name="harga" id="rupiah" value="<?= $hasil_rupiah = "Rp " . number_format($row['harga'], 0, ',', '.') ?>" class="form-control" required autofocus>
-        </div>
-        <div>
-            <label for="">Foto</label>
+            <label for="">Foto (kosongkan jika tidak ingin ganti foto)</label>
             <input type="file" name="foto" class="form-control">
         </div>
         <br>
@@ -94,14 +94,14 @@ if (isset($_POST['simpan'])) {
     $ekstensi = strtolower(end($x));
     $ukuran    = $_FILES['foto']['size'];
     $nama_c = date('hisdmy') . $nama;
-    $harga = preg_replace('/[Rp. ]/', '', $_POST['harga']);
     $file_tmp = $_FILES['foto']['tmp_name'];
     $nm_barang = $_POST['nm_barang'];
     $id_kategori = substr($_POST['id_kategori'], 0, 4);
     $jumlah = $_POST['jumlah'];
+    $merek = $_POST['merek'];
 
     if (empty($nama)) {
-        mysqli_query($koneksi, "UPDATE barang SET id_kategori='$id_kategori',nm_barang='$nm_barang',jumlah='$jumlah',harga='$harga' WHERE id_barang ='$id'") or die(mysqli_error($koneksi));
+        mysqli_query($koneksi, "UPDATE barang SET id_kategori='$id_kategori',nm_barang='$nm_barang',jumlah='$jumlah',merek='$merek' WHERE id_barang ='$id'") or die(mysqli_error($koneksi));
 ?>
         <script>
             swal({
@@ -120,7 +120,7 @@ if (isset($_POST['simpan'])) {
         if (in_array($ekstensi, $ekstensi_diperbolehkan) === true) {
             if ($ukuran < 1044070) {
                 move_uploaded_file($file_tmp, 'file/' . $nama_c);
-                mysqli_query($koneksi, "UPDATE barang SET id_kategori='$id_kategori',nm_barang='$nm_barang',jumlah='$jumlah',foto='$nama_c',harga=10000 WHERE id_barang ='$id'") or die(mysqli_error($koneksi));
+                mysqli_query($koneksi, "UPDATE barang SET id_kategori='$id_kategori',nm_barang='$nm_barang',jumlah='$jumlah',foto='$nama_c',merek='$merek' WHERE id_barang ='$id'") or die(mysqli_error($koneksi));
         ?>
                 <script>
                     swal({
