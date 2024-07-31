@@ -39,7 +39,7 @@ if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
                         <?php
                         } else if ($row['deskripsi'] && $row['status_retur'] == 2) {
                         ?>
-                            <span class="badge bg-success">Uang kembali</span>
+                            <span class="badge bg-success">Barang baru diterima</span>
                         <?php
                         }
                         ?>
@@ -51,7 +51,7 @@ if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
                                     <span class="badge bg-success">Pesanan Diterima</span>
                                 <?php
                                 }
-                            } else if ($row['pembayaran'] != 5 && $row['pembayaran'] != 6) {
+                            } else if ($row['pembayaran'] == 2) {
                                 ?>
                                 <a href="index.php?page=bayar&id_order=<?= $row['id_order'] ?>&email=<?= $row['email'] ?>" class="btn btn-success">Dikirim</a>
                                 <a href="index.php?page=hapus_history&id_order=<?= $row['id_order'] ?>" class="btn btn-danger">Hapus</a>

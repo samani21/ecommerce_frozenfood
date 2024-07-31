@@ -1,7 +1,7 @@
 <?php
 include "././koneksi.php";
 $id = $_GET['id'];
-$query = mysqli_query($koneksi, "UPDATE user SET is_verified =2 WHERE id = '$id'");
+$query = mysqli_query($koneksi, "UPDATE user SET is_verified =1 WHERE id = '$id'");
 if ($_SESSION['level'] == "Super Admin") {
 ?>
   <script>

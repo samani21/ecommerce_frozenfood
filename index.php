@@ -444,7 +444,17 @@ if (empty($row['id_pelanggan'])) {
                                     <li class="notification-item">
                                         <i class="bi bi-exclamation-circle text-warning"></i>
                                         <a href="index.php?page=history">
-                                            <p class="text-dark">Pesanan anda tanggal <?= $data['tgl'] ?> dengan total <?= "Rp " . number_format($data['harga'], 0, ',', '.'); ?> Telah diganti</p>
+                                            <p class="text-dark">Pesanan anda tanggal <?= $data['tgl'] ?> yuang rusak Telah diganti dan sedang dikirim</p>
+                                        </a>
+                                    </li>
+                                <?php
+                                } else
+                                if ($data['pembayaran'] == 7) {
+                                ?>
+                                    <li class="notification-item">
+                                        <i class="bi bi-check-circle text-success"></i>
+                                        <a href="index.php?page=history">
+                                            <p class="text-dark">Barang pengganti pada pembelian tanggal <?= $data['tgl'] ?> dengan total <?= "Rp " . number_format($data['harga'], 0, ',', '.'); ?> Telah diterima</p>
                                         </a>
                                     </li>
                                 <?php
@@ -524,11 +534,17 @@ if (empty($row['id_pelanggan'])) {
                             <i class="bi bi-menu-button-wide"></i><span>Master</span><i class="bi bi-chevron-down ms-auto"></i>
                         </a>
                         <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                            <li>
-                                <a <?php if ($hal == "user" || $hal == "tambah_user" || $hal == "edit_user") { ?>class="active" <?php } ?> href="index.php?page=user">
-                                    <i class="bi bi-circle"></i><span>User</span>
-                                </a>
-                            </li>
+                            <?php
+                            if ($_SESSION['level'] == "Super Admin") {
+                            ?>
+                                <li>
+                                    <a <?php if ($hal == "user" || $hal == "tambah_user" || $hal == "edit_user") { ?>class="active" <?php } ?> href="index.php?page=user">
+                                        <i class="bi bi-circle"></i><span>User</span>
+                                    </a>
+                                </li>
+                            <?php
+                            }
+                            ?>
                             <li>
                                 <a <?php if ($hal == "kategori" || $hal == "tambah_kategori" || $hal == "edit_kategori") { ?>class="active" <?php } ?> href="index.php?page=kategori">
                                     <i class="bi bi-circle"></i><span>Kategori</span>
@@ -597,23 +613,8 @@ if (empty($row['id_pelanggan'])) {
                                 </a>
                             </li>
                             <li>
-                                <a <?php if ($hal == "kewajiban" || $hal == "tambah_kewajiban" || $hal == "edit_kewajiban") { ?>class="active" <?php } ?> href="index.php?page=kewajiban">
-                                    <i class="bi bi-circle"></i><span>Kewajiban</span>
-                                </a>
-                            </li>
-                            <li>
                                 <a <?php if ($hal == "piutang" || $hal == "tambah_piutang" || $hal == "edit_piutang") { ?>class="active" <?php } ?> href="index.php?page=piutang">
                                     <i class="bi bi-circle"></i><span>Piutang</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a <?php if ($hal == "gaji" || $hal == "tambah_gaji" || $hal == "edit_gaji") { ?>class="active" <?php } ?> href="index.php?page=gaji">
-                                    <i class="bi bi-circle"></i><span>Gaji</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a <?php if ($hal == "transaksi_lainnya" || $hal == "tambah_transaksi_lainnya" || $hal == "edit_transaksi_lainnya") { ?>class="active" <?php } ?> href="index.php?page=transaksi_lainnya">
-                                    <i class="bi bi-circle"></i><span>Transaksi Lainnya</span>
                                 </a>
                             </li>
                         </ul>
@@ -795,6 +796,9 @@ if (empty($row['id_pelanggan'])) {
                         break;
                     case 'blokir_pelanggan':
                         include "halaman/pelanggan/blokir.php";
+                        break;
+                    case 'unblok_pelanggan':
+                        include "halaman/pelanggan/unblok.php";
                         break;
 
                         //barang

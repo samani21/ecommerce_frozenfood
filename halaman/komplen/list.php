@@ -38,15 +38,15 @@ if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
                         if ($row['status_retur'] == 0 && $_SESSION['level'] == "Admin" || $row['status_retur'] == 0 && $_SESSION['level'] == "Super Admin") {
                         ?>
                             <a href="index.php?page=retur&id_order=<?= $row['id_order'] ?>&status=1" class="btn btn-primary">Retur Barang</a>
-                            <a href="index.php?page=retur&id_order=<?= $row['id_order'] ?>&status=2" class="btn btn-primary">Retur Uang</a>
                         <?php
                         } else if ($row['status_retur'] == 1) {
                         ?>
-                            <span class="badge bg-primary">Diganti Barang</span>
+                            <span class="badge bg-primary">Barang diganti dan sedang dikirim</span>
+                            <a href="index.php?page=retur&id_order=<?= $row['id_order'] ?>&status=2" class="btn btn-success">Terima Barang</a>
                         <?php
                         } else if ($row['status_retur'] == 2) {
                         ?>
-                            <span class="badge bg-success">Uang kembali</span>
+                            <span class="badge bg-success">Barang baru diterima</span>
                         <?php
                         }
                         ?>

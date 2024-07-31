@@ -388,17 +388,29 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                         }
                     }
                 } else {
-                    if ($subtotal['pembayaran'] == 4 || $subtotal['pembayaran'] == 5) {
+                    if ($subtotal['pembayaran'] >= 4) {
                         $queryKomplen = mysqli_query($koneksi, "SELECT * FROM `komplen` WHERE id_order = $order");
                         $rk = mysqli_fetch_assoc($queryKomplen);
                         ?>
+                        <h5>Barang rusak</h5>
                         <form action="" method="post" enctype="multipart/form-data">
                             <div>
                                 <input type="hidden" value="<?= date('Y-m-d') ?>" name="tanggal_komplen" class="form-control" required>
                             </div>
                             <div>
                                 <label for="">Deskripsi</label>
-                                <textarea class="form-control" required name="deskripsi_komplen" id=""><?= @$rk['deskripsi'] ?></textarea>
+                                <?php
+                                if ($subtotal['pembayaran'] >= 6) {
+                                ?>
+                                    <textarea class="form-control" required name="deskripsi_komplen" id="" readonly><?= @$rk['deskripsi'] ?></textarea>
+                                    <br>
+                                <?php
+                                } else {
+                                ?>
+                                    <textarea class="form-control" required name="deskripsi_komplen" id=""><?= @$rk['deskripsi'] ?></textarea>
+                                <?php
+                                }
+                                ?>
                             </div>
                             <?php
                             if (isset($rk['bukti'])) {
@@ -416,15 +428,23 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                             <?php
                                 }
                             } ?>
-                            <div>
-                                <label for="">Foto / Video</label>
-                                <input type="file" name="bukti" class="form-control">
-                            </div>
-                            <br>
-                            <div>
-                                <button type="submit" name="komplen" class="btn btn-primary">Komplen</button>
-                            </div>
+                            <?php
+                            if ($subtotal['pembayaran'] >= 6) {
+                            } else {
+                            ?>
+                                <div>
+                                    <label for="">Foto / Video</label>
+                                    <input type="file" name="bukti" class="form-control">
+                                </div>
+                                <br>
+                                <div>
+                                    <button type="submit" name="komplen" class="btn btn-primary">Komplen</button>
+                                </div>
+                            <?php
+                            }
+                            ?>
                         </form>
+                        <br>
                         <a href="halaman/menu/cetak.php?id_order=<?= $order ?>" class="btn btn-success col-md-12">Cetak</a>
                 <?php
                     }
