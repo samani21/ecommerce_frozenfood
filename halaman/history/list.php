@@ -33,12 +33,7 @@ if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
                     <td>
                         <a href="index.php?page=menu&id_order=<?= $row['id_order'] ?>" class="btn btn-warning">Cek</a>
                         <?php
-                        if ($row['deskripsi'] && $row['status_retur'] == 0 && $_SESSION['level'] == "Admin" || $row['deskripsi'] && $row['status_retur'] == 0 && $_SESSION['level'] == "Super Admin") {
-                        ?>
-                            <a href="index.php?page=retur&id_order=<?= $row['id_order'] ?>&status=1" class="btn btn-primary">Retur Barang</a>
-                            <a href="index.php?page=retur&id_order=<?= $row['id_order'] ?>&status=2" class="btn btn-primary">Retur Uang</a>
-                        <?php
-                        } else if ($row['deskripsi'] && $row['status_retur'] == 1) {
+                        if ($row['deskripsi'] && $row['status_retur'] == 1) {
                         ?>
                             <span class="badge bg-primary">Diganti Barang</span>
                         <?php

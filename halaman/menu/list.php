@@ -186,7 +186,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 </div>
                 <?php
                 $pesan = mysqli_query($koneksi, "SELECT pesanan.jumlah as total_p ,pesanan.*,barang.id_barang,barang.nm_barang,barang.foto,jual_beli.jual as harga,kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE pesanan.id_order = '$order'");
-                $total = mysqli_query($koneksi, "SELECT order.foto as foto_pembayaran,SUM(pesanan.jumlah*pesanan.harga) as subtotal, `order`.harga as harga_total,`order`.id_ongkir as ongkir, ongkir.harga as harga_ongkir,ongkir.kota as kota,`order`.alamat,`order`.pembayaran,ongkir.kurir FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` JOIN ongkir ON ongkir.id_ongkir = `order`.id_ongkir WHERE `order`.`id_order`= '$order'");
+                $total = mysqli_query($koneksi, "SELECT order.foto as foto_pembayaran,SUM(pesanan.jumlah*pesanan.harga) as subtotal,`order`.jenis_pembayaran, `order`.harga as harga_total,`order`.id_ongkir as ongkir, ongkir.harga as harga_ongkir,ongkir.kota as kota,`order`.alamat,`order`.pembayaran,ongkir.kurir FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` JOIN ongkir ON ongkir.id_ongkir = `order`.id_ongkir WHERE `order`.`id_order`= '$order'");
                 $subtotal = mysqli_fetch_array($total);
 
                 $total_kes = mysqli_query($koneksi, "SELECT SUM(jumlah*harga) as totl FROM `pesanan` WHERE id_order = '$order'");
@@ -238,7 +238,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
 
                         mysqli_query($koneksi, "UPDATE pesanan SET status =2,total='$total_p' WHERE id_pesanan = '$id_pesanan'") or die(mysqli_error($koneksi));
 
-                        mysqli_query($koneksi, "UPDATE `order` SET harga = '$harga_total',alamat = '$alamat',pembayaran = '$pembayaran' WHERE id_order = '$id_order'") or die(mysqli_error($koneksi));
+                        mysqli_query($koneksi, "UPDATE `order` SET harga = '$harga_total',alamat = '$alamat',pembayaran = 2 ,jenis_pembayaran='$pembayaran' WHERE id_order = '$id_order'") or die(mysqli_error($koneksi));
                     ?>
                         <script>
                             window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
@@ -312,45 +312,45 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                     <div class="row">
                         <div class="col-12">
                             <h5>Pembayaran : <?php
-                                                if ($subtotal['pembayaran'] == 1) {
+                                                if ($subtotal['jenis_pembayaran'] == 1) {
                                                     echo "Transfer";
-                                                } else if ($subtotal['pembayaran'] == 2) {
+                                                } else if ($subtotal['jenis_pembayaran'] == 2) {
                                                     echo "COD";
                                                 }
-                                                ?>(<?php
-                                                    if ($subtotal['pembayaran'] == 3) {
-                                                        echo "Dibayar";
-                                                    } else {
-                                                        echo "Belum Bayar";
-                                                    }
-                                                    ?>)</h5>
+                                                ?></h5>
                         </div>
                     </div>
                     <?php
-                    if (isset($subtotal['foto_pembayaran'])) {
+                    if ($subtotal['jenis_pembayaran'] == 1) {
                     ?>
-                        <img src="././file/<?= $subtotal['foto_pembayaran'] ?>" width="300" height="300" alt="">
+                        <?php
+                        if (isset($subtotal['foto_pembayaran'])) {
+                        ?>
+                            <img src="././file/<?= $subtotal['foto_pembayaran'] ?>" width="300" height="300" alt="">
+                        <?php
+                        }
+                        ?>
+                        <div class="row">
+                            <div class="col-6">
+                                <b>BNI (123456)</b>
+                            </div>
+                            <div class="col-6">
+                                <b>BRI (989798)</b>
+                            </div>
+                        </div>
+                        <form action="" method="post" enctype="multipart/form-data">
+                            <div>
+                                <label for="">Bukti pembayaran</label>
+                                <input type="file" name="foto_pembayaran" class="form-control">
+                            </div>
+                            <br>
+                            <div>
+                                <button type="submit" name="foto_pembayaran" class="btn btn-primary">kirim</button>
+                            </div>
+                        </form>
                     <?php
                     }
                     ?>
-                    <div class="row">
-                        <div class="col-6">
-                            <b>BNI (123456)</b>
-                        </div>
-                        <div class="col-6">
-                            <b>BRI (989798)</b>
-                        </div>
-                    </div>
-                    <form action="" method="post" enctype="multipart/form-data">
-                        <div>
-                            <label for="">Bukti pembayaran</label>
-                            <input type="file" name="foto_pembayaran" class="form-control">
-                        </div>
-                        <br>
-                        <div>
-                            <button type="submit" name="foto_pembayaran" class="btn btn-primary">kirim</button>
-                        </div>
-                    </form>
                 <?php
                 }
                 ?>
@@ -363,33 +363,35 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 if ($subtotal['harga_total'] == 0) {
                     if ($subtotal['ongkir'] == 1) {
                     } else {
-                        $id_p = $_SESSION['id'];
-                        $queryPelanggan1 = mysqli_query($koneksi, "SELECT * FROM pelanggan WHERE id_user=$id_p");
-                        $row_p1 = mysqli_fetch_assoc($queryPelanggan1);
+                        if ($subtotal['ongkir'] > 0) {
+                            $id_p = $_SESSION['id'];
+                            $queryPelanggan1 = mysqli_query($koneksi, "SELECT * FROM pelanggan WHERE id_user=$id_p");
+                            $row_p1 = mysqli_fetch_assoc($queryPelanggan1);
                 ?>
-                        <form method="post">
-                            <div>
-                                <label> Alamat</label>
-                                <input class="form-control" value="<?= $row_p1['alamat'] ?>" name="alamat" required>
-                            </div>
-                            <div>
-                                <label> Pembayaran</label>
-                                <select class="form-control" name="pembayaran" required>
-                                    <option value="">--Pilih pembayaran</option>
-                                    <option value="1">Transfer</option>
-                                    <option value="2">COD</option>
-                                </select>
-                            </div>
-                            <br>
-                            <button class="btn btn-primary col-md-12" type="submit" name="bayar">Bayar</button>
-                        </form>
-                    <?php
+                            <form method="post">
+                                <div>
+                                    <label> Alamat</label>
+                                    <input class="form-control" value="<?= $row_p1['alamat'] ?>" name="alamat" required>
+                                </div>
+                                <div>
+                                    <label> Pembayaran</label>
+                                    <select class="form-control" name="pembayaran" required>
+                                        <option value="">--Pilih pembayaran</option>
+                                        <option value="1">Transfer</option>
+                                        <option value="2">COD</option>
+                                    </select>
+                                </div>
+                                <br>
+                                <button class="btn btn-primary col-md-12" type="submit" name="bayar">Bayar</button>
+                            </form>
+                        <?php
+                        }
                     }
                 } else {
                     if ($subtotal['pembayaran'] == 4 || $subtotal['pembayaran'] == 5) {
                         $queryKomplen = mysqli_query($koneksi, "SELECT * FROM `komplen` WHERE id_order = $order");
                         $rk = mysqli_fetch_assoc($queryKomplen);
-                    ?>
+                        ?>
                         <form action="" method="post" enctype="multipart/form-data">
                             <div>
                                 <input type="hidden" value="<?= date('Y-m-d') ?>" name="tanggal_komplen" class="form-control" required>
@@ -543,7 +545,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 if (in_array($ekstensi, $ekstensi_diperbolehkan) === true) {
                     if ($ukuran < 104407000) {
                         move_uploaded_file($file_tmp, 'file/' . $nama_c);
-
+                        mysqli_query($koneksi, "UPDATE `order` SET pembayaran= 5 WHERE id_order ='$order'") or die(mysqli_error($koneksi));
                         mysqli_query($koneksi, "INSERT INTO komplen VALUES(null,'$order','$tanggal_komplen','$deskripsi_komplen','$nama_c',0)");
                         ?>
                         <script>

@@ -1,6 +1,6 @@
 <?php
 include "././koneksi.php";
-if ($_SESSION['level'] == "Pelanggan" ||$_SESSION['level'] == "Super Admin") {
+if ($_SESSION['level'] == "Pelanggan" || $_SESSION['level'] == "Super Admin" || $_SESSION['level'] == "Admin") {
     $id = $_GET['id'];
     $query = mysqli_query($koneksi, "SELECT * FROM pelanggan WHERE id_user = '$id'");
     $row = mysqli_fetch_assoc($query);
@@ -45,6 +45,10 @@ if ($_SESSION['level'] == "Pelanggan" ||$_SESSION['level'] == "Super Admin") {
             <label for="">No Hp</label>
             <input type="text" name="no_hp" value="<?= $row['no_hp'] ?>" class="form-control" required>
         </div>
+        <div>
+            <label for="">Password (kosongi jika tidak ganti password)</label>
+            <input type="password" name="password" class="form-control">
+        </div>
         <br>
         <div>
             <button type="submit" name="simpan" class="btn btn-primary">Simpan</button>
@@ -65,8 +69,12 @@ if (isset($_POST['simpan'])) {
     $alamat = $_POST['alamat'];
     $no_hp = $_POST['no_hp'];
     $id_pelanggan = $_POST['id_pelanggan'];
+    $password = md5($_POST['password']);
 
     mysqli_query($koneksi, "UPDATE pelanggan SET nama = '$nama',tempat = '$tempat',tgl = '$tgl',alamat = '$alamat',no_hp = '$no_hp',provinsi = '$provinsi',kecamatan = '$kecamatan',kelurahan = '$kelurahan' WHERE id_pelanggan = '$id_pelanggan'");
+    if (!$_POST['password'] == "") {
+        mysqli_query($koneksi, "UPDATE user SET password='$password' WHERE id = '$id'");
+    }
 ?>
     <script>
         swal({

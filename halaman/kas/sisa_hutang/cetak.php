@@ -31,13 +31,13 @@
         </tr>
     </table>
     <hr>
-    <h3 align="center">KAS PENJUALAN</h3>
+    <h3 align="center">RINGKASAN KAS</h3>
     <hr>
     <?php
     include "../../../koneksi.php";
     $dari = $_GET['dari'];
     $sampai = $_GET['sampai'];
-    $query = mysqli_query($koneksi, "SELECT * FROM `piutang` WHERE jumlah IS NOT NULL AND tanggal BETWEEN '$dari' AND '$sampai' ORDER BY tanggal DESC ");
+    $query = mysqli_query($koneksi, "SELECT supplier.nm_supplier,hutang.deskripsi,hutang.tanggal,hutang.id_hutang,hutang.id_hutang, jumlah_hutang,SUM(piutang.jumlah), jumlah_hutang- SUM(CASE WHEN piutang.status = 'Sudah dibayar' THEN jumlah ELSE 0 END) as sisa_hutang FROM `hutang` left JOIN piutang ON piutang.id_hutang = hutang.id_hutang JOIN supplier ON supplier.id_supplier = hutang.id_supplier GROUP BY hutang.id_hutang");
     ?>
     <pre>
 periode tanggal <?= $dari ?> sampai <?= $sampai ?>
@@ -47,9 +47,8 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
             <tr>
                 <th>NO</th>
                 <th>Tanggal</th>
-                <th>Deskripsi</th>
-                <th>Jumlah</th>
-                <th>Status</th>
+                <th>Nama Supplier</th>
+                <th>Sisa Hutang</th>
             </tr>
         </thead>
         <tbody>
@@ -60,9 +59,8 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $row['tanggal'] ?></td>
-                    <td><?= $row['deskripsi'] ?></td>
-                    <td><?= $hasil_rupiah = "Rp " . number_format($row['jumlah'], 0, ',', '.') ?></td>
-                    <td><?= $row['status'] ?></td>
+                    <td><?= $row['nm_supplier'] ?></td>
+                    <td><?= $hasil_rupiah = "Rp " . number_format($row['sisa_hutang'], 0, ',', '.') ?></td>
                 </tr>
             <?php
             }
@@ -71,14 +69,14 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
     </table>
     <br><br><br>
     <pre>
-                                        Banjarmasin <?= date('d-m-Y') ?>
+                                                                            Banjarmasin <?= date('d-m-Y') ?>
 
 
 
-                                        
+                                                            
 
 
-                                                Admin
+                                                                                        Admin
 </pre>
     </div>
 </body>

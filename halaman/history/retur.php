@@ -12,7 +12,7 @@ mysqli_query($koneksi, "UPDATE `order` SET pembayaran= 6 WHERE id_order ='$id_or
         type: "success"
     }, setTimeout(function() {
 
-        window.location.href = "http://localhost/bikafrozen/index.php?page=history";
+        window.location.href = "http://localhost/bikafrozen/index.php?page=komplen";
 
     }, 1000));
 </script>

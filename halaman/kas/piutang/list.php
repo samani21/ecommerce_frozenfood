@@ -1,6 +1,6 @@
 <?php
 include "././koneksi.php";
-$query = mysqli_query($koneksi, "SELECT * FROM piutang");
+$query = mysqli_query($koneksi, "SELECT * FROM `piutang` WHERE jumlah IS NOT NULL ORDER BY tanggal DESC");
 ?>
 <div>
     <form action="halaman/kas/piutang/cetak.php" method="get">

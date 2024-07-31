@@ -1,16 +1,21 @@
 <?php
 include "././koneksi.php";
-$query = mysqli_query($koneksi, "SELECT * FROM komplen");
+$id_pel = $_SESSION['id'];
+if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
+    $query = mysqli_query($koneksi, "SELECT `order`.id_order,pelanggan.nama,`order`.tgl as tgl_order,ongkir.kota,komplen.status_retur,`order`.harga as hrg,komplen.deskripsi FROM `komplen` JOIN `order` ON `order`.`id_order` = `komplen`.`id_order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.`id_pelanggan` JOIN ongkir ON ongkir.id_ongkir = `order`.`id_ongkir` ORDER BY `order`.tgl DESC");
+} else {
+    $query = mysqli_query($koneksi, "SELECT `order`.id_order,pelanggan.nama,`order`.tgl as tgl_order,ongkir.kota,komplen.status_retur,`order`.harga as hrg,komplen.deskripsi FROM `komplen` JOIN `order` ON `order`.`id_order` = `komplen`.`id_order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.`id_pelanggan` JOIN ongkir ON ongkir.id_ongkir = `order`.`id_ongkir` WHERE pelanggan.id_user = $id_pel ORDER BY order.tgl DESC");
+}
 ?>
-<div>
-    <a href="index.php?page=tambah_komplen" class="btn btn-primary">Tambah</a>
-</div>
 <div>
     <table id="example" class="table datatable" style="width:100%">
         <thead>
             <tr>
                 <th>NO</th>
+                <th>Nama</th>
                 <th>Tanggal</th>
+                <th>Ongkir</th>
+                <th>Harga</th>
                 <th>Deskripsi</th>
                 <th>Aksi</th>
             </tr>
@@ -22,11 +27,30 @@ $query = mysqli_query($koneksi, "SELECT * FROM komplen");
             ?>
                 <tr>
                     <td><?= $no++ ?></td>
-                    <td><?= $row['tanggal'] ?></td>
+                    <td><?= $row['nama'] ?></td>
+                    <td><?= $row['tgl_order'] ?></td>
+                    <td><?= $row['kota'] ?></td>
+                    <td><?= $hasil_rupiah = "Rp " . number_format($row['hrg'], 0, ',', '.') ?></td>
                     <td><?= $row['deskripsi'] ?></td>
                     <td>
-                        <a href="index.php?page=edit_komplen&id=<?= $row['id_komplen'] ?>" class="btn btn-warning">Edit</a>
-                        <a href="index.php?page=hapus_komplen&id=<?= $row['id_komplen'] ?>" class="btn btn-danger" onclick="return confirm('Apakah anda yakin ingin menghapus ini ?')">Hapus</a>
+                        <a href="index.php?page=menu&id_order=<?= $row['id_order'] ?>" class="btn btn-warning">Cek</a>
+                        <?php
+                        if ($row['status_retur'] == 0 && $_SESSION['level'] == "Admin" || $row['status_retur'] == 0 && $_SESSION['level'] == "Super Admin") {
+                        ?>
+                            <a href="index.php?page=retur&id_order=<?= $row['id_order'] ?>&status=1" class="btn btn-primary">Retur Barang</a>
+                            <a href="index.php?page=retur&id_order=<?= $row['id_order'] ?>&status=2" class="btn btn-primary">Retur Uang</a>
+                        <?php
+                        } else if ($row['status_retur'] == 1) {
+                        ?>
+                            <span class="badge bg-primary">Diganti Barang</span>
+                        <?php
+                        } else if ($row['status_retur'] == 2) {
+                        ?>
+                            <span class="badge bg-success">Uang kembali</span>
+                        <?php
+                        }
+                        ?>
+
                     </td>
                 </tr>
             <?php

@@ -380,9 +380,9 @@ if (empty($row['id_pelanggan'])) {
                             include "koneksi.php";
                             $id_user = $_SESSION['id'];
                             if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
-                                $countNotif = mysqli_query($koneksi, "SELECT COUNT(pembayaran) as notfi_pembayaran FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.id_pelanggan JOIN user ON pelanggan.id_user = user.id where pembayaran >1");
+                                $countNotif = mysqli_query($koneksi, "SELECT COUNT(pembayaran) as notfi_pembayaran FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.id_pelanggan JOIN user ON pelanggan.id_user = user.id where pembayaran >2");
                             } else {
-                                $countNotif = mysqli_query($koneksi, "SELECT COUNT(pembayaran) as notfi_pembayaran FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.id_pelanggan JOIN user ON pelanggan.id_user = user.id WHERE pelanggan.id_user = $id_user AND pembayaran >1");
+                                $countNotif = mysqli_query($koneksi, "SELECT COUNT(pembayaran) as notfi_pembayaran FROM `order` JOIN pelanggan ON pelanggan.id_pelanggan = `order`.id_pelanggan JOIN user ON pelanggan.id_user = user.id WHERE pelanggan.id_user = $id_user AND pembayaran >2");
                             }
 
                             $cn = mysqli_fetch_assoc($countNotif);
@@ -503,7 +503,7 @@ if (empty($row['id_pelanggan'])) {
                     </a>
                 </li><!-- End Dashboard Nav -->
                 <?php
-                if ($_SESSION['level'] == "Pelanggan" || $_SESSION['level'] == "Super Admin") {
+                if ($_SESSION['level'] == "Pelanggan" || $_SESSION['level'] == "Super Admin" || $_SESSION['level'] == "Admin") {
                 ?>
                     <li class="nav-item">
                         <a class="nav-link <?php if ($hal != "pelanggan" || $hal != "edit_pelanggan") {
@@ -524,6 +524,11 @@ if (empty($row['id_pelanggan'])) {
                             <i class="bi bi-menu-button-wide"></i><span>Master</span><i class="bi bi-chevron-down ms-auto"></i>
                         </a>
                         <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a <?php if ($hal == "user" || $hal == "tambah_user" || $hal == "edit_user") { ?>class="active" <?php } ?> href="index.php?page=user">
+                                    <i class="bi bi-circle"></i><span>User</span>
+                                </a>
+                            </li>
                             <li>
                                 <a <?php if ($hal == "kategori" || $hal == "tambah_kategori" || $hal == "edit_kategori") { ?>class="active" <?php } ?> href="index.php?page=kategori">
                                     <i class="bi bi-circle"></i><span>Kategori</span>
@@ -582,6 +587,11 @@ if (empty($row['id_pelanggan'])) {
                                 </a>
                             </li>
                             <li>
+                                <a <?php if ($hal == "sisa_hutang" || $hal == "tambah_hutang" || $hal == "edit_hutang") { ?>class="active" <?php } ?> href="index.php?page=sisa_hutang">
+                                    <i class="bi bi-circle"></i><span>Sisa Hutang</span>
+                                </a>
+                            </li>
+                            <li>
                                 <a <?php if ($hal == "penjualan" || $hal == "tambah_penjualan" || $hal == "edit_penjualan") { ?>class="active" <?php } ?> href="index.php?page=penjualan">
                                     <i class="bi bi-circle"></i><span>Penjualan</span>
                                 </a>
@@ -618,29 +628,43 @@ if (empty($row['id_pelanggan'])) {
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link <?php if ($hal != "barang_keluar") {
-                                            echo "collapsed";
-                                        } ?>" href="index.php?page=barang_keluar">
-                        <i class="bi bi-archive"></i>
-                        <span>Barang Keluar</span>
-                    </a>
-                </li>
+                <?php
+                if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
+                ?>
+                    <li class="nav-item">
+                        <a class="nav-link <?php if ($hal != "barang_keluar") {
+                                                echo "collapsed";
+                                            } ?>" href="index.php?page=barang_keluar">
+                            <i class="bi bi-archive"></i>
+                            <span>Barang Keluar</span>
+                        </a>
+                    </li>
 
+                    <li class="nav-item">
+                        <a class="nav-link <?php if ($hal != "barang_masuk") {
+                                                echo "collapsed";
+                                            } ?>" href="index.php?page=barang_masuk">
+                            <i class="bi bi-bag-plus"></i>
+                            <span>Barang Masuk</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php if ($hal != "barang_rusak") {
+                                                echo "collapsed";
+                                            } ?>" href="index.php?page=barang_rusak">
+                            <i class="bi bi-bag-x-fill"></i>
+                            <span>Barang Rusak</span>
+                        </a>
+                    </li>
+                <?php
+                }
+                ?>
                 <li class="nav-item">
-                    <a class="nav-link <?php if ($hal != "barang_masuk") {
+                    <a class="nav-link <?php if ($hal != "komplen") {
                                             echo "collapsed";
-                                        } ?>" href="index.php?page=barang_masuk">
-                        <i class="bi bi-bag-plus"></i>
-                        <span>Barang Masuk</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link <?php if ($hal != "barang_rusak") {
-                                            echo "collapsed";
-                                        } ?>" href="index.php?page=barang_rusak">
-                        <i class="bi bi-bag-x-fill"></i>
-                        <span>Barang Rusak</span>
+                                        } ?>" href="index.php?page=komplen">
+                        <i class="bi bi-cart-x"></i>
+                        <span>Komplen</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -715,6 +739,21 @@ if (empty($row['id_pelanggan'])) {
                     case 'hapus_kategori':
                         include "halaman/kategori/hapus.php";
                         break;
+
+                        //kategori
+                    case 'user':
+                        include "halaman/user/list.php";
+                        break;
+                    case 'tambah_user':
+                        include "halaman/user/tambah.php";
+                        break;
+                    case 'edit_user':
+                        include "halaman/user/edit.php";
+                        break;
+                    case 'hapus_user':
+                        include "halaman/user/hapus.php";
+                        break;
+
 
                         //link live
                     case 'link_live':
@@ -926,6 +965,19 @@ if (empty($row['id_pelanggan'])) {
                         //Ringkasan kas
                     case 'ringkasan_kas':
                         include "halaman/kas/ringkasan_kas/list.php";
+                        break;
+
+                    case 'sisa_hutang':
+                        include "halaman/kas/sisa_hutang/list.php";
+                        break;
+                    case 'tambah_hutang':
+                        include "halaman/kas/sisa_hutang/tambah.php";
+                        break;
+                    case 'edit_hutang':
+                        include "halaman/kas/sisa_hutang/edit.php";
+                        break;
+                    case 'hapus_hutang':
+                        include "halaman/kas/sisa_hutang/hapus.php";
                         break;
 
                         //penjuaan
