@@ -60,14 +60,14 @@
     </table>
     <br><br><br>
     <pre>
-                                        Banjarmasin <?= date('d-m-Y') ?>
+                                                                Banjarmasin <?= date('d-m-Y') ?>
 
 
 
-                                        
+                                                                
 
 
-                                                Admin
+                                                                        Admin
 </pre>
     </div>
 </body>

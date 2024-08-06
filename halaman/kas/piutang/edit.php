@@ -50,7 +50,7 @@ if (isset($_POST['simpan'])) {
         $queryTransaksi = mysqli_query($koneksi, 'SELECT * FROM transaksi_harian ORDER BY id_transaksi DESC LIMIT 1');
         $transaksi = mysqli_fetch_assoc($queryTransaksi);
         $awal =  $transaksi['saldo_akhir'];
-        $akhir =  $transaksi['saldo_akhir'] + $jumlah;
+        $akhir =  $transaksi['saldo_akhir'] - $jumlah;
 
         mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','Pembayaran Piutang $supplier','$jumlah','$awal','$akhir',0,$jumlah,null,null,'$id',null,null)");
     } else {

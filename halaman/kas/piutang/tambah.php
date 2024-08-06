@@ -12,9 +12,11 @@
                 include '././koneksi.php';
                 $querySupplier = mysqli_query($koneksi, "SELECT supplier.nm_supplier,hutang.deskripsi,hutang.tanggal,hutang.id_hutang,hutang.id_hutang, jumlah_hutang,SUM(piutang.jumlah), jumlah_hutang- SUM(CASE WHEN piutang.status = 'Sudah dibayar' THEN jumlah ELSE 0 END) as sisa_hutang FROM `hutang` left JOIN piutang ON piutang.id_hutang = hutang.id_hutang JOIN supplier ON supplier.id_supplier = hutang.id_supplier GROUP BY hutang.id_hutang");
                 while ($rs = mysqli_fetch_array($querySupplier)) {
+                    if ($rs['sisa_hutang'] != 0) {
                 ?>
-                    <option value="<?= $rs['id_hutang'] ?>" data-sisa-hutang="<?= $rs['sisa_hutang'] ?>" supplier="<?= $rs['nm_supplier'] ?>" deskripsi="<?= $rs['deskripsi'] ?>"><?= $rs['nm_supplier'] ?></option>
+                        <option value="<?= $rs['id_hutang'] ?>" data-sisa-hutang="<?= $rs['sisa_hutang'] ?>" supplier="<?= $rs['nm_supplier'] ?>" deskripsi="<?= $rs['deskripsi'] ?>"><?= $rs['nm_supplier'] ?></option>
                 <?php
+                    }
                 }
                 ?>
             </select>
