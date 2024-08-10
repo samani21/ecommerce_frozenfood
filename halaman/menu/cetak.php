@@ -88,7 +88,7 @@ No HP  :<?= $row_totl['no_hp'] ?>
     </table>
     <br><br><br>
     <pre>
-                                        Banjarmasin <?= date('d-m-Y') ?>
+                                        Buntok <?= date('d-m-Y') ?>
 
 
 

@@ -8,6 +8,10 @@ $row = mysqli_fetch_assoc($query);
     <form action="" method="post">
         <div>
             <label for="">Tanggal</label>
+            <input type="text" value="<?= $row['no_invoice'] ?>" class="form-control" required readonly>
+        </div>
+        <div>
+            <label for="">Tanggal</label>
             <input type="date" name="tanggal" value="<?= $row['tanggal'] ?>" class="form-control" required>
         </div>
         <div>

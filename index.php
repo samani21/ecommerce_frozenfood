@@ -194,15 +194,6 @@ if (empty($row['id_pelanggan'])) {
                             <label for="">Nama</label>
                             <input type="text" class="form-control" name="nama" autofocus required>
                         </div>
-                        <div class="row">
-                            <label for="">TTL</label>
-                            <div class="col-6">
-                                <input type="text" class="form-control" name="tempat" required>
-                            </div>
-                            <div class="col-6">
-                                <input type="date" class="form-control" name="tgl" required>
-                            </div>
-                        </div>
                         <div>
                             <label for="">Provensi</label>
                             <input type="text" class="form-control" name="provensi" autofocus required>
@@ -235,8 +226,6 @@ if (empty($row['id_pelanggan'])) {
         <?php
         if (isset($_POST['simpan'])) {
             $nama = $_POST['nama'];
-            $tempat = $_POST['tempat'];
-            $tgl = $_POST['tgl'];
             $provensi = $_POST['provensi'];
             $kecamatan = $_POST['kecamatan'];
             $kelurahan = $_POST['kelurahan'];
@@ -244,7 +233,17 @@ if (empty($row['id_pelanggan'])) {
             $no_hp = $_POST['no_hp'];
             $id_user = $_POST['id_user'];
 
-            mysqli_query($koneksi, "INSERT INTO pelanggan VALUES(null,'$id_user','$nama','$tempat','$tgl','$alamat','$no_hp','$provensi','$kecamatan','$kelurahan')");
+            // Create a prepared statement
+            $stmt = $koneksi->prepare("INSERT INTO pelanggan (id_pelanggan, id_user, nama, alamat, no_hp, provinsi, kecamatan, kelurahan) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)");
+
+            // Bind parameters
+            $stmt->bind_param("sssssss", $id_user, $nama, $alamat, $no_hp, $provensi, $kecamatan, $kelurahan);
+
+            // Execute the query
+            $stmt->execute();
+
+            // Close the statement
+            $stmt->close();
         ?>
             <script>
                 swal({
@@ -685,6 +684,11 @@ if (empty($row['id_pelanggan'])) {
                         if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
                         ?>
                             <li>
+                                <a <?php if ($hal == "laporan_penjualan") { ?>class="active" <?php } ?> href="index.php?page=laporan_penjualan">
+                                    <i class="bi bi-circle"></i><span>Laporan Penjualan Terlaris</span>
+                                </a>
+                            </li>
+                            <li>
                                 <a <?php if ($hal == "laporan_stok_barang") { ?>class="active" <?php } ?> href="index.php?page=laporan_stok_barang">
                                     <i class="bi bi-circle"></i><span>Laporan Stok Barang</span>
                                 </a>
@@ -1068,6 +1072,10 @@ if (empty($row['id_pelanggan'])) {
                         include "halaman/kas/transaksi_lainnya/verifikasi.php";
                         break;
 
+                    case 'laporan_penjualan':
+                        include "halaman/laporan_penjualan/laporan.php";
+                        break;
+
 
                     default:
                         echo "<center><h3>Maaf. Halaman tidak di temukan !</h3></center>";
@@ -1145,6 +1153,39 @@ if (empty($row['id_pelanggan'])) {
                 return prefix == undefined ? rupiah1 : (rupiah1 ? 'Rp. ' + rupiah1 : '');
             }
         </script>
+        <script>
+            function updateURL() {
+                // Ambil nilai dari input
+                var inputValue = document.getElementById('inputField').value;
+
+                // Ambil parameter query string yang ada saat ini
+                const params = new URLSearchParams(window.location.search);
+
+                // Set parameter 'cari' dengan nilai baru
+                params.set('cari', encodeURIComponent(inputValue));
+
+                // Buat URL baru dengan parameter yang diperbarui
+                var newUrl = window.location.pathname + '?' + params.toString();
+
+                // Arahkan ke URL baru dan lakukan refresh halaman
+                window.location.href = newUrl;
+            }
+
+            function initialize() {
+                // Ambil nilai dari query string
+                const params = new URLSearchParams(window.location.search);
+                const savedValue = params.get('cari');
+
+                // Jika ada nilai yang disimpan di URL, atur nilai input field
+                if (savedValue) {
+                    document.getElementById('inputField').value = decodeURIComponent(savedValue);
+                }
+            }
+
+            // Jalankan fungsi initialize saat halaman dimuat
+            window.onload = initialize;
+        </script>
+
     </body>
 
     </html>

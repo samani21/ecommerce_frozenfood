@@ -42,8 +42,24 @@ if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
 <?php
 }
 ?>
-<br>
+<hr>
 <div class="row">
+  <div class="col-12">
+    <form action="" method="get">
+      <input type="hidden" name="page" value="dashboard">
+      <div class="row">
+        <div class="col-5">
+          <input type="date" name="dari" value="<?= @$_GET['dari'] ?>" class="form-control">
+        </div>
+        <div class="col-5">
+          <input type="date" name="sampai" value="<?= @$_GET['sampai'] ?>" class="form-control">
+        </div>
+        <div class="col-2">
+          <button class="btn btn-success" type="submit">Filter</button>
+        </div>
+      </div>
+    </form>
+  </div>
   <div class="col-6">
     <h5>GRAFIK MENU TERLARIS</h5>
     <div>
@@ -57,6 +73,7 @@ if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
     </div>
   </div>
 </div>
+<br>
 <div class="row">
   <?php
   include "././koneksi.php";
@@ -75,22 +92,45 @@ if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
 </div>
 <?php
 include "././koneksi.php";
-$query_order = mysqli_query($koneksi, "SELECT 
-    MONTHNAME(tgl) AS bulan,
-    COUNT(*) AS data 
+
+if (isset($_GET['dari'])) {
+  $dari = $_GET['dari'];
+  $sampai = $_GET['sampai'];
+  $query_order = mysqli_query($koneksi, "SELECT 
+  MONTHNAME(tgl) AS bulan,
+  COUNT(*) AS data 
 FROM 
-    `order` 
+  `order` 
 WHERE 
-    harga != 0 
+  harga != 0 AND `order`.tgl BETWEEN '$dari' AND '$sampai'
 GROUP BY 
-    MONTH(tgl), MONTHNAME(tgl);
+  MONTH(tgl), MONTHNAME(tgl);
 ");
+} else {
+  $query_order = mysqli_query($koneksi, "SELECT 
+  MONTHNAME(tgl) AS bulan,
+  COUNT(*) AS data 
+FROM 
+  `order` 
+WHERE 
+  harga != 0 
+GROUP BY 
+  MONTH(tgl), MONTHNAME(tgl);
+");
+}
+
 while ($row_order = mysqli_fetch_array($query_order)) {
   $bulan[] = $row_order['bulan'];
   $data[] = $row_order['data'];
 }
 
-$query_barang = mysqli_query($koneksi, "SELECT SUM(total) AS total ,pesanan.id_barang,nm_barang FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang GROUP BY pesanan.id_barang");
+if (isset($_GET['dari'])) {
+  $dari = $_GET['dari'];
+  $sampai = $_GET['sampai'];
+  $query_barang = mysqli_query($koneksi, "SELECT SUM(total) AS total ,pesanan.id_barang,nm_barang FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang WHERE pesanan.tgl BETWEEN '$dari' AND '$sampai' GROUP BY pesanan.id_barang");
+} else {
+  $query_barang = mysqli_query($koneksi, "SELECT SUM(total) AS total ,pesanan.id_barang,nm_barang FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang WHERE pesanan.tgl GROUP BY pesanan.id_barang");
+}
 while ($row_barang = mysqli_fetch_array($query_barang)) {
   $nm_barang[] = $row_barang['nm_barang'];
   $total[] = $row_barang['total'];

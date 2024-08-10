@@ -71,21 +71,21 @@
                     <td><?= $row['tgl'] ?></td>
                     <td><?= $row['nm_kategori'] ?></td>
                     <td><?= $row['total'] ?></td>
-                    <td><?= $hasil_rupiah = "Rp " . number_format($row['harga'], 0, ',', '.') ?></td>
-                    <td><?= $hasil_rupiah = "Rp " . number_format($row['harga'] * $row['total'], 0, ',', '.') ?></td>
+                    <td><?= @$hasil_rupiah = "Rp " . number_format($row['harga'], 0, ',', '.') ?></td>
+                    <td><?= @$hasil_rupiah = "Rp " . number_format($row['harga'] * $row['total'], 0, ',', '.') ?></td>
                 </tr>
             <?php
             }
             ?>
             <tr>
                 <td colspan="6" align="right">Total</td>
-                <td colspan="6" align="left"><?= $hasil_rupiah = "Rp " . number_format($row_to['total'], 0, ',', '.') ?></td>
+                <td colspan="6" align="left"><?= @$hasil_rupiah = "Rp " . number_format($row_to['total'], 0, ',', '.') ?></td>
             </tr>
         </tbody>
     </table>
     <br><br><br>
     <pre>
-                                        Banjarmasin <?= date('d-m-Y') ?>
+                                        Buntok <?= date('d-m-Y') ?>
 
 
 

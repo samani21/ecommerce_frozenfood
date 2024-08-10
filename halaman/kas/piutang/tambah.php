@@ -2,6 +2,31 @@
     <form action="" method="post">
         <div>
             <label for="">Tanggal</label>
+            <?php
+            include "././koneksi.php";
+            $query = mysqli_query($koneksi, "SELECT * FROM piutang ORDER BY id_piutang DESC limit 1");
+            $invoice = mysqli_fetch_assoc($query);
+            @$no_invoice1 = $invoice['no_invoice'];
+            $tahun = substr(date('Y'), -2);
+            if ($no_invoice1) {
+                // Mengambil 4 digit terakhir dari nomor invoice
+                $last_four_digits = substr($no_invoice1, -4);
+                if ($last_four_digits < 10) {
+                    $inputInvoice = "000" . $last_four_digits + 1;
+                } else if ($last_four_digits < 100) {
+                    $inputInvoice = "00" . $last_four_digits + 1;
+                } else if ($last_four_digits < 1000) {
+                    $inputInvoice = "0" . $last_four_digits + 1;
+                } else if ($last_four_digits < 10000) {
+                    $inputInvoice = "" . $last_four_digits + 1;
+                }
+            } else {
+                $inputInvoice = "000" . 1;
+            }?>
+            <input type="text" name="no_invoice" value="<?= "BTK" . $tahun . $inputInvoice ?>" class="form-control" required readonly autofocus>
+        </div>
+        <div>
+            <label for="">Tanggal</label>
             <input type="date" name="tanggal" value="<?= date('Y-m-d') ?>" class="form-control" required autofocus>
         </div>
         <div>
@@ -120,7 +145,8 @@ if (isset($_POST['simpan'])) {
         $status = $_POST['status'];
         $supplier = $_POST['supplier'];
         $deskripsi = $_POST['deskripsi'];
-        mysqli_query($koneksi, "INSERT INTO piutang VALUES(null,'$id_hutang','$tanggal','$deskripsi','$jumlah','$status',0)");
+        $no_invoice = $_POST['no_invoice'];
+        mysqli_query($koneksi, "INSERT INTO piutang VALUES(null,'$id_hutang','$no_invoice','$tanggal','$deskripsi','$jumlah','$status',0)");
         if ($status == "Sudah dibayar") {
             $queryTransaksi = mysqli_query($koneksi, 'SELECT * FROM transaksi_harian ORDER BY id_transaksi DESC LIMIT 1');
             $transaksi = mysqli_fetch_assoc($queryTransaksi);

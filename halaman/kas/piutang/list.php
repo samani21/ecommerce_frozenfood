@@ -26,6 +26,7 @@ $query = mysqli_query($koneksi, "SELECT * FROM `piutang` WHERE jumlah IS NOT NUL
         <thead>
             <tr>
                 <th>NO</th>
+                <th>NO Invoice</th>
                 <th>Tanggal</th>
                 <th>Deskripsi</th>
                 <th>Jumlah</th>
@@ -40,6 +41,7 @@ $query = mysqli_query($koneksi, "SELECT * FROM `piutang` WHERE jumlah IS NOT NUL
             ?>
                 <tr>
                     <td><?= $no++ ?></td>
+                    <td><?= $row['no_invoice'] ?></td>
                     <td><?= $row['tanggal'] ?></td>
                     <td><?= $row['deskripsi'] ?></td>
                     <td><?= $hasil_rupiah = "Rp " . number_format($row['jumlah'], 0, ',', '.') ?></td>

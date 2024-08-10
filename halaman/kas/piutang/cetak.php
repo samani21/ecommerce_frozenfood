@@ -37,7 +37,7 @@
     include "../../../koneksi.php";
     $dari = $_GET['dari'];
     $sampai = $_GET['sampai'];
-    $query = mysqli_query($koneksi, "SELECT * FROM `piutang` WHERE jumlah IS NOT NULL AND tanggal BETWEEN '$dari' AND '$sampai' ORDER BY tanggal DESC ");
+    $query = mysqli_query($koneksi, "SELECT supplier.nm_supplier,piutang.* FROM `piutang`  join hutang ON hutang.id_hutang = piutang.id_hutang JOIN supplier ON supplier.id_supplier = hutang.id_supplier WHERE jumlah IS NOT NULL AND piutang.tanggal BETWEEN '$dari' AND '$sampai' ORDER BY piutang.tanggal DESC ");
     ?>
     <pre>
 periode tanggal <?= $dari ?> sampai <?= $sampai ?>
@@ -46,6 +46,8 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
         <thead>
             <tr>
                 <th>NO</th>
+                <th>NO Invoice</th>
+                <th>Supplier</th>
                 <th>Tanggal</th>
                 <th>Deskripsi</th>
                 <th>Jumlah</th>
@@ -59,6 +61,8 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
             ?>
                 <tr>
                     <td><?= $no++ ?></td>
+                    <td><?= $row['no_invoice'] ?></td>
+                    <td><?= $row['nm_supplier'] ?></td>
                     <td><?= $row['tanggal'] ?></td>
                     <td><?= $row['deskripsi'] ?></td>
                     <td><?= $hasil_rupiah = "Rp " . number_format($row['jumlah'], 0, ',', '.') ?></td>
@@ -71,7 +75,7 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
     </table>
     <br><br><br>
     <pre>
-                                        Banjarmasin <?= date('d-m-Y') ?>
+                                        Buntok <?= date('d-m-Y') ?>
 
 
 

@@ -14,7 +14,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 <input type="hidden" name="page" value="<?= $pa ?>" class="form-control" required>
                 <input type="hidden" name="halaman" value="1" class="form-control" required>
                 <input type="hidden" name="id_order" value="<?= $order ?>" class="form-control" required>
-                <div class="col-6">
+                <div class="col-5">
                     <select name="id_kategori" class="form-control" id="">
                         <option value="">Semua</option>
                         <?php
@@ -47,11 +47,16 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
 
                     </select>
                 </div>
-                <div class="col-6">
+                <div class="col-2">
                     <button type="submit" class="btn btn-primary">Cari</button>
                 </div>
             </div>
         </form>
+        <br>
+        <div class="col-5">
+            <label for="">Cari Menu</label>
+            <input type="text" id="inputField" class="form-control" name="inputField" oninput="updateURL()" required autofocus>
+        </div>
     </div>
     <div class="col-2">
         <?php
@@ -75,20 +80,20 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
         $batas = 5;
         $halaman = isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
         $halaman_awal = ($halaman > 1) ? ($halaman * $batas) - $batas : 0;
-
+        @$cari = $_GET['cari'];
         $previous = $halaman - 1;
         $next = $halaman + 1;
         if (empty($id_k)) {
-            $data = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang");
+            $data = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.nm_barang LIKE '%" . $cari . "%'");
         } else {
-            $data = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.id_kategori = '$id_k'");
+            $data = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.id_kategori = '$id_k' OR barang.nm_barang LIKE '%" . $cari . "%'");
         }
         $jumlah_data = mysqli_num_rows($data);
         $total_halaman = ceil($jumlah_data / $batas);
         if (empty($id_k)) {
-            $query = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang limit $halaman_awal, $batas");
+            $query = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.nm_barang LIKE '%" . $cari . "%' limit $halaman_awal, $batas");
         } else {
-            $query = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.id_kategori = '$id_k' limit $halaman_awal, $batas");
+            $query = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.id_kategori = '$id_k' AND barang.nm_barang LIKE '%" . $cari . "%' limit $halaman_awal, $batas");
         }
         $nomor = $halaman_awal + 1;
         while ($row = mysqli_fetch_array($query)) {
@@ -239,6 +244,21 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                         mysqli_query($koneksi, "UPDATE pesanan SET status =2,total='$total_p' WHERE id_pesanan = '$id_pesanan'") or die(mysqli_error($koneksi));
 
                         mysqli_query($koneksi, "UPDATE `order` SET harga = '$harga_total',alamat = '$alamat',pembayaran = 2 ,jenis_pembayaran='$pembayaran' WHERE id_order = '$id_order'") or die(mysqli_error($koneksi));
+
+                        $query = mysqli_query($koneksi, "SELECT * FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang WHERE id_order =$id_order");
+                        $rowPesanan = mysqli_fetch_assoc($query);
+                        $pesanan = $rowPesanan['harga'] * $rowPesanan['total'];
+                        $queryTransaksi = mysqli_query($koneksi, 'SELECT * FROM transaksi_harian ORDER BY id_transaksi DESC LIMIT 1');
+                        $transaksi = mysqli_fetch_assoc($queryTransaksi);
+                        $pelanggan = $_SESSION['username'];
+                        $tanggal = date('Y-m-d');
+                        if (!$transaksi) {
+                            mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','transaksi pelanggan $pelanggan','$pesanan','$pesanan','$pesanan',$pesanan,0,null,null,null,null,null)");
+                        } else {
+                            $awal = $transaksi['saldo_akhir'];
+                            $akhir = $awal + $pesanan;
+                            mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','transaksi pelanggan $pelanggan','$pesanan','$awal','$akhir',$pesanan,0,null,null,null,null,null)");
+                        }
                     ?>
                         <script>
                             window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";

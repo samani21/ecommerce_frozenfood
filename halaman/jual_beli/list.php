@@ -83,10 +83,20 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                     <td><?php if (isset($row['jual'])) {
                             echo $hasil_rupiah = "Rp " . number_format($row['jual'], 0, ',', '.');
                         } ?></td>
-                    <td>
-                        <a href="index.php?page=edit_jual_beli&id=<?= $row['id_jual_beli'] ?>" class="btn btn-warning">Edit</a>
-                        <a href="index.php?page=hapus_jual_beli&id=<?= $row['id_jual_beli'] ?>" class="btn btn-danger" onclick="return confirm('Apakah anda yakin ingin menghapus ini ?')">Hapus</a>
-                    </td>
+                    <?php
+                    if (isset($row['beli'])) {
+                    ?>
+                        <td>
+                            <a href="index.php?page=edit_jual_beli&id=<?= $row['id_jual_beli'] ?>" class="btn btn-warning">Edit</a>
+                            <a href="index.php?page=hapus_jual_beli&id=<?= $row['id_jual_beli'] ?>" class="btn btn-danger" onclick="return confirm('Apakah anda yakin ingin menghapus ini ?')">Hapus</a>
+                        </td>
+                    <?php
+                    } else {
+                    ?>
+                        <td></td>
+                    <?php
+                    }
+                    ?>
                 </tr>
             <?php
             }

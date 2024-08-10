@@ -18,14 +18,6 @@ if ($_SESSION['level'] == "Pelanggan" || $_SESSION['level'] == "Super Admin" || 
             <input type="text" name="nama" value="<?= $row['nama'] ?>" class="form-control" required>
         </div>
         <div>
-            <label for="">Tempat</label>
-            <input type="text" name="tempat" value="<?= $row['tempat'] ?>" class="form-control" required>
-        </div>
-        <div>
-            <label for="">Tanggal</label>
-            <input type="text" name="tgl" value="<?= $row['tgl'] ?>" class="form-control" required>
-        </div>
-        <div>
             <label for="">Provensi</label>
             <input type="text" name="provinsi" value="<?= $row['provinsi'] ?>" class="form-control" required>
         </div>
@@ -61,17 +53,22 @@ if ($_SESSION['level'] == "Pelanggan" || $_SESSION['level'] == "Super Admin" || 
 include "././koneksi.php";
 if (isset($_POST['simpan'])) {
     $nama = $_POST['nama'];
-    $tempat = $_POST['tempat'];
-    $tgl = $_POST['tgl'];
     $provinsi = $_POST['provinsi'];
     $kecamatan = $_POST['kecamatan'];
     $kelurahan = $_POST['kelurahan'];
     $alamat = $_POST['alamat'];
     $no_hp = $_POST['no_hp'];
     $id_pelanggan = $_POST['id_pelanggan'];
-    $password = md5($_POST['password']);
+    $password = $_POST['password'];
 
-    mysqli_query($koneksi, "UPDATE pelanggan SET nama = '$nama',tempat = '$tempat',tgl = '$tgl',alamat = '$alamat',no_hp = '$no_hp',provinsi = '$provinsi',kecamatan = '$kecamatan',kelurahan = '$kelurahan' WHERE id_pelanggan = '$id_pelanggan'");
+    // Create a prepared statement
+    $stmt = $koneksi->prepare("UPDATE pelanggan SET nama = ?, alamat = ?, no_hp = ?, provinsi = ?, kecamatan = ?, kelurahan = ? WHERE id_pelanggan = ?");
+    // Bind parameters
+    $stmt->bind_param("sssssss", $nama, $alamat, $no_hp, $provinsi, $kecamatan, $kelurahan, $id_pelanggan);
+    // Execute the query
+    $stmt->execute();
+    // Close the statement
+    $stmt->close();
     if (!$_POST['password'] == "") {
         mysqli_query($koneksi, "UPDATE user SET password='$password' WHERE id = '$id'");
     }

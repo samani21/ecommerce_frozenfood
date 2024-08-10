@@ -8,7 +8,6 @@ $query = mysqli_query($koneksi, "SELECT * FROM pelanggan JOIN user ON user.id = 
             <tr>
                 <th>NO</th>
                 <th>Nama</th>
-                <th>TTL</th>
                 <th>Alamat</th>
                 <th>No HP</th>
                 <th>Aksi</th>
@@ -22,7 +21,6 @@ $query = mysqli_query($koneksi, "SELECT * FROM pelanggan JOIN user ON user.id = 
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $row['nama'] ?></td>
-                    <td><?= $row['tempat'] ?>, <?= date('d-m-Y', strtotime($row['tgl'])) ?></td>
                     <td><?= $row['alamat'] ?></td>
                     <td><?= $row['no_hp'] ?></td>
                     <td>

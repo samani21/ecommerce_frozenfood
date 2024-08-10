@@ -31,26 +31,23 @@
         </tr>
     </table>
     <hr>
-    <h3 align="center">DATA BARANG</h3>
+    <h3 align="center">Barang Terlaris</h3>
     <hr>
     <?php
     include "../../koneksi.php";
-    $pa = $_GET['page'];
-    @$id_k = substr($_GET['id_kategori'], 0, 4);
-    if (empty($id_k)) {
-        $query = mysqli_query($koneksi, "SELECT * FROM barang JOIN jual_beli ON jual_beli.id_barang = barang.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori");
-    } else {
-        $query = mysqli_query($koneksi, "SELECT * FROM barang JOIN jual_beli ON jual_beli.id_barang = barang.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE barang.id_kategori = '$id_k'");
-    }
+    $dari = $_GET['dari'];
+    $sampai = $_GET['sampai'];
+    $query = mysqli_query($koneksi, "SELECT SUM(total) AS total ,pesanan.id_barang,nm_barang FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang WHERE pesanan.tgl BETWEEN '$dari' AND '$sampai' GROUP BY pesanan.id_barang ORDER BY total DESC");
     ?>
+    <pre>
+periode tanggal <?= $dari ?> sampai <?= $sampai ?>
+</pre>
     <table border="1" style="width:100%; border-collapse: collapse;">
         <thead>
             <tr>
                 <th>NO</th>
-                <th>Nama barang</th>
-                <th>Kategori</th>
-                <th>Jumlah</th>
-                <th>Harga</th>
+                <th>Nama Barang</th>
+                <th>Total</th>
             </tr>
         </thead>
         <tbody>
@@ -61,9 +58,7 @@
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $row['nm_barang'] ?></td>
-                    <td><?= $row['nm_kategori'] ?></td>
-                    <td><?= $row['jumlah'] ?></td>
-                    <td><?= $hasil_rupiah = "Rp " . number_format($row['jual'], 0, ',', '.') ?></td>
+                    <td><?= $row['total'] ?></td>
                 </tr>
             <?php
             }
@@ -72,14 +67,14 @@
     </table>
     <br><br><br>
     <pre>
-                                        Buntok <?= date('d-m-Y') ?>
+                                                                            Buntok <?= date('d-m-Y') ?>
 
 
 
-                                        
+                                                                            
 
 
-                                                Admin
+                                                                                    Admin
 </pre>
     </div>
 </body>

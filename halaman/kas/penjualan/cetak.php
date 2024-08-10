@@ -67,7 +67,7 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
     </table>
     <br><br><br>
     <pre>
-                                        Banjarmasin <?= date('d-m-Y') ?>
+                                        Buntok <?= date('d-m-Y') ?>
 
 
 
