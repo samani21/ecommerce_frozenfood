@@ -1,3 +1,29 @@
+<?php
+include "../../../koneksi.php";
+$id = $_GET['id'];
+
+$queryHutang = mysqli_query($koneksi, "SELECT 
+supplier.nm_supplier,
+hutang.deskripsi,
+hutang.tanggal,
+hutang.id_hutang,
+jumlah_hutang,
+SUM(piutang.jumlah) AS total_piutang,
+jumlah_hutang - SUM(CASE WHEN piutang.status = 'Sudah dibayar' THEN piutang.jumlah ELSE 0 END) AS sisa_hutang,
+SUM(CASE WHEN piutang.status = 'Sudah dibayar' THEN piutang.jumlah ELSE 0 END) as dibayar
+FROM 
+hutang
+LEFT JOIN 
+piutang ON piutang.id_hutang = hutang.id_hutang
+JOIN 
+supplier ON supplier.id_supplier = hutang.id_supplier
+WHERE hutang.id_hutang = $id
+GROUP BY 
+hutang.id_hutang
+");
+$rowHutang = mysqli_fetch_assoc($queryHutang);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,30 +57,40 @@
         </tr>
     </table>
     <hr>
-    <h3 align="center">KAS PENJUALAN</h3>
+    <h3 align="center">Angsuran</h3>
+    <table>
+        <tr>
+            <th>Supplier</th>
+            <th>:</th>
+            <td><?= $rowHutang['nm_supplier'] ?></td>
+        </tr>
+        <tr>
+            <th>Deskripsi</th>
+            <th>:</th>
+            <td><?= $rowHutang['deskripsi'] ?></td>
+        </tr>
+        <tr>
+            <th>Transaksi</th>
+            <th>:</th>
+            <td><?= "Rp " . number_format($rowHutang['jumlah_hutang'], 0, ',', '.') ?></td>
+        </tr>
+    </table>
     <hr>
     <?php
-    include "../../../koneksi.php";
-    $dari = $_GET['dari'];
-    $sampai = $_GET['sampai'];
+
     $query = mysqli_query($koneksi, "SELECT supplier.nm_supplier,piutang.* FROM `piutang`  
-        join hutang ON hutang.id_hutang = piutang.id_hutang 
-        JOIN supplier ON supplier.id_supplier = hutang.id_supplier 
-        WHERE jumlah IS NOT NULL AND piutang.tanggal BETWEEN '$dari' AND '$sampai' ORDER BY piutang.tanggal DESC ");
+    join hutang ON hutang.id_hutang = piutang.id_hutang 
+    JOIN supplier ON supplier.id_supplier = hutang.id_supplier 
+    WHERE jumlah IS NOT NULL AND piutang.id_hutang = $id  ORDER BY piutang.tanggal DESC ");
     $current_hutang = null;
     $row_number = 0;
     ?>
-    <pre>
-periode tanggal <?= $dari ?> sampai <?= $sampai ?>
-</pre>
     <table border="1" style="width:100%; border-collapse: collapse;">
         <thead>
             <tr>
                 <th>NO</th>
                 <th>NO Invoice</th>
-                <th>Supplier</th>
                 <th>Tanggal</th>
-                <th>Deskripsi</th>
                 <th>Angsuran Ke</th>
                 <th>Jumlah</th>
                 <th>Status</th>
@@ -70,14 +106,13 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
                     $row_number = 1;
                     $current_hutang = $row['id_hutang'];
                 }
+
                 $row['angsuran'] = $row_number;
             ?>
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $row['no_invoice'] ?></td>
-                    <td><?= $row['nm_supplier'] ?></td>
                     <td><?= $row['tanggal'] ?></td>
-                    <td><?= $row['deskripsi'] ?></td>
                     <td><?= $row['angsuran'] ?></td>
                     <td><?= $hasil_rupiah = "Rp " . number_format($row['jumlah'], 0, ',', '.') ?></td>
                     <td><?= $row['status'] ?></td>
@@ -85,18 +120,32 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
             <?php
             }
             ?>
+            <tr>
+                <td colspan="3" align="right">Sisa Hutang</td>
+                <td><?= "Rp " . number_format($rowHutang['sisa_hutang'], 0, ',', '.') ?></td>
+                <td><?= "Rp " . number_format($rowHutang['dibayar'], 0, ',', '.') ?></td>
+                <td>
+                    <?php
+                    if ($rowHutang['sisa_hutang'] == 0) {
+                        echo "Lunas";
+                    } else {
+                        echo "Belum Lunas";
+                    }
+                    ?>
+                </td>
+            </tr>
         </tbody>
     </table>
     <br><br><br>
     <pre>
-                                                                                            Buntok <?= date('d-m-Y') ?>
+                                                                            Buntok <?= date('d-m-Y') ?>
 
 
 
-                                                                                            
+                                                            
 
 
-                                                                                                    Admin
+                                                                                        Admin
 </pre>
     </div>
 </body>

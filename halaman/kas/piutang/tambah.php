@@ -22,7 +22,7 @@
                 }
             } else {
                 $inputInvoice = "000" . 1;
-            }?>
+            } ?>
             <input type="text" name="no_invoice" value="<?= "BTK" . $tahun . $inputInvoice ?>" class="form-control" required readonly autofocus>
         </div>
         <div>
@@ -31,7 +31,7 @@
         </div>
         <div>
             <label for="">Hutang Dari</label>
-            <select name="id_hutang" class="form-control" id="supplierDropdown" onchange="updateSisaHutang()">
+            <select name="id_hutang" class="form-control" id="supplierDropdown" onchange="updateSisaHutang()" required>
                 <option value="">-Pilih supplier</option>
                 <?php
                 include '././koneksi.php';
@@ -39,7 +39,7 @@
                 while ($rs = mysqli_fetch_array($querySupplier)) {
                     if ($rs['sisa_hutang'] != 0) {
                 ?>
-                        <option value="<?= $rs['id_hutang'] ?>" data-sisa-hutang="<?= $rs['sisa_hutang'] ?>" supplier="<?= $rs['nm_supplier'] ?>" deskripsi="<?= $rs['deskripsi'] ?>"><?= $rs['nm_supplier'] ?></option>
+                        <option value="<?= $rs['id_hutang'] ?>" data-sisa-hutang="<?= $rs['sisa_hutang'] ?>" supplier="<?= $rs['nm_supplier'] ?>" deskripsi="<?= $rs['deskripsi'] ?>"><?= $rs['nm_supplier'] ?> (<?= $rs['deskripsi'] ?>)</option>
                 <?php
                     }
                 }
@@ -54,11 +54,11 @@
         </div>
         <div>
             <label for="">Jumlah Bayar</label>
-            <input type="text" name="jumlah" class="form-control" id="rupiah">
+            <input type="text" name="jumlah" class="form-control" id="rupiah" required>
         </div>
         <div>
             <label for="">Status</label>
-            <select name="status" class="form-control" id="">
+            <select name="status" class="form-control" id="" required>
                 <option value="">--Pilih status</option>
                 <option value="Belum dibayar">Belum dibayar</option>
                 <option value="Sudah dibayar">Sudah dibayar</option>

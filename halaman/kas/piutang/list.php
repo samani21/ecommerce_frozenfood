@@ -1,6 +1,11 @@
 <?php
 include "././koneksi.php";
-$query = mysqli_query($koneksi, "SELECT * FROM `piutang` WHERE jumlah IS NOT NULL ORDER BY tanggal DESC");
+$query = mysqli_query($koneksi, "SELECT piutang.*,supplier.nm_supplier FROM `piutang` JOIN hutang ON hutang.id_hutang = piutang.id_hutang JOIN supplier ON supplier.id_supplier = hutang.id_supplier WHERE jumlah IS NOT NULL ORDER BY tanggal DESC");
+
+// Initialize variables for handling the row number logic
+$current_hutang = null;
+$row_number = 0;
+$no = 1;
 ?>
 <div>
     <form action="halaman/kas/piutang/cetak.php" method="get">
@@ -26,9 +31,11 @@ $query = mysqli_query($koneksi, "SELECT * FROM `piutang` WHERE jumlah IS NOT NUL
         <thead>
             <tr>
                 <th>NO</th>
+                <th>Supplier</th>
                 <th>NO Invoice</th>
                 <th>Tanggal</th>
                 <th>Deskripsi</th>
+                <th>Angsuran Ke</th>
                 <th>Jumlah</th>
                 <th>Status</th>
                 <th>Aksi</th>
@@ -36,14 +43,23 @@ $query = mysqli_query($koneksi, "SELECT * FROM `piutang` WHERE jumlah IS NOT NUL
         </thead>
         <tbody>
             <?php
-            $no = 1;
             while ($row = mysqli_fetch_array($query)) {
+                if ($current_hutang === $row['id_hutang']) {
+                    $row_number++;
+                } else {
+                    $row_number = 1;
+                    $current_hutang = $row['id_hutang'];
+                }
+
+                $row['angsuran'] = $row_number;
             ?>
                 <tr>
                     <td><?= $no++ ?></td>
+                    <td><?= $row['nm_supplier'] ?></td>
                     <td><?= $row['no_invoice'] ?></td>
                     <td><?= $row['tanggal'] ?></td>
                     <td><?= $row['deskripsi'] ?></td>
+                    <td><?= $row['angsuran'] ?></td>
                     <td><?= $hasil_rupiah = "Rp " . number_format($row['jumlah'], 0, ',', '.') ?></td>
                     <td><?= $row['status'] ?></td>
                     <td>

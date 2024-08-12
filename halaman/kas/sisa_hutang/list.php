@@ -58,7 +58,7 @@ piutang ON piutang.id_hutang = hutang.id_hutang
 JOIN 
 supplier ON supplier.id_supplier = hutang.id_supplier
 GROUP BY 
-hutang.id_hutang;
+hutang.id_hutang
 ");
 };
 ?>
@@ -178,8 +178,10 @@ hutang.id_hutang;
                         }
                         ?>
                     </td>
-                    <td><a href="index.php?page=edit_hutang&id=<?= $row['id_hutang'] ?>" class="btn btn-warning">Edit</a>
+                    <td>
+                        <a href="index.php?page=edit_hutang&id=<?= $row['id_hutang'] ?>" class="btn btn-warning">Edit</a>
                         <a href="index.php?page=hapus_hutang&id=<?= $row['id_hutang'] ?>" class="btn btn-danger" onclick="return confirm('Apakah anda yakin ingin menghapus ini ?')">Hapus</a>
+                        <a href="halaman/kas/sisa_hutang/cetak_angsuran.php?id=<?= $row['id_hutang'] ?>" class="btn btn-success">Angsuran</a>
                     </td>
                 </tr>
             <?php
