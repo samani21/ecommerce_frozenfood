@@ -570,11 +570,6 @@ if (empty($row['id_pelanggan'])) {
                                 </a>
                             </li>
                             <li>
-                                <a <?php if ($hal == "kurir" || $hal == "tambah_kurir" || $hal == "edit_kurir") { ?>class="active" <?php } ?> href="index.php?page=kurir">
-                                    <i class="bi bi-circle"></i><span>Kurir</span>
-                                </a>
-                            </li>
-                            <li>
                                 <a <?php if ($hal == "supplier" || $hal == "tambah_supplier" || $hal == "edit_supplier") { ?>class="active" <?php } ?> href="index.php?page=supplier">
                                     <i class="bi bi-circle"></i><span>Supplier</span>
                                 </a>
@@ -874,19 +869,6 @@ if (empty($row['id_pelanggan'])) {
                         include "halaman/ongkir/hapus.php";
                         break;
 
-                        //kurir
-                    case 'kurir':
-                        include "halaman/kurir/list.php";
-                        break;
-                    case 'tambah_kurir':
-                        include "halaman/kurir/tambah.php";
-                        break;
-                    case 'edit_kurir':
-                        include "halaman/kurir/edit.php";
-                        break;
-                    case 'hapus_kurir':
-                        include "halaman/kurir/hapus.php";
-                        break;
 
                         //supplier
                     case 'supplier':

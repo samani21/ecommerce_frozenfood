@@ -130,9 +130,15 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                                             <input type="hidden" name="harga" value="<?= $row['harga'] ?>" class="form-control" required>
                                             <input type="hidden" name="id_barang" value="<?= $row['id_barang'] ?>" class="form-control" required>
                                         </div>
-                                        <div class="col-6">
-                                            <button class="btn btn-primary" type="submit" name="simpan1">Pesan</button>
-                                        </div>
+                                        <?php
+                                        if ($row['harga'] && $row['jumlah'] > 0) {
+                                        ?>
+                                            <div class="col-6">
+                                                <button class="btn btn-primary" type="submit" name="simpan1">Pesan</button>
+                                            </div>
+                                        <?php
+                                        }
+                                        ?>
                                     </div>
                                 </form>
                             <?php
@@ -244,28 +250,30 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                         mysqli_query($koneksi, "UPDATE pesanan SET status =2,total='$total_p' WHERE id_pesanan = '$id_pesanan'") or die(mysqli_error($koneksi));
 
                         mysqli_query($koneksi, "UPDATE `order` SET harga = '$harga_total',alamat = '$alamat',pembayaran = 2 ,jenis_pembayaran='$pembayaran' WHERE id_order = '$id_order'") or die(mysqli_error($koneksi));
+                    }
+                }
+                if (isset($_POST['bayar'])) {
+                    $query = mysqli_query($koneksi, "SELECT SUM(total*harga) as pesanan FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang WHERE id_order =$id_order");
+                    $rowPesanan = mysqli_fetch_assoc($query);
+                    $pesanan = $rowPesanan['pesanan'];
 
-                        $query = mysqli_query($koneksi, "SELECT * FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang WHERE id_order =$id_order");
-                        $rowPesanan = mysqli_fetch_assoc($query);
-                        $pesanan = $rowPesanan['harga'] * $rowPesanan['total'];
-                        $queryTransaksi = mysqli_query($koneksi, 'SELECT * FROM transaksi_harian ORDER BY id_transaksi DESC LIMIT 1');
-                        $transaksi = mysqli_fetch_assoc($queryTransaksi);
-                        $pelanggan = $_SESSION['username'];
-                        $tanggal = date('Y-m-d');
-                        if (!$transaksi) {
-                            mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','transaksi pelanggan $pelanggan','$pesanan','$pesanan','$pesanan',$pesanan,0,null,null,null,null,null)");
-                        } else {
-                            $awal = $transaksi['saldo_akhir'];
-                            $akhir = $awal + $pesanan;
-                            mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','transaksi pelanggan $pelanggan','$pesanan','$awal','$akhir',$pesanan,0,null,null,null,null,null)");
-                        }
+                    $queryTransaksi = mysqli_query($koneksi, 'SELECT * FROM transaksi_harian ORDER BY id_transaksi DESC LIMIT 1');
+                    $transaksi = mysqli_fetch_assoc($queryTransaksi);
+                    $pelanggan = $_SESSION['username'];
+                    $tanggal = date('Y-m-d');
+                    if (!$transaksi) {
+                        mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','transaksi pelanggan $pelanggan','$pesanan',0,'$pesanan',$pesanan,0,null)");
+                    } else {
+                        $awal = $transaksi['saldo_akhir'];
+                        $akhir = $awal + $pesanan;
+                        mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','transaksi pelanggan $pelanggan','$pesanan','$awal','$akhir',$pesanan,0,null)");
+                    }
                     ?>
-                        <script>
-                            window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
-                        </script>
+                    <script>
+                        window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
+                    </script>
 
                 <?php
-                    }
                 }
                 ?>
             </div>

@@ -59,7 +59,7 @@ if (isset($_POST['simpan'])) {
     $alamat = $_POST['alamat'];
     $no_hp = $_POST['no_hp'];
     $id_pelanggan = $_POST['id_pelanggan'];
-    $password = $_POST['password'];
+    $password = md5($_POST['password']);
 
     // Create a prepared statement
     $stmt = $koneksi->prepare("UPDATE pelanggan SET nama = ?, alamat = ?, no_hp = ?, provinsi = ?, kecamatan = ?, kelurahan = ? WHERE id_pelanggan = ?");

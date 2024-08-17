@@ -56,7 +56,7 @@ if (isset($_POST['simpan'])) {
         $awal =  $transaksi['saldo_akhir'];
         $akhir =  $transaksi['saldo_akhir'] - $jumlah;
 
-        mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','Pembayaran Piutang $supplier','$jumlah','$awal','$akhir',0,$jumlah,null,null,'$id',null,null)");
+        mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','Pembayaran Piutang $supplier','$jumlah','$awal','$akhir',0,$jumlah,'$id')");
     } else {
         mysqli_query($koneksi, "DELETE FROM transaksi_harian WHERE id_piutang = '$id'");
     }

@@ -155,11 +155,11 @@ if (isset($_POST['simpan'])) {
             $id_piutang = $res['id_piutang'];
             $id_piutang = $res['id_piutang'];
             if (!$transaksi) {
-                mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','Pembayaran Piutang $supplier','$jumlah','$jumlah','$jumlah',0,$jumlah,null,null,null,null,null)");
+                mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','Pembayaran Piutang $supplier','$jumlah',0,'$jumlah',0,$jumlah,$id_piutang)");
             } else {
                 $awal = $transaksi['saldo_akhir'];
                 $akhir = $awal - $jumlah;
-                mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','Pembayaran hutang ke $supplier','$jumlah','$awal','$akhir',0,$jumlah,null,null,$id_piutang,null,null)");
+                mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','Pembayaran hutang ke $supplier','$jumlah','$awal','$akhir',0,$jumlah,$id_piutang)");
             }
         }
     ?>

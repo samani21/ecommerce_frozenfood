@@ -96,11 +96,11 @@ if (isset($_POST['simpan'])) {
         $res = mysqli_fetch_assoc($query);
         $id_piutang = $res['id_piutang'];
         if (!$transaksi) {
-            mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','Pemmbayaran  $nm_supplier','$jumlah_bayar','$jumlah_bayar','$jumlah_bayar',0,$jumlah_bayar,null,null,null,null,null)");
+            mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','Pemmbayaran  $nm_supplier','$jumlah_bayar','$jumlah_bayar',0,0,$jumlah_bayar,$id_piutang)");
         } else {
             $awal = $transaksi['saldo_akhir'];
             $akhir = $awal - $jumlah_hutang;
-            mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','Pembayaran transaksi ke $nm_supplier','$jumlah_hutang','$awal','$akhir',0,$jumlah_hutang,null,null,$id_piutang,null,null)");
+            mysqli_query($koneksi, "INSERT INTO transaksi_harian VALUES(null,'$tanggal','Pembayaran transaksi ke $nm_supplier','$jumlah_hutang','$awal','$akhir',0,$jumlah_hutang,$id_piutang)");
         }
 ?>
         <script>
