@@ -31,7 +31,7 @@
         </tr>
     </table>
     <hr>
-    <h3 align="center">KAS PENJUALAN</h3>
+    <h3 align="center">KAS PIUTANG</h3>
     <hr>
     <?php
     include "../../../koneksi.php";

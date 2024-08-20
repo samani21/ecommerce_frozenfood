@@ -1,7 +1,7 @@
 <?php
 include "././koneksi.php";
 $pa = $_GET['page'];
-$query = mysqli_query($koneksi, "SELECT SUM(total) AS total ,pesanan.id_barang,nm_barang FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang WHERE pesanan.tgl GROUP BY pesanan.id_barang ORDER BY total DESC");
+$query = mysqli_query($koneksi, "SELECT SUM(total) AS total ,pesanan.id_barang,nm_barang,merek FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang WHERE pesanan.tgl GROUP BY pesanan.id_barang ORDER BY total DESC");
 ?>
 <div>
     <div class="col-9">
@@ -27,6 +27,7 @@ $query = mysqli_query($koneksi, "SELECT SUM(total) AS total ,pesanan.id_barang,n
         <tr>
             <th>NO</th>
             <th>Nama barang</th>
+            <th>Merek</th>
             <th>Total Terjual</th>
         </tr>
     </thead>
@@ -38,6 +39,7 @@ $query = mysqli_query($koneksi, "SELECT SUM(total) AS total ,pesanan.id_barang,n
             <tr>
                 <td><?= $no++ ?></td>
                 <td><?= $row['nm_barang'] ?></td>
+                <td><?= $row['merek'] ?></td>
                 <td><?= $row['total'] ?></td>
             </tr>
         <?php

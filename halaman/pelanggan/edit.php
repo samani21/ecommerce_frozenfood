@@ -1,6 +1,6 @@
 <?php
 include "././koneksi.php";
-if ($_SESSION['level'] == "Pelanggan" || $_SESSION['level'] == "Super Admin" || $_SESSION['level'] == "Admin") {
+if ($_GET['page'] == "profil") {
     $id = $_GET['id'];
     $query = mysqli_query($koneksi, "SELECT * FROM pelanggan WHERE id_user = '$id'");
     $row = mysqli_fetch_assoc($query);

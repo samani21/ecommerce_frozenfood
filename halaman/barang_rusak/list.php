@@ -78,6 +78,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
             <tr>
                 <th>NO</th>
                 <th>Nama barang</th>
+                <th>Merek</th>
                 <th>Kategori</th>
                 <th>Tanggal</th>
                 <th>Jumlah Rusak</th>
@@ -94,6 +95,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $row['nm_barang'] ?></td>
+                    <td><?= $row['merek'] ?></td>
                     <td><?= $row['nm_kategori'] ?></td>
                     <td><?= $row['tgl'] ?></td>
                     <td><?= $row['total'] ?></td>

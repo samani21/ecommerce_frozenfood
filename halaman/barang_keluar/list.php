@@ -7,15 +7,15 @@ $pa = $_GET['page'];
 @$sampai = $_GET['sampai'];
 if (empty($dari) && empty($sampai)) {
     if (empty($id_k)) {
-        $query = mysqli_query($koneksi, "SELECT barang.nm_barang,kategori.nm_kategori,pesanan.jumlah,pesanan.tgl,pesanan.harga,pesanan.total FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 ORDER BY pesanan.tgl desc");
+        $query = mysqli_query($koneksi, "SELECT barang.nm_barang,kategori.nm_kategori,pesanan.jumlah,pesanan.tgl,pesanan.harga,pesanan.total,barang.merek FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 ORDER BY pesanan.tgl desc");
     } else {
-        $query = mysqli_query($koneksi, "SELECT barang.nm_barang,kategori.nm_kategori,pesanan.jumlah,pesanan.tgl,pesanan.harga,pesanan.total FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 AND kategori.id_kategori = '$id_k' ORDER BY pesanan.tgl desc");
+        $query = mysqli_query($koneksi, "SELECT barang.nm_barang,kategori.nm_kategori,pesanan.jumlah,pesanan.tgl,pesanan.harga,pesanan.total,barang.merek FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 AND kategori.id_kategori = '$id_k' ORDER BY pesanan.tgl desc");
     }
 } else {
     if (empty($id_k)) {
-        $query = mysqli_query($koneksi, "SELECT barang.nm_barang,kategori.nm_kategori,pesanan.jumlah,pesanan.tgl,pesanan.harga,pesanan.total FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 AND tgl BETWEEN '$dari' AND '$sampai' ORDER BY pesanan.tgl desc");
+        $query = mysqli_query($koneksi, "SELECT barang.nm_barang,kategori.nm_kategori,pesanan.jumlah,pesanan.tgl,pesanan.harga,pesanan.total,barang.merek FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 AND tgl BETWEEN '$dari' AND '$sampai' ORDER BY pesanan.tgl desc");
     } else {
-        $query = mysqli_query($koneksi, "SELECT barang.nm_barang,kategori.nm_kategori,pesanan.jumlah,pesanan.tgl,pesanan.harga,pesanan.total FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 AND kategori.id_kategori = '$id_k' AND tgl BETWEEN '$dari' AND '$sampai' ORDER BY pesanan.tgl desc");
+        $query = mysqli_query($koneksi, "SELECT barang.nm_barang,kategori.nm_kategori,pesanan.jumlah,pesanan.tgl,pesanan.harga,pesanan.total,barang.merek FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori WHERE status =2 AND kategori.id_kategori = '$id_k' AND tgl BETWEEN '$dari' AND '$sampai' ORDER BY pesanan.tgl desc");
     }
 }
 $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
@@ -79,6 +79,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
             <tr>
                 <th>NO</th>
                 <th>Nama barang</th>
+                <th>Merek</th>
                 <th>Kategori</th>
                 <th>Jumlah</th>
                 <th>Tanggal</th>
@@ -94,6 +95,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $row['nm_barang'] ?></td>
+                    <td><?= $row['merek'] ?></td>
                     <td><?= $row['nm_kategori'] ?></td>
                     <td><?= $row['total'] ?></td>
                     <td><?= $row['tgl'] ?></td>

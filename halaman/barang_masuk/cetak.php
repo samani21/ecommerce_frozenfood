@@ -53,6 +53,7 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
             <tr>
                 <th>NO</th>
                 <th>Nama barang</th>
+                <th>Merek</th>
                 <th>Tanggal</th>
                 <th>Kategori</th>
                 <th>Jumlah</th>
@@ -66,6 +67,7 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $row['nm_barang'] ?></td>
+                    <td><?= $row['merek'] ?></td>
                     <td><?= $row['tgl'] ?></td>
                     <td><?= $row['nm_kategori'] ?></td>
                     <td><?= $row['jum'] ?></td>

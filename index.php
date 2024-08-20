@@ -327,50 +327,56 @@ if (empty($row['id_pelanggan'])) {
                         </a>
                     </li><!-- End Search Icon-->
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-bell"></i>
-                            <?php
-                            include "koneksi.php";
-                            $countNotif = mysqli_query($koneksi, "SELECT COUNT(jumlah) as jumlah FROM `barang` WHERE jumlah < 15");
-                            $cn = mysqli_fetch_assoc($countNotif);
-                            ?>
-                            <span class="badge bg-primary badge-number"><?= $cn['jumlah'] ?></span>
-                        </a><!-- End Notification Icon -->
+                    <?php
+                    if ($_SESSION['level'] == "Admin" || $_SESSION['level'] == "Super Admin") {
+                    ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-bell"></i>
+                                <?php
+                                include "koneksi.php";
+                                $countNotif = mysqli_query($koneksi, "SELECT COUNT(jumlah) as jumlah FROM `barang` WHERE jumlah < 15");
+                                $cn = mysqli_fetch_assoc($countNotif);
+                                ?>
+                                <span class="badge bg-primary badge-number"><?= $cn['jumlah'] ?></span>
+                            </a><!-- End Notification Icon -->
 
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                            <li class="dropdown-header">
-                                You have <?= $cn['jumlah'] ?> new notifications
-                                <a href="index.php?page=barang"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <?php
-                            include "koneksi.php";
-                            $queryNotif = mysqli_query($koneksi, "SELECT DISTINCT(jumlah), nm_barang FROM `barang` WHERE jumlah < 15");
-                            while ($data = mysqli_fetch_array($queryNotif)) {
-                            ?>
-                                <li class="notification-item">
-                                    <i class="bi bi-x-circle text-danger"></i>
-                                    <a href="index.php?page=barang">
-                                        <p class="text-dark">Barang: <?php echo $data['nm_barang']; ?> tinggal <?php echo $data['jumlah']; ?></p>
-                                    </a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+                                <li class="dropdown-header">
+                                    You have <?= $cn['jumlah'] ?> new notifications
+                                    <a href="index.php?page=barang"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
                                 </li>
-
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                            <?php
-                            }
-                            ?>
-                            <li class="dropdown-footer">
-                                <a href="#">Show all notifications</a>
-                            </li>
+                                <?php
+                                include "koneksi.php";
+                                $queryNotif = mysqli_query($koneksi, "SELECT DISTINCT(jumlah), nm_barang FROM `barang` WHERE jumlah < 15");
+                                while ($data = mysqli_fetch_array($queryNotif)) {
+                                ?>
+                                    <li class="notification-item">
+                                        <i class="bi bi-x-circle text-danger"></i>
+                                        <a href="index.php?page=barang">
+                                            <p class="text-dark">Barang: <?php echo $data['nm_barang']; ?> tinggal <?php echo $data['jumlah']; ?></p>
+                                        </a>
+                                    </li>
 
-                        </ul><!-- End Notification Dropdown Items -->
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                <?php
+                                }
+                                ?>
+                                <li class="dropdown-footer">
+                                    <a href="#">Show all notifications</a>
+                                </li>
 
-                    </li><!-- End Notification Nav -->
+                            </ul><!-- End Notification Dropdown Items -->
+
+                        </li>
+                    <?php
+                    }
+                    ?>
 
                     <li class="nav-item dropdown">
                         <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
@@ -517,7 +523,7 @@ if (empty($row['id_pelanggan'])) {
                     <li class="nav-item">
                         <a class="nav-link <?php if ($hal != "pelanggan" || $hal != "edit_pelanggan") {
                                                 echo "collapsed";
-                                            } ?>" href="index.php?page=edit_pelanggan&id=<?= $_SESSION['id'] ?>">
+                                            } ?>" href="index.php?page=profil&id=<?= $_SESSION['id'] ?>">
                             <i class="bi bi-person"></i>
                             <span>Profil</span>
                         </a>
@@ -788,6 +794,9 @@ if (empty($row['id_pelanggan'])) {
                         include "halaman/pelanggan/list.php";
                         break;
                     case 'edit_pelanggan':
+                        include "halaman/pelanggan/edit.php";
+                        break;
+                    case 'profil':
                         include "halaman/pelanggan/edit.php";
                         break;
                     case 'hapus_pelanggan':

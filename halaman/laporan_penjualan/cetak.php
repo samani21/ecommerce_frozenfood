@@ -37,7 +37,7 @@
     include "../../koneksi.php";
     $dari = $_GET['dari'];
     $sampai = $_GET['sampai'];
-    $query = mysqli_query($koneksi, "SELECT SUM(total) AS total ,pesanan.id_barang,nm_barang FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang WHERE pesanan.tgl BETWEEN '$dari' AND '$sampai' GROUP BY pesanan.id_barang ORDER BY total DESC");
+    $query = mysqli_query($koneksi, "SELECT SUM(total) AS total ,pesanan.id_barang,nm_barang,merek FROM `pesanan` JOIN barang ON barang.id_barang = pesanan.id_barang WHERE pesanan.tgl BETWEEN '$dari' AND '$sampai' GROUP BY pesanan.id_barang ORDER BY total DESC");
     ?>
     <pre>
 periode tanggal <?= $dari ?> sampai <?= $sampai ?>
@@ -47,6 +47,7 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
             <tr>
                 <th>NO</th>
                 <th>Nama Barang</th>
+                <th>Merek</th>
                 <th>Total</th>
             </tr>
         </thead>
@@ -58,6 +59,7 @@ periode tanggal <?= $dari ?> sampai <?= $sampai ?>
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $row['nm_barang'] ?></td>
+                    <td><?= $row['merek'] ?></td>
                     <td><?= $row['total'] ?></td>
                 </tr>
             <?php

@@ -49,7 +49,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                     </select>
                 </div>
                 <div class="col-6">
-                    <button type="submit" class="btn btn-primary">Cari</button>
+                    <button type="submit" class="btn btn-primary">Cetak</button>
                 </div>
             </div>
         </form>
@@ -62,6 +62,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
             <tr>
                 <th>NO</th>
                 <th>Nama barang</th>
+                <th>Merek</th>
                 <th>Kategori</th>
                 <th>Jumlah</th>
                 <th>Harga</th>
@@ -75,6 +76,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $row['nm_barang'] ?></td>
+                    <td><?= $row['merek'] ?></td>
                     <td><?= $row['nm_kategori'] ?></td>
                     <td><?= $row['jumlah'] ?></td>
                     <td><?= $hasil_rupiah = "Rp " . number_format($row['beli'], 0, ',', '.') ?></td>

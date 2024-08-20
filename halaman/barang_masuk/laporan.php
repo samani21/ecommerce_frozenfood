@@ -32,16 +32,16 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                                                 echo $row1['id_kategori'];
                                             }
                                             ?>, <?= $row1['nm_kategori'] ?>"><?php
-                                                        if ($row1['id_kategori'] < 10) {
-                                                            echo "000" . $row1['id_kategori'];
-                                                        } else if ($row1['id_kategori'] < 100) {
-                                                            echo "00" . $row1['id_kategori'];
-                                                        } else if ($row1['id_kategori'] < 1000) {
-                                                            echo "0" . $row1['id_kategori'];
-                                                        } else if ($row1['id_kategori'] < 10000) {
-                                                            echo $row1['id_kategori'];
-                                                        }
-                                                        ?>, <?= $row1['nm_kategori'] ?></option>
+                                                                                if ($row1['id_kategori'] < 10) {
+                                                                                    echo "000" . $row1['id_kategori'];
+                                                                                } else if ($row1['id_kategori'] < 100) {
+                                                                                    echo "00" . $row1['id_kategori'];
+                                                                                } else if ($row1['id_kategori'] < 1000) {
+                                                                                    echo "0" . $row1['id_kategori'];
+                                                                                } else if ($row1['id_kategori'] < 10000) {
+                                                                                    echo $row1['id_kategori'];
+                                                                                }
+                                                                                ?>, <?= $row1['nm_kategori'] ?></option>
                         <?php
                         }
                         ?>
@@ -68,6 +68,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
             <tr>
                 <th>NO</th>
                 <th>Nama barang</th>
+                <th>Merek</th>
                 <th>Tanggal</th>
                 <th>Kategori</th>
                 <th>Jumlah</th>
@@ -81,6 +82,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $row['nm_barang'] ?></td>
+                    <td><?= $row['merek'] ?></td>
                     <td><?= $row['tgl'] ?></td>
                     <td><?= $row['nm_kategori'] ?></td>
                     <td><?= $row['jum'] ?></td>

@@ -14,6 +14,15 @@
         <div class="card">
             <h5 class="card-header bg-info">Daftar Akun</h5>
             <div class="card-body">
+                <?php
+                if (isset($_GET['error'])) {
+                ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?= $_GET['error'] ?> telah digunakan
+                    </div>
+                <?php
+                }
+                ?>
                 <form action="" method="post">
                     <div>
                         <label for="">Nama</label>
@@ -46,28 +55,46 @@
     if (isset($_POST['simpan'])) {
         $email = $_POST['email'];
         $username = $_POST['username'];
-        $name = $_POST['name'];
-        $password = md5($_POST['password']);
-        $verification_code = bin2hex(random_bytes(16)); // Generate verification code
+        $query = mysqli_query($koneksi, "SELECT * FROM user WHERE email = '$email' OR username = '$username'");
+        $rowCount = mysqli_num_rows($query);
+        if ($rowCount > 0) {
+            $existingUser = mysqli_fetch_assoc($query);
 
-
-        $stmt = $koneksi->prepare("INSERT INTO user VALUES (null, '$username', '$email', '$name', '$password', 'Pelanggan', '$verification_code', 0)");
-        if ($stmt->execute()) {
-            // Kirim email verifikasi
-            if (sendVerificationEmail($email, $verification_code)) {
-                echo "Verification email sent. Please check your inbox.";
-            } else {
-                echo "Failed to send verification email.";
+            if ($existingUser['email'] === $email) {
+                // If the email already exists
+                echo "<script>
+                        window.location = 'http://localhost/bikafrozen/register.php?error=email';
+                      </script>";
+            } elseif ($existingUser['username'] === $username) {
+                // If the username already exists
+                echo "<script>
+                        window.location = 'http://localhost/bikafrozen/register.php?error=username';
+                      </script>";
             }
         } else {
-            echo "Error: " . $stmt->error;
-        }
+            $name = $_POST['name'];
+            $password = md5($_POST['password']);
+            $verification_code = bin2hex(random_bytes(16)); // Generate verification code
+
+
+            $stmt = $koneksi->prepare("INSERT INTO user VALUES (null, '$username', '$email', '$name', '$password', 'Pelanggan', '$verification_code', 0)");
+            if ($stmt->execute()) {
+                // Kirim email verifikasi
+                if (sendVerificationEmail($email, $verification_code)) {
+                    echo "Verification email sent. Please check your inbox.";
+                } else {
+                    echo "Failed to send verification email.";
+                }
+            } else {
+                echo "Error: " . $stmt->error;
+            }
 
     ?>
-        <script>
-            window.location = "http://localhost/bikafrozen/login.php";
-        </script>
+            <script>
+                window.location = "http://localhost/bikafrozen/login.php";
+            </script>
     <?php
+        }
     }
     ?>
 </body>

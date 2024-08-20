@@ -77,6 +77,15 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
 <div class="row">
     <div class="col-6">
         <?php
+        if (isset($_GET['error'])) {
+        ?>
+            <div class="alert alert-danger" role="alert">
+                Barang dipesan melebihi stok
+            </div>
+        <?php
+        }
+        ?>
+        <?php
         $batas = 5;
         $halaman = isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
         $halaman_awal = ($halaman > 1) ? ($halaman * $batas) - $batas : 0;
@@ -84,16 +93,16 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
         $previous = $halaman - 1;
         $next = $halaman + 1;
         if (empty($id_k)) {
-            $data = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.nm_barang LIKE '%" . $cari . "%'");
+            $data = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga,merek FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.nm_barang LIKE '%" . $cari . "%'");
         } else {
-            $data = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.id_kategori = '$id_k' OR barang.nm_barang LIKE '%" . $cari . "%'");
+            $data = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga,merek FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.id_kategori = '$id_k' OR barang.nm_barang LIKE '%" . $cari . "%'");
         }
         $jumlah_data = mysqli_num_rows($data);
         $total_halaman = ceil($jumlah_data / $batas);
         if (empty($id_k)) {
-            $query = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.nm_barang LIKE '%" . $cari . "%' limit $halaman_awal, $batas");
+            $query = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga,merek FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.nm_barang LIKE '%" . $cari . "%' limit $halaman_awal, $batas");
         } else {
-            $query = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.id_kategori = '$id_k' AND barang.nm_barang LIKE '%" . $cari . "%' limit $halaman_awal, $batas");
+            $query = mysqli_query($koneksi, "SELECT barang.id_barang,barang.nm_barang,barang.jumlah,barang.foto,barang.foto,kategori.nm_kategori,jual_beli.jual as harga,merek FROM barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE barang.id_kategori = '$id_k' AND barang.nm_barang LIKE '%" . $cari . "%' limit $halaman_awal, $batas");
         }
         $nomor = $halaman_awal + 1;
         while ($row = mysqli_fetch_array($query)) {
@@ -102,7 +111,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                 <div class="card-header bg-info text-dark">
                     <div class="row">
                         <div class="col-6">
-                            <h5><?= $nomor++  ?>. <?= $row['nm_barang'] ?></h5>
+                            <h5><?= $nomor++  ?>. <?= $row['nm_barang'] ?>(<?= $row['merek'] ?>)</h5>
                         </div>
                         <div class="col-3">
                             <h5><?= $row['nm_kategori'] ?></h5>
@@ -196,7 +205,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                     </div>
                 </div>
                 <?php
-                $pesan = mysqli_query($koneksi, "SELECT pesanan.jumlah as total_p ,pesanan.*,barang.id_barang,barang.nm_barang,barang.foto,jual_beli.jual as harga,kategori.* FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE pesanan.id_order = '$order'");
+                $pesan = mysqli_query($koneksi, "SELECT pesanan.jumlah as total_p ,pesanan.*,barang.id_barang,barang.nm_barang,barang.foto,jual_beli.jual as harga,kategori.*,merek FROM pesanan JOIN barang ON barang.id_barang = pesanan.id_barang JOIN kategori ON kategori.id_kategori = barang.id_kategori LEFT JOIN jual_beli ON jual_beli.id_barang = barang.id_barang WHERE pesanan.id_order = '$order'");
                 $total = mysqli_query($koneksi, "SELECT order.foto as foto_pembayaran,SUM(pesanan.jumlah*pesanan.harga) as subtotal,`order`.jenis_pembayaran, `order`.harga as harga_total,`order`.id_ongkir as ongkir, ongkir.harga as harga_ongkir,ongkir.kota as kota,`order`.alamat,`order`.pembayaran,ongkir.kurir FROM `pesanan` JOIN `order` ON `order`.`id_order`= `pesanan`.`id_order` JOIN ongkir ON ongkir.id_ongkir = `order`.id_ongkir WHERE `order`.`id_order`= '$order'");
                 $subtotal = mysqli_fetch_array($total);
 
@@ -209,7 +218,7 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                         <div class="card-header bg-white text-dark">
                             <div class="row">
                                 <div class="col-5">
-                                    <h5> <?= $row_pesan['nm_barang'] ?> (<?= $row_pesan['nm_kategori'] ?>)</h5>
+                                    <h5> <?= $row_pesan['nm_barang'] ?> (<?= $row_pesan['merek'] ?>) <?= $row_pesan['nm_kategori'] ?></h5>
                                 </div>
                                 <div class="col-4">
                                     <form method="post">
@@ -465,9 +474,15 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
                                     <input type="file" name="bukti" class="form-control">
                                 </div>
                                 <br>
-                                <div>
-                                    <button type="submit" name="komplen" class="btn btn-primary">Komplen</button>
-                                </div>
+                                <?php
+                                if ($_SESSION['level'] == "Super Admin" || $_SESSION['level'] == "Pelanggan") {
+                                ?>
+                                    <div>
+                                        <button type="submit" name="komplen" class="btn btn-primary">Komplen</button>
+                                    </div>
+                                <?php
+                                }
+                                ?>
                             <?php
                             }
                             ?>
@@ -491,20 +506,40 @@ $query1 = mysqli_query($koneksi, "SELECT * FROM kategori");
             $id_barang = $_POST['id_barang'];
             $harga = $_POST['harga'];
             $status = 1;
-            mysqli_query($koneksi, "INSERT INTO pesanan VALUES(null,'$id_order','$id_barang','$tgl','$jumlah',0,'$harga','$status')") or die(mysqli_error($koneksi));
+            $queryBarang = mysqli_query($koneksi, "SELECT * FROM barang WHERE id_barang = $id_barang");
+            $rowBarang = mysqli_fetch_assoc($queryBarang);
+            if ($jumlah > $rowBarang['jumlah']) {
         ?>
-            <script>
-                window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
-            </script>
+                <script>
+                    window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>&error";
+                </script>
 
-        <?php
+            <?php
+            } else {
+                $queryPesanan = mysqli_query($koneksi, "SELECT * FROM pesanan WHERE id_order = $id_order AND id_barang = $id_barang");
+                $rowCount = mysqli_num_rows($queryPesanan);
+                if ($rowCount > 0) {
+                    $rowOrderPesanan = mysqli_fetch_assoc($queryPesanan);
+                    $jumlahPesanan = $rowOrderPesanan['jumlah'] + $jumlah;
+                    $id_pesanan =  $rowOrderPesanan['id_pesanan'];
+                    mysqli_query($koneksi, "UPDATE pesanan SET jumlah = '$jumlahPesanan' WHERE id_pesanan = '$id_pesanan'") or die(mysqli_error($koneksi));
+                } else {
+                    mysqli_query($koneksi, "INSERT INTO pesanan VALUES(null,'$id_order','$id_barang','$tgl','$jumlah',0,'$harga','$status')") or die(mysqli_error($koneksi));
+                }
+            ?>
+                <script>
+                    window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
+                </script>
+
+            <?php
+            }
         }
 
         if (isset($_POST['updt'])) {
             $jumlah = $_POST['jumlah'];
             $id_pesanan1 = $_POST['id_pesanan'];
             mysqli_query($koneksi, "UPDATE pesanan SET jumlah = '$jumlah' WHERE id_pesanan = '$id_pesanan1'") or die(mysqli_error($koneksi));
-        ?>
+            ?>
             <script>
                 window.location = "http://localhost/bikafrozen/index.php?page=menu&id_order=<?= $order ?>";
             </script>

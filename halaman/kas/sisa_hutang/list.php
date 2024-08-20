@@ -118,13 +118,10 @@ hutang.id_hutang
                                 <option value="<?= $_GET['filter'] ?>"><?= $_GET['filter'] ?></option>
                             <?php
                             } else {
-                            ?>
-                                <option value="">--pilih</option>
-                            <?php
                             }
                             ?>
-                            <option value="Lunas">Lunas</option>
                             <option value="Belum Lunas">Belum Lunas</option>
+                            <option value="Lunas">Lunas</option>
                         </select>
                     </div>
                     <div class="col-2">

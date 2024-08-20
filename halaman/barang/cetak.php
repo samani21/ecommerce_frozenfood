@@ -48,6 +48,7 @@
             <tr>
                 <th>NO</th>
                 <th>Nama barang</th>
+                <th>Merek</th>
                 <th>Kategori</th>
                 <th>Jumlah</th>
                 <th>Harga</th>
@@ -61,6 +62,7 @@
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $row['nm_barang'] ?></td>
+                    <td><?= $row['merek'] ?></td>
                     <td><?= $row['nm_kategori'] ?></td>
                     <td><?= $row['jumlah'] ?></td>
                     <td><?= $hasil_rupiah = "Rp " . number_format($row['jual'], 0, ',', '.') ?></td>
